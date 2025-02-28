@@ -185,6 +185,7 @@ const result = Object.assign({},meal);
 result.breakfast = [];
 result.lunch = [];
 result.dinner = [];
+result.snacks = [];
 
 const obj = MealItems.filter((item) => {
     if(item.Mealtype == 'breakfast')
@@ -193,8 +194,8 @@ const obj = MealItems.filter((item) => {
         result.lunch.push(item)
     else if(item.Mealtype == 'dinner')
         result.dinner.push(item)
-
-    return result;
+    else if(item.Mealtype == 'snacks')
+        result.snacks.push(item)
 })
 
-console.log(result);
+console.log(obj);
