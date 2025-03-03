@@ -1,0 +1,15 @@
+.imagePreview {
+    margin-top: 10px;
+  }
+  
+  .imagePreview img{
+      max-width: 40vw;
+      max-height: 40vh;
+      border-radius: 8px;
+      /* border: 1px solid #e5ebec;  */
+  }
+  
+  .pdfImage {
+    width: 10vw;
+    height: 15vh;
+  }
