@@ -1,0 +1,12 @@
+.flex 
+{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.preview {
+    max-width: 20vw;
+    max-height: 20vh;
+    border-radius: 8px;
+}

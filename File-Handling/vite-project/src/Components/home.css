@@ -1,0 +1,18 @@
+.btnDiv {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .btnDiv button{
+    padding: 0.8rem;
+    background-color: black;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    border: 1px solid black;
+  }
+  
+  .btnDiv button:hover{
+    background-color: rgb(19, 18, 18);
+  }
