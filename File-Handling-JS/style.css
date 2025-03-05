@@ -6,24 +6,33 @@
 }
 
 #heading {
-    color: black;
     margin-bottom: 4rem;
 }
 
-.btns {
-    display: flex;
-    justify-content: space-between;
-}
-
-.btn-single, .btn-multiple {
-    background-color: black;
-    color: white;
+/* CSS for Customize the label tag */
+/* .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+  
+  input.visually-hidden:is(:focus, :focus-within) + label {
+    outline: thin dotted;
+  } */
+  
+.btn {
+    background-color: rgb(71, 71, 71);
+    cursor:pointer;
     padding: 0.8rem;
-    border-radius: 5px;
-    border: none;
+    color:white;
+    border:none;
+    border-radius: 10px;
 }
 
-.btn-single:hover, .btn-multiple:hover {
-    background-color: rgb(56, 55, 55);
-    cursor: pointer;
+.btn:hover{
+    background-color: #615e5e;
 }

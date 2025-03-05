@@ -1,13 +1,14 @@
-const single_btn = document.getElementsByClassName("btn-single");
-const multiple_btn = document.getElementsByClassName("btn-multiple");
+// Script for customize the input button by using the property display:none
+const fileSelect = document.getElementById("fileSelect");
+const fileElem = document.getElementById("fileElem");
 
-single_btn.addEventListener("Click",handleSingleButton);
-multiple_btn.addEventListener("Click",handleMultipleButton);
-
-function handleSingleButton(){
-    console.log("Single-btn-clicked")
-}
-
-function handleMultipleButton(){
-    console.log("multiple-btn-clicked")
-}
+fileSelect.addEventListener(
+  "click",
+  (e) => {
+    if (fileElem) {
+      fileElem.click();
+    }
+     e.preventDefault();         //prevent navigation to "#"
+  },
+  false,
+);
