@@ -1,0 +1,29 @@
+:root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+#heading {
+    color: black;
+    margin-bottom: 4rem;
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-single, .btn-multiple {
+    background-color: black;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: none;
+}
+
+.btn-single:hover, .btn-multiple:hover {
+    background-color: rgb(56, 55, 55);
+    cursor: pointer;
+}
