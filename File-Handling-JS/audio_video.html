@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="audio_video.css">
+    <script src="audio_video.js" defer></script>
+    <title>Audio and Video</title>
 </head>
 <body>
-    <p>Audio and video</p>
+    <h2>Here You can Upload Multiple audios and videos</h2>
+
+    <form enctype="multipart/form-data">
+        <label for="fileElem">Select files: </label>
+        <input type="file"
+        id="fileElem"
+        accept="audio/*,video/*"
+        style="display:none"
+        multiple/>
+        <button id="fileSelect" type="button" class="btn">Click Here</button>
+
+        <div id="preview"></div>
+        
+        <button type="submit" class="btn">Submit</button>
+    </form>
     <a href="index.html"><button class="btn">Back</button></a>
 </body>
 </html>

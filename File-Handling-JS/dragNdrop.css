@@ -1,0 +1,39 @@
+.btn {
+    background-color: rgb(71, 71, 71);
+    cursor:pointer;
+    padding: 0.8rem;
+    color:white;
+    border:none;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.btn:hover{
+    background-color: #615e5e;
+}
+
+.dropBox {
+    width:40vw;
+    height:40vh;
+    color: rgb(120,120,120);
+    border: 2px dashed #5bc0de;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+}
+
+input {
+    display: none;
+}
+
+.setImg {
+    max-width: 20vw;
+    max-height: 20vh;
+    border-radius: 8px;
+}
+
+.pdfPreview {
+    max-width: 40vw;
+    max-height: 40vh;
+}

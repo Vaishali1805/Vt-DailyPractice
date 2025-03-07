@@ -11,3 +11,14 @@
 .btn:hover{
     background-color: #615e5e;
 }
+
+.setImg {
+    max-width: 20vw;
+    max-height: 20vh;
+    border-radius: 8px;
+}
+
+.pdfPreview {
+    max-width: 40vw;
+    max-height: 40vh;
+}
