@@ -1,0 +1,38 @@
+:root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+#heading {
+    margin-bottom: 4rem;
+}
+
+/* CSS for Customize the label tag */
+/* .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+  
+  input.visually-hidden:is(:focus, :focus-within) + label {
+    outline: thin dotted;
+  } */
+  
+.btn {
+    background-color: rgb(71, 71, 71);
+    cursor:pointer;
+    padding: 0.8rem;
+    color:white;
+    border:none;
+    border-radius: 10px;
+}
+
+.btn:hover{
+    background-color: #615e5e;
+}

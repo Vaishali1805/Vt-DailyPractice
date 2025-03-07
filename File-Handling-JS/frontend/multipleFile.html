@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="multipleFile.css">
+    <script src="multipleFile.js" defer></script>
+    <title>Multiple Files</title>
+</head>
+<body>
+    <h2>Here You can Upload Multiple Images and Files</h2>
+
+    <form enctype="multipart/form-data">
+        <label for="fileElem">Select files:</label>
+        <input type="file" 
+        id="fileElem" 
+        name="file"
+        accept=".png, .jpg, .jpeg, .pdf" 
+        style="display:none" 
+        multiple />
+        <button id="fileSelect" type="button" class="btn">Click Here</button>
+        <br /><br />
+
+        <div id="preview"></div>
+        
+        <input class="btn" type="submit" />
+    </form>
+    <a href="index.html"><button class="btn">Back</button></a>
+</body>
+</html>

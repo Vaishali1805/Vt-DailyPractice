@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dragNdrop.css">
+    <script src="dragNdrop.js" defer></script>
+    <title>Drag and Drop</title>
+</head>
+<body>
+    <h2>Here you can select files via Drag and Drop</h2>
+    
+    <form enctype="multipart/form-data">
+        <input type="file" name="file" multiple />
+
+        <div id="dropBox" class="dropBox">
+            <p>Drop Your Files here or click here</p>
+        </div>
+
+        <div id="preview"></div>
+
+        <button type="submit" class="btn">Submit</button>
+    </form>
+    <a href="index.html"><button class="btn">Back</button></a>
+</body>
+</html>
