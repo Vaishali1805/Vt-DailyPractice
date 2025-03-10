@@ -24,8 +24,22 @@
         <div id="preview"></div>
         <button class="btn" type="submit" id="submitBtn">Submit</button>
     </form>
+    <div>
+        <progress id="progressBar" value="0" max="100"></progress>
+        <p id="message"></p>
+    </div>
 
-    <a href="index.html"><button class="btn">Back</button></a>
+    
+    <dialog id="dialog">
+        <form method="dialog">
+            <h3>Are you sure to delete this file?</h3>
+            <button id="yesBtn" type="submit">Yes</button>
+            <button id="cancelBtn" type="submit">Cancel</button>
+        </form>
+    </dialog>
+    <button id="delete">delete</button>
+
+    <a href="index.html" id="message"><button class="btn">Back</button></a>
 </body>
 
 </html>

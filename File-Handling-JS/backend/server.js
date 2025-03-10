@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors';
 import multer from 'multer'
+import mime from 'mime-types'
 // import bodyParser from 'body-parser'
 
 const PORT = 3500;
@@ -13,16 +14,39 @@ const storage = multer.diskStorage({
         cb(null,'uploads/');
     },
     filename: (req,file,cb) => {
-        cb(null,file.originalname);
+        // console.log("req2: ",req.file);
+        console.log("req2: ",req.files);
+        console.log("mimeType: ",file.mimetype);
+        let fileExtension = mime.extension(file.mimetype);
+        console.log("fileExtension: ",fileExtension);
+        let fileName = `${Date.now()}${file.originalname}.${fileExtension}`;
+        cb(null,fileName);
     }
 })
 
 const upload = multer({ storage });
 
-app.post('/singleUpload', upload.single('file'),(req,res) => {
-    console.log("req: ",req.file);
+app.post('/UploadFile', upload.single('fileChunk'),(req,res) => {
+    // console.log("req: ",req);
+    console.log("req.file ",req.file);
+    // console.log("fileType: ",req.body.fileType);
     res.send("File uploaded successfully");
 })
+
+app.post('/deleteFile',(req,res) => {
+    //file path?
+    fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        } else {
+          console.log("File deleted successfully");
+        }
+      });
+
+    res.send("File deleted successfully");
+})
+
+// Function to delete an uploaded file
 
 app.listen(PORT,() => {
     console.log("server is running at PORT: ",PORT);

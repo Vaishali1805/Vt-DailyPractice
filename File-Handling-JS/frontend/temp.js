@@ -102,7 +102,7 @@ async function uploadFileInChunks(file) {
         await sendChunk(formData, chunkIndex, totalChunks);
     }
 
-    console.log("✅ File Upload Completed!");
+    console.log("File Upload Completed!");
 }
 
 async function sendChunk(formData, chunkIndex, totalChunks) {

@@ -1,6 +1,11 @@
 const fileInput = document.getElementById("fileElem");
 const fileSelectBtn = document.getElementById("fileSelect");
 const preview = document.getElementById("preview");
+const progressBar = document.getElementById("progressBar");
+const message = document.getElementById("message");
+const form = document.getElementById("form");
+
+progressBar.style.display = "none";
 
 fileSelectBtn.addEventListener("click", (e) => {
     if (fileInput) {
@@ -11,27 +16,29 @@ fileSelectBtn.addEventListener("click", (e) => {
 
 fileInput.addEventListener("change", handleFileSelection);
 
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    handleSubmit(e);
+});
+
 function handleFileSelection(event) {
+    progressBar.style.display = "none";
+    message.textContent = " ";
+
     const files = event.target.files;
-    console.log("files: ", files);
+    // console.log("files: ", files);
 
     for (let i = 0; i < files.length; i++) {
-        const validTypes = ['image/jpg', 'image/jpeg', 'image/png', 'application/pdf']
 
-        if (!validTypes.includes(files[i].type)){
-            alert("Invalid file type. Please select an image (JPG, JPEG, PNG, PDF).");
-            return;
-        }
-
-        const maxSize = 5 * 1024 * 1024;        //5MB
-        if(files[i].size > maxSize){
-            alert("File size exceeds 5MB. Please select a smaller image.")
+        if (!validateFile(files[i])) {
+            fileInput.value = "";
+            preview.innerHTML = "";
             return;
         }
 
         if (files[i].type.startsWith("image")) {
             const img = document.createElement("img");
-            img.classList.add("setImg")
+            img.classList.add("setImg");
             img.src = URL.createObjectURL(files[i]);
             preview.appendChild(img);
         }
@@ -43,4 +50,65 @@ function handleFileSelection(event) {
             preview.appendChild(iFrame);
         }
     }
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+    const files = fileInput.files;
+    console.log("files: ", files);
+
+    for (let i = 0; i < files.length; i++) {
+
+        if (!validateFile(files[i])) {
+            return;
+        }
+
+        progressBar.style.display = "block";
+
+        const chunkSize = 1024 * 1024;      //1Mb size
+        const totalChunks = Math.ceil(files[i].size / chunkSize);
+
+        for (let j = 0; j < totalChunks; j++) {
+            let chunk = files[i].slice(j * chunkSize, Math.min(files[i].size, (j + 1) * chunkSize));
+            const formData = new FormData();
+            formData.append('fileChunk', chunk);
+            formData.append('chunkNumber', j);
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.upload.addEventListener('progress', (e) => {
+                const progress = parseInt((e.loaded / e.total) * 100);
+                progressBar.value = progress;
+                message.textContent = `uploading....${progress}%`;
+            })
+            xhttp.open('POST', "http://localhost:3500/UploadFile", true);
+            xhttp.send(formData);
+        }
+    }
+}
+
+function validateFile(file) {
+    if (!file) {
+        alert("Please select a file.");
+        return false;
+    }
+
+    const validTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
+    ];
+    const maxSize = 5 * 1024 * 1024; //5MB
+
+    if (!validTypes.includes(file.type)) {
+        alert("Invalid file type. Please select an image (JPG, JPEG, PNG, PDF).");
+        return false;
+    }
+
+    if (file.size > maxSize) {
+        alert("File size exceeds 5MB. Please select a smaller image.");
+        return false;
+    }
+
+    return true;
 }
