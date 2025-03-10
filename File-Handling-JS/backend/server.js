@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors';
 import multer from 'multer'
 import mime from 'mime-types'
+import path from 'path'
 // import bodyParser from 'body-parser'
 
 const PORT = 3500;
@@ -14,12 +15,8 @@ const storage = multer.diskStorage({
         cb(null,'uploads/');
     },
     filename: (req,file,cb) => {
-        // console.log("req2: ",req.file);
-        console.log("req2: ",req.files);
-        console.log("mimeType: ",file.mimetype);
-        let fileExtension = mime.extension(file.mimetype);
-        console.log("fileExtension: ",fileExtension);
-        let fileName = `${Date.now()}${file.originalname}.${fileExtension}`;
+        // const fileExtension = path.extname(file.originalname);       //no need
+        let fileName = `${Date.now()}${file.originalname}`;
         cb(null,fileName);
     }
 })
