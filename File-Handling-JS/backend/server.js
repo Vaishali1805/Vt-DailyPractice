@@ -1,53 +1,62 @@
 import express from 'express'
 import cors from 'cors';
-import multer from 'multer'
-import mime from 'mime-types'
-import path from 'path'
-// import bodyParser from 'body-parser'
 
 const PORT = 3500;
 const app = express();
 
 app.use(cors());
+app.use(express.static("uploads"));       //server static files
 
-const storage = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null,'uploads/');
-    },
-    filename: (req,file,cb) => {
-        // const fileExtension = path.extname(file.originalname);       //no need
-        let fileName = `${Date.now()}${file.originalname}`;
-        cb(null,fileName);
-    }
-})
+import uploadRoutes from  './routes/uploadRoutes.js'
+import deleteRoutes from './routes/deleteRoutes.js'
+import getFilesRoutes from './routes/getFilesRoutes.js'
 
-const upload = multer({ storage });
-
-app.post('/UploadFile', upload.single('fileChunk'),(req,res) => {
-    // console.log("req: ",req);
-    console.log("req.file ",req.file);
-    // console.log("fileType: ",req.body.fileType);
-    res.send("File uploaded successfully");
-})
-
-app.post('/deleteFile',(req,res) => {
-    //file path?
-    fs.unlink(filePath, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
-        } else {
-          console.log("File deleted successfully");
-        }
-      });
-
-    res.send("File deleted successfully");
-})
-
-// Function to delete an uploaded file
+app.use('/get',getFilesRoutes);
+app.use('/upload',uploadRoutes);
+app.use('/delete',deleteRoutes);
 
 app.listen(PORT,() => {
     console.log("server is running at PORT: ",PORT);
 })
+
+
+
+
+
+
+// const storage = multer.diskStorage({
+//     destination: (req,file,cb) => {
+//         cb(null,'uploads/');
+//     },
+//     filename: (req,file,cb) => {
+//         // const fileExtension = path.extname(file.originalname);       //no need
+//         let fileName = `${Date.now()}${file.originalname}`;
+//         cb(null,fileName);
+//     }
+// })
+
+// const upload = multer({ storage });
+
+// app.post('/UploadFile', upload.single('fileChunk'),(req,res) => {
+//     console.log("req.file in submit",req.file);
+//     res.send("File uploaded successfully");
+// })
+
+// app.post('/deleteFile',(req,res) => {
+//     console.log("req ",req);
+//     console.log("req.body: ",req.body)
+//     console.log("req.file: ",req.file)
+    // file path?
+    // fs.unlink(filePath, (err) => {
+    //     if (err) {
+    //       console.error("Error deleting file:", err);
+    //     } else {
+    //       console.log("File deleted successfully");
+    //     }
+    //   });
+
+//     res.send("File deleted successfully");
+// })
 
 // parse application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: false }))
