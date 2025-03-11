@@ -14,27 +14,27 @@ progressBar.style.display = "none";
 let files = [];
 
 fileSelectBtn.addEventListener(
-    "click",
-    (e) => {
-        if (fileInput) {
-            fileInput.click();
-        }
-        e.preventDefault(); //prevent navigation to "#"
-    },
-    false
+  "click",
+  (e) => {
+    if (fileInput) {
+      fileInput.click();
+    }
+    e.preventDefault(); //prevent navigation to "#"
+  },
+  false
 );
 
 fileInput.addEventListener("change", handleFileSelection);
 
 form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    handleSubmit(e);
+  e.preventDefault();
+  handleSubmit(e);
 });
 
-yesBtn.addEventListener("click", (e) => {
-    dialog.close();
-    deleteFile(e);
-});
+// yesBtn.addEventListener("click", (e) => {
+//   dialog.close();
+//   deleteFile(e);
+// });
 
 // submitBtn.addEventListener("click",(e) => {
 //     e.preventDefault();
@@ -43,164 +43,184 @@ yesBtn.addEventListener("click", (e) => {
 // })
 
 function handleFileSelection(event) {
-    progressBar.style.display = "none";
-    message.textContent = " ";
-    const file = event.target.files[0];
-    // console.log("file: ", file);
+  progressBar.style.display = "none";
+  message.textContent = " ";
+  const file = event.target.files[0];
+  // console.log("file: ", file);
 
-    if (!validateFile(file)) {
-        fileInput.value = ""; // clear the input if file is invalid
-        preview.innerHTML = "";
-        return;
-    }
+  if (!validateFile(file)) {
+    fileInput.value = ""; // clear the input if file is invalid
+    preview.innerHTML = "";
+    return;
+  }
 
-    preview.innerHTML = ""; //to remove the old preview
+  preview.innerHTML = ""; //to remove the old preview
 
-    if (file.type.startsWith("image")) {
-        const img = document.createElement("img");
-        img.classList.add("setImg");
-        img.src = URL.createObjectURL(file);
-        preview.appendChild(img);
-    }
+  if (file.type.startsWith("image")) {
+    const img = document.createElement("img");
+    img.classList.add("setImg");
+    img.src = URL.createObjectURL(file);
+    preview.appendChild(img);
+  }
 
-    if (file.type == "application/pdf") {
-        const iFrame = document.createElement("iframe");
-        iFrame.classList.add("pdfPreview");
-        iFrame.src = URL.createObjectURL(file);
-        preview.appendChild(iFrame);
-    }
+  if (file.type == "application/pdf") {
+    const iFrame = document.createElement("iframe");
+    iFrame.classList.add("pdfPreview");
+    iFrame.src = URL.createObjectURL(file);
+    preview.appendChild(iFrame);
+  }
 }
 
 function handleSubmit(event) {
-    event.preventDefault();
-    progressBar.style.display = "block";
-    const file = fileInput.files[0];
-    console.log("file in submit: ", file);
+  event.preventDefault();
+  progressBar.style.display = "block";
+  const file = fileInput.files[0];
+  console.log("file in submit: ", file);
 
-    if (!validateFile(file)) {
-        return; //if file is invalid then don't submit it
-    }
+  if (!validateFile(file)) {
+    return; //if file is invalid then don't submit it
+  }
 
-    const chunkSize = 1024 * 1024; //1MB chunk Size
-    const totalChunks = Math.ceil(file.size / chunkSize); //rounds a number rounded UP to the nearest integer.
+  const chunkSize = 1024 * 1024; //1MB chunk Size
+  const totalChunks = Math.ceil(file.size / chunkSize); //rounds a number rounded UP to the nearest integer.
 
-    for (let i = 0; i < totalChunks; i++) {
-        const chunk = file.slice(
-            i * chunkSize,
-            Math.min(file.size, (i + 1) * chunkSize)
-        );
-        const formData = new FormData();
-        formData.append("fileChunk", chunk, file.name);
-        formData.append("chunkNumber", i);
+  for (let i = 0; i < totalChunks; i++) {
+    const chunk = file.slice(
+      i * chunkSize,
+      Math.min(file.size, (i + 1) * chunkSize)
+    );
+    const formData = new FormData();
+    formData.append("fileChunk", chunk, file.name);
+    formData.append("chunkNumber", i);
 
-        const xhttp = new XMLHttpRequest();
-        xhttp.upload.addEventListener("progress", (e) => {
-            const progress = parseInt((e.loaded / e.total) * 100);
-            progressBar.value = progress;
-            message.textContent = `uploading....${progress}%`;
-        });
-        xhttp.open("POST", "http://localhost:3500/upload/singleFile", true);
-        xhttp.send(formData);
-    }
+    const xhttp = new XMLHttpRequest();
+    xhttp.upload.addEventListener("progress", (e) => {
+      const progress = parseInt((e.loaded / e.total) * 100);
+      progressBar.value = progress;
+      message.textContent = `uploading....${progress}%`;
+    });
+    xhttp.open("POST", "http://localhost:3500/upload/singleFile", true);
+    xhttp.send(formData);
+  }
 
-    //To send complete file at once
-    //   const formData = new FormData();
-    //   formData.append("file", file, file.name); //Here browser will automatically set the content-type
+  //To send complete file at once
+  //   const formData = new FormData();
+  //   formData.append("file", file, file.name); //Here browser will automatically set the content-type
 
-    //   const xhttp = new XMLHttpRequest();
-    //   xhttp.onload = function () {
-    //     console.log("xhttp.status: ", xhttp.status);
-    //     if (xhttp.status === 200) {
-    //       console.log("Successfully uploaded");
-    //       console.log("response:", this.responseText);
-    //     } else console.log("Error in uploading!! Please Try Again");
-    //   };
-    //   xhttp.open("POST", "http://localhost:3500/singleUpload", true);
-    //   xhttp.send(formData);
+  //   const xhttp = new XMLHttpRequest();
+  //   xhttp.onload = function () {
+  //     console.log("xhttp.status: ", xhttp.status);
+  //     if (xhttp.status === 200) {
+  //       console.log("Successfully uploaded");
+  //       console.log("response:", this.responseText);
+  //     } else console.log("Error in uploading!! Please Try Again");
+  //   };
+  //   xhttp.open("POST", "http://localhost:3500/singleUpload", true);
+  //   xhttp.send(formData);
 }
 
 function validateFile(file) {
-    if (!file) {
-        alert("Please select a file.");
-        return false;
-    }
+  if (!file) {
+    alert("Please select a file.");
+    return false;
+  }
 
-    const validTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/jpg",
-        "application/pdf",
-    ];
-    const maxSize = 5 * 1024 * 1024; //5MB
+  const validTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "application/pdf",
+  ];
+  const maxSize = 5 * 1024 * 1024; //5MB
 
-    if (!validTypes.includes(file.type)) {
-        alert("Invalid file type. Please select an image (JPG, JPEG, PNG, PDF).");
-        return false;
-    }
+  if (!validTypes.includes(file.type)) {
+    alert("Invalid file type. Please select an image (JPG, JPEG, PNG, PDF).");
+    return false;
+  }
 
-    if (file.size > maxSize) {
-        alert("File size exceeds 5MB. Please select a smaller image.");
-        return false;
-    }
+  if (file.size > maxSize) {
+    alert("File size exceeds 5MB. Please select a smaller image.");
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
-function deleteFile(event) {
-    console.log("am in delete file");
+function deleteFile(fileId) {
+  console.log("am in delete file");
+  console.log("fileId: ", fileId);
+  //send file name to backend with date.now()
 
-    const file = fileInput.files[0];
-    console.log("file: ", file)
+//   const file = fileInput.files[0];
+//   console.log("file: ", file);
 
-    const formData = new FormData();
-    formData.append("file", file, file.name);
+//   const formData = new FormData();
+//   formData.append("file", file, file.name);
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function () {
-        if (xhttp.status === 200) {
-            console.log("response: ", this.responseText);
-            preview.innerHTML = "";
-            fileInput.value = "";
-        }
-    }
-    xhttp.open("POST", "http://localhost:3500/deleteFile", true);
-    xhttp.send(formData);
+//   const xhttp = new XMLHttpRequest();
+//   xhttp.onload = function () {
+//     if (xhttp.status === 200) {
+//       console.log("response: ", this.responseText);
+//       preview.innerHTML = "";
+//       fileInput.value = "";
+//     }
+//   };
+//   xhttp.open("POST", "http://localhost:3500/deleteFile", true);
+//   xhttp.send(formData);
 }
 
 function getUploadedFiles() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function () {
-        if (xhttp.status === 200) {
-            const resFiles = JSON.parse(this.responseText);
-            files = [...resFiles];
-            console.log("files: ", files);
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    if (xhttp.status === 200) {
+      const resFiles = JSON.parse(this.responseText);
+      files = [...resFiles];
+      console.log("files: ", files);
+      preview.innerHTML = "";
 
-            // console.log("new path: ",window.Ionic.WebView.convertFileSrc(file.fileLoc));
-            for (file of files) {
-                let ext = file.fileLoc.split(".");
-                let arr = ext[0].split('\\');
-                let fileName = arr[arr.length - 1].split("+");
+      for (file of files) {
+        let ext = file.name.split(".");
+        let fileName = ext[0].split("+");
 
-                if (ext != 'PDF') {
-                    const img = document.createElement("img");
-                    img.classList.add("setImg");
-                    // img.src = file.fileLoc;
-                    img.alt = fileName[1];
-                    preview.appendChild(img);
-                }
-                else {
-                    const iFrame = document.createElement("iframe");
-                    iFrame.classList.add("pdfPreview");
-                    // iFrame.src = file.fileLoc;
-                    iFrame.alt = fileName[1];
-                    preview.appendChild(iFrame);
-                }
-                
-            }
+        const fileContainer = document.createElement("div");
+        fileContainer.classList.add("file-container");
+
+        const fileUrl = `http://localhost:3500${file.fileLoc}`;
+        if (ext[1].toLowerCase() !== "pdf") {
+          const img = document.createElement("img");
+          img.classList.add("setImg");
+          img.src = fileUrl;
+          img.alt = fileName[1];
+          fileContainer.appendChild(img);
+        } else {
+          const iFrame = document.createElement("iframe");
+          iFrame.classList.add("pdfPreview");
+          iFrame.src = fileUrl;
+          iFrame.alt = fileName[1];
+          fileContainer.appendChild(iFrame);
         }
+
+        //create a delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.onclick = function (e) {
+          e.preventDefault();
+          dialog.showModal();
+
+          yesBtn.addEventListener("click", (e) => {
+            dialog.close();
+            deleteFile(file.id);
+          });
+        };
+
+        fileContainer.appendChild(deleteBtn);
+        preview.appendChild(fileContainer);
+      }
     }
-    xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
-    xhttp.send();
+  };
+  xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
+  xhttp.send();
 }
 
 getUploadedFiles();
@@ -211,8 +231,8 @@ getUploadedFiles();
 // deleteBtn.classList.add("delete-btn");
 
 // deleteBtn.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     dialog.showModal();
+// e.preventDefault();
+// dialog.showModal();
 //     deleteBtn.style.display = "none";
 // });
 

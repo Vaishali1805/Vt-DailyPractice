@@ -1,3 +1,29 @@
+router.post("/deleteFile", (req, res) => {
+    const { fileName } = req.body;  // Frontend se aaya hua file name
+    if (!fileName) {
+        return res.status(400).json({ error: "File name is required" });
+    }
+
+    // ✅ File ka exact path banayein
+    const filePath = path.join(__dirname, "uploads", "singleUploads", fileName);
+
+    // ✅ Check karein ki file exist karti hai ya nahi
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ error: "File not found" });
+        }
+
+        // ✅ File delete karein
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                return res.status(500).json({ error: "Error deleting file" });
+            }
+            res.json({ message: "File deleted successfully" });
+        });
+    });
+});
+
+
 {/* <input type="file" id="fileInput">
 
 <div id="progressBar"></div>   */}

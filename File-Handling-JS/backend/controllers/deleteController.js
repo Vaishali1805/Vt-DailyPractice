@@ -12,3 +12,18 @@ const deleteFile = (req,res) => {
 }
 
 export {deleteFile}
+
+// Check if file exists before deleting
+// fs.access(filePath, fs.constants.F_OK, (err) => {
+//   if (err) {
+//       return res.status(404).json({ message: "File not found" });
+//   }
+
+//   // Delete the file
+//   fs.unlink(filePath, (err) => {
+//       if (err) {
+//           return res.status(500).json({ message: "Error deleting file" });
+//       }
+//       res.json({ message: "File deleted successfully!" });
+//   });
+// });

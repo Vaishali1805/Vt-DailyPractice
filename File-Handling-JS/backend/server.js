@@ -1,11 +1,13 @@
 import express from 'express'
 import cors from 'cors';
+import path from 'path'
 
 const PORT = 3500;
 const app = express();
 
 app.use(cors());
-app.use(express.static("uploads"));       //server static files
+const __dirname = path.resolve(); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));   //server static files
 
 import uploadRoutes from  './routes/uploadRoutes.js'
 import deleteRoutes from './routes/deleteRoutes.js'

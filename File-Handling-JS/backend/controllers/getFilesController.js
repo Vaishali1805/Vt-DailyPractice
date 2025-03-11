@@ -24,8 +24,12 @@ const getSingleUploadedFiles = (req, res) => {
         // let arr = files.map((file,index) => ({fileLoc : filesPath + file}))
 
         let arr = files.map((file) => {
-            return { fileLoc: path.join(filesPath, file) };
-            // return { fileLoc: `/uploads/singleUploads/${file}` };        //Try to solve the problem using relative path
+            return {
+                id: Date.now(),
+                name: file,
+                fileLoc: `/uploads/singleUploads/${file}`   //Relative path
+                // fileLoc: path.join(filesPath, file),
+            };
         });
         
         console.log("arr: ", arr)
