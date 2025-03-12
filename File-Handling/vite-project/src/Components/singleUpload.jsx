@@ -22,7 +22,6 @@ const SingleUpload = () => {
 
     // For handle the change of the file
     const handleChange = (event) => {
-        console.log("am in handleChange")
         setisloading(true);                     //Loader not working correctly -- pending
         const file = event.target.files[0];
 

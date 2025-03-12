@@ -1,7 +1,6 @@
 const fileSelectBtn = document.getElementById("fileSelect");
 const form = document.getElementById("fileUploadForm");
 const fileInput = document.getElementById("fileElem");
-// const submitBtn = document.getElementById("submitBtn");
 const preview = document.getElementById("preview");
 const progressBar = document.getElementById("progressBar");
 const message = document.getElementById("message");
@@ -30,17 +29,6 @@ form.addEventListener("submit", (e) => {
     e.preventDefault();
     handleSubmit(e);
 });
-
-yesBtn.addEventListener("click", (e) => {
-    dialog.close();
-    deleteFile(e);
-});
-
-// submitBtn.addEventListener("click",(e) => {
-//     e.preventDefault();
-//     console.log("am in submitBtn");
-//     handleSubmit(e);
-// })
 
 function handleFileSelection(event) {
     progressBar.style.display = "none";
@@ -98,6 +86,8 @@ function handleSubmit(event) {
             const progress = parseInt((e.loaded / e.total) * 100);
             progressBar.value = progress;
             message.textContent = `uploading....${progress}%`;
+
+            
         });
         xhttp.open("POST", "http://localhost:3500/upload/singleFile", true);
         xhttp.send(formData);
@@ -146,25 +136,25 @@ function validateFile(file) {
     return true;
 }
 
-function deleteFile(event) {
-    console.log("am in delete file");
+function deleteFile(fileId) {
+    console.log("fileId: ", fileId);
+    let fileName;
+    const arr = files.map((file) => {
+        if (file.id == fileId)
+            fileName =  {name: file.name};
+    })
+    console.log("fileName: ", fileName);
 
-    const file = fileInput.files[0];
-    console.log("file: ", file)
-
-    const formData = new FormData();
-    formData.append("file", file, file.name);
-
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function () {
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function () {
         if (xhttp.status === 200) {
-            console.log("response: ", this.responseText);
-            preview.innerHTML = "";
-            fileInput.value = "";
+          console.log("response: ", this.responseText);
+          getUploadedFiles();
         }
-    }
-    xhttp.open("POST", "http://localhost:3500/deleteFile", true);
-    xhttp.send(formData);
+      };
+      xhttp.open("POST", "http://localhost:3500/delete/file", true);
+      xhttp.setRequestHeader("Content-Type", "application/json");
+      xhttp.send(JSON.stringify(fileName));
 }
 
 function getUploadedFiles() {
@@ -174,31 +164,51 @@ function getUploadedFiles() {
             const resFiles = JSON.parse(this.responseText);
             files = [...resFiles];
             console.log("files: ", files);
+            preview.innerHTML = "";
+            
+            files.forEach((file,index) => {
+                let ext = file.name.split(".");
+                let fileName = ext[0].split("+");
 
-            // console.log("new path: ",window.Ionic.WebView.convertFileSrc(file.fileLoc));
-            for (file of files) {
-                let ext = file.fileLoc.split(".");
-                let arr = ext[0].split('\\');
-                let fileName = arr[arr.length - 1].split("+");
+                const fileContainer = document.createElement("div");
+                fileContainer.classList.add("file-container");
 
-                if (ext != 'PDF') {
+                const fileUrl = `http://localhost:3500${file.fileLoc}`;
+                if (ext[1].toLowerCase() !== "pdf") {
                     const img = document.createElement("img");
                     img.classList.add("setImg");
-                    // img.src = file.fileLoc;
+                    img.src = fileUrl;
                     img.alt = fileName[1];
-                    preview.appendChild(img);
-                }
-                else {
+                    fileContainer.appendChild(img);
+                } else {
                     const iFrame = document.createElement("iframe");
                     iFrame.classList.add("pdfPreview");
-                    // iFrame.src = file.fileLoc;
+                    iFrame.src = fileUrl;
                     iFrame.alt = fileName[1];
-                    preview.appendChild(iFrame);
+                    fileContainer.appendChild(iFrame);
                 }
-                
-            }
+
+                //create a delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Delete";
+                deleteBtn.classList.add("delete-btn");
+
+                deleteBtn.onclick = function (e) {
+                    e.preventDefault();
+                    dialog.showModal();
+                    
+                    console.log("fileId: ",file.id);
+                    yesBtn.addEventListener("click", (e) => {
+                        dialog.close();
+                        deleteFile(file.id);
+                    });
+                };
+
+                fileContainer.appendChild(deleteBtn);
+                preview.appendChild(fileContainer);
+            })
         }
-    }
+    };
     xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
     xhttp.send();
 }
@@ -211,8 +221,8 @@ getUploadedFiles();
 // deleteBtn.classList.add("delete-btn");
 
 // deleteBtn.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     dialog.showModal();
+// e.preventDefault();
+// dialog.showModal();
 //     deleteBtn.style.display = "none";
 // });
 
