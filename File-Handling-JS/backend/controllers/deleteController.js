@@ -1,4 +1,4 @@
-const deleteFile = (req,res) => {
+export function deleteFile(req,res){
     console.log("req.file",req.file);
     // file path?
     fs.unlink(filePath, (err) => {
@@ -11,4 +11,4 @@ const deleteFile = (req,res) => {
     res.send("File deleted successfully");
 }
 
-export {deleteFile}
+// export {deleteFile}
