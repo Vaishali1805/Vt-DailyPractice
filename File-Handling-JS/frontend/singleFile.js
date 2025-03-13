@@ -86,8 +86,6 @@ function handleSubmit(event) {
             const progress = parseInt((e.loaded / e.total) * 100);
             progressBar.value = progress;
             message.textContent = `uploading....${progress}%`;
-
-            
         });
         xhttp.open("POST", "http://localhost:3500/upload/singleFile", true);
         xhttp.send(formData);
@@ -213,7 +211,19 @@ function getUploadedFiles() {
     xhttp.send();
 }
 
-getUploadedFiles();
+function getFiles(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        if(xhttp.status == 200){
+            console.log("response: ",this.responseText);
+        }
+    }
+    xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
+    xhttp.send();
+}
+
+// getUploadedFiles();
+getFiles();
 
 // const deleteBtn = document.createElement("button");
 // deleteBtn.textContent = "Delete";

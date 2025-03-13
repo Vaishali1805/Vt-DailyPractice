@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 })
 
 const storage2 = multer.diskStorage({
-    destination: (req,file,cb) => {
+    destination: (req,file,cb) => {     
         cb(null,'uploads/multiUploads');
     },
     filename: (req,file,cb) => {

@@ -23,7 +23,6 @@ export function deleteFile(req,res){
         }
       });
     })
-
     // res.send("File deleted successfully");
 }
 

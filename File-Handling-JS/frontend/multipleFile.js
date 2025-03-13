@@ -80,7 +80,7 @@ function handleSubmit(event) {
                 progressBar.value = progress;
                 message.textContent = `uploading....${progress}%`;
             })
-            xhttp.open('POST', "http://localhost:3500/UploadFile", true);
+            xhttp.open('POST', "http://localhost:3500/upload/multipleFiles", true);
             xhttp.send(formData);
         }
     }
