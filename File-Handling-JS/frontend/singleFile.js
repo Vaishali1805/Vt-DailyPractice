@@ -119,6 +119,7 @@ function validateFile(file) {
         "image/jpg",
         "application/pdf",
     ];
+
     const maxSize = 5 * 1024 * 1024; //5MB
 
     if (!validTypes.includes(file.type)) {
@@ -212,15 +213,21 @@ function getUploadedFiles() {
 }
 
 function getFiles(){
+    console.log("am here")
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         if(xhttp.status == 200){
             console.log("response: ",this.responseText);
         }
     }
+    xhttp.onerror = function () {
+        console.error("Request failed");
+        alert("Network error! Unable to connect to server.");
+    };
     xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
     xhttp.send();
 }
+
 
 // getUploadedFiles();
 getFiles();
