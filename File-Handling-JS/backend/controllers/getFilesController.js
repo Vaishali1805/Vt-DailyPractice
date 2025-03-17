@@ -7,9 +7,9 @@ const __dirname = path.resolve(); //to prevent the error that __dirname is not d
 const getSingleUploadedFiles = (req, res) => {
   //get files from cache and send it to frontend
   let files = myCache.get("uploadedFiles") || [];
-  console.log("files: ", files);    //always empty because Node-cache stores data only in RAM, and RAM gets reset when the server restarts.
+  //console.log("files: ", files);    //when the server restarts it always empty because Node-cache stores data only in RAM, and RAM gets reset when the server restarts.
 
-  res.send("files retrieved successfully");
+  res.json(files);
 
   //get files from uploads folder and send it to frontend
   // const filesPath = path.join(__dirname, "uploads", "singleUploads");
@@ -32,4 +32,10 @@ const getSingleUploadedFiles = (req, res) => {
   // })
 };
 
-export { getSingleUploadedFiles };
+const getMultipleUploadedFiles = (req, res) => {
+  let files = myCache.get("multipleUploadedFiles") || [];
+
+  res.json(files);
+  // res.send("files retrieved");
+}
+export { getSingleUploadedFiles, getMultipleUploadedFiles };

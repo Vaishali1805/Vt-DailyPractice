@@ -6,11 +6,11 @@ const progressBar = document.getElementById("progressBar");
 const message = document.getElementById("message");
 const dialog = document.getElementById("dialog");
 const yesBtn = document.getElementById("yesBtn");
-const yesBtcancelBtn = document.getElementById("closeBtn");
 const forDeleteBtn = document.getElementById("forDeleteBtn");
 
 progressBar.style.display = "none";
 let files = [];
+let uploadedFiles = [];
 
 fileSelectBtn.addEventListener(
     "click",
@@ -63,7 +63,7 @@ function handleSubmit(event) {
     event.preventDefault();
     progressBar.style.display = "block";
     const file = fileInput.files[0];
-    console.log("file in submit: ", file);
+    // console.log("file in submit: ", file);
 
     if (!validateFile(file)) {
         return; //if file is invalid then don't submit it
@@ -78,15 +78,40 @@ function handleSubmit(event) {
             Math.min(file.size, (i + 1) * chunkSize)
         );
         const formData = new FormData();
-        formData.append("fileChunk", chunk, file.name);
+        formData.append("fileChunk", chunk, `${Date.now()}_${file.name}`);
         formData.append("chunkNumber", i);
 
+        // debugger;    
         const xhttp = new XMLHttpRequest();
-        xhttp.upload.addEventListener("progress", (e) => {
-            const progress = parseInt((e.loaded / e.total) * 100);
-            progressBar.value = progress;
-            message.textContent = `uploading....${progress}%`;
-        });
+
+        xhttp.onprogress = function (event) {
+            if (event.lengthComputable) {
+                // console.log("hii")
+                progressBar.style.display = "block";
+                let progress = parseInt((event.loaded / event.total) * 100);
+                //   console.log(`Upload Progress: ${progress.toFixed(2)}%`);
+                progressBar.value = progress;
+                message.textContent = `uploading....${progress}%`;
+            }
+        };
+
+        xhttp.onloadend = function () {
+            if (xhttp.status === 200) {
+                //receive the array of uploaded files
+                let response = JSON.parse(this.responseText);
+                console.log("message: ", response.message)
+                uploadedFiles = [...response.files];
+                // console.log("uploadedFiles: ", uploadedFiles);
+                previewUploadedFiles();
+            }
+        };
+
+        // xhttp.upload.addEventListener("progress", (e) => {
+        //     const progress = parseInt((e.loaded / e.total) * 100);
+        //     progressBar.value = progress;
+        //     message.textContent = `uploading....${progress}%`;
+        // });
+
         xhttp.open("POST", "http://localhost:3500/upload/singleFile", true);
         xhttp.send(formData);
     }
@@ -137,25 +162,24 @@ function validateFile(file) {
 
 function deleteFile(fileId) {
     console.log("fileId: ", fileId);
-    let fileName;
-    const arr = files.map((file) => {
-        if (file.id == fileId)
-            fileName =  {name: file.name};
-    })
-    console.log("fileName: ", fileName);
+    let obj = { id: fileId}
 
-      const xhttp = new XMLHttpRequest();
-      xhttp.onload = function () {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
         if (xhttp.status === 200) {
-          console.log("response: ", this.responseText);
-          getUploadedFiles();
+            let response = JSON.parse(this.responseText)
+            console.log("response: ",response);
+            uploadedFiles = [...response.files];
+            previewUploadedFiles();
+            // getUploadedFiles();
         }
-      };
-      xhttp.open("POST", "http://localhost:3500/delete/file", true);
-      xhttp.setRequestHeader("Content-Type", "application/json");
-      xhttp.send(JSON.stringify(fileName));
+    };
+    xhttp.open("POST", "http://localhost:3500/delete/file", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send(JSON.stringify(obj));
 }
 
+//without cache get from directory
 function getUploadedFiles() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
@@ -164,8 +188,8 @@ function getUploadedFiles() {
             files = [...resFiles];
             console.log("files: ", files);
             preview.innerHTML = "";
-            
-            files.forEach((file,index) => {
+
+            files.forEach((file, index) => {
                 let ext = file.name.split(".");
                 let fileName = ext[0].split("+");
 
@@ -195,8 +219,8 @@ function getUploadedFiles() {
                 deleteBtn.onclick = function (e) {
                     e.preventDefault();
                     dialog.showModal();
-                    
-                    console.log("fileId: ",file.id);
+
+                    console.log("fileId: ", file.id);
                     yesBtn.addEventListener("click", (e) => {
                         dialog.close();
                         deleteFile(file.id);
@@ -212,12 +236,73 @@ function getUploadedFiles() {
     xhttp.send();
 }
 
-function getFiles(){
+//using cache
+function previewUploadedFiles() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        if (xhttp.status === 200) {
+            // console.log("response: ", JSON.parse(this.responseText));
+            let response = JSON.parse(this.responseText);
+            uploadedFiles = [...response];
+            console.log("uploadedFiles: ", uploadedFiles);
+
+            progressBar.style.display = "none";
+            message.style.display = "none";
+            preview.innerHTML = ""; //to remove the old preview
+
+            uploadedFiles.forEach((file, index) => {
+                let ext = file.path.split('.');
+
+                const fileContainer = document.createElement("div");
+                fileContainer.classList.add("file-container");
+
+                const fileUrl = `http://localhost:3500/${file.path}`;                                       
+
+                if (ext[1].toLowerCase() !== "pdf") {
+                    const img = document.createElement("img");
+                    img.classList.add("setImg");
+                    img.src = fileUrl;
+                    preview.appendChild(img);
+                }
+                else {
+                    const iFrame = document.createElement("iframe");
+                    iFrame.classList.add("pdfPreview");
+                    iFrame.src = fileUrl;
+                    preview.appendChild(iFrame);
+                }
+
+                //create a delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Delete";
+                deleteBtn.classList.add("delete-btn");
+
+                deleteBtn.onclick = function (e) {
+                    e.preventDefault();
+                    dialog.showModal();
+
+                    // console.log("fileId: ", file.id);
+                    yesBtn.addEventListener("click", (e) => {
+                        dialog.close();
+                        deleteFile(file.id);
+                    });
+                };
+
+                fileContainer.appendChild(deleteBtn);
+                preview.appendChild(fileContainer);
+
+            });
+        }
+    }
+    xhttp.open("GET", "http://localhost:3500/get/singleFiles", true);
+    xhttp.send();
+}
+
+function getFiles() {
     console.log("am here")
     const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        if(xhttp.status == 200){
-            console.log("response: ",this.responseText);
+    xhttp.onload = function () {
+        if (xhttp.status == 200) {
+            console.log("response: ", this.responseText);
         }
     }
     xhttp.onerror = function () {
@@ -228,9 +313,10 @@ function getFiles(){
     xhttp.send();
 }
 
+previewUploadedFiles();
 
 // getUploadedFiles();
-getFiles();
+// getFiles();
 
 // const deleteBtn = document.createElement("button");
 // deleteBtn.textContent = "Delete";

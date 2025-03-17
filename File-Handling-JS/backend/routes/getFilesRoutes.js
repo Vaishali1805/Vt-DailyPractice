@@ -1,7 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import { getSingleUploadedFiles } from '../controllers/getFilesController.js'
+import { getSingleUploadedFiles,getMultipleUploadedFiles } from '../controllers/getFilesController.js'
 
 router.get('/singleFiles',getSingleUploadedFiles);
+router.get('/multipleFiles',getMultipleUploadedFiles);
 
 export default router;
