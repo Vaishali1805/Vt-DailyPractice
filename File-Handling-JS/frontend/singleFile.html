@@ -21,10 +21,15 @@
         style="display:none" />
         <button id="fileSelect" type="button" class="btn">Click Here</button>
         <br /><br />
+        <div id="mainCheckBox">
+            <label>Select all Files: </label>
+            <input type="checkbox" class="selectAll">
+        </div>
         <div id="preview"></div>
-        <div id="forDeleteBtn"></div>
         <button class="btn" type="submit" id="submitBtn">Submit</button>
     </form>
+
+    <button class="btn" id="deleteBtn">Delete</button>
     
     <div>
         <progress id="progressBar" value="0" max="100"></progress>

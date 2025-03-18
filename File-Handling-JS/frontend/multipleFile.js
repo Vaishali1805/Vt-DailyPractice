@@ -25,7 +25,8 @@ fileInput.addEventListener("change", handleFileSelection);
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
-    handleSubmit(e);
+    handleSubmit(e);        // send all files at once
+    //handleSubmit_chunks(e); //send files in chunks
 });
 
 function handleFileSelection(event) {
@@ -35,6 +36,7 @@ function handleFileSelection(event) {
     const files = event.target.files;
     // console.log("files: ", files);
 
+    preview.innerHTML = "";     //to remove the old preview
     for (let i = 0; i < files.length; i++) {
         if (!validateFile(files[i])) {
             fileInput.value = "";
@@ -103,34 +105,47 @@ function handleSubmit(event) {
     xhttp.open("POST", "http://localhost:3500/upload/multipleFiles", true);
     xhttp.send(formData);
 
-    //In chunks
-    // for (let i = 0; i < files.length; i++) {
+}
 
-    //     if (!validateFile(files[i])) {
-    //         return;
-    //     }
+//upload multiple files in chunks
+function handleSubmit_chunks(event) {
+    event.preventDefault();
+    const files = fileInput.files;
 
-    //     progressBar.style.display = "block";
+    if (files.length === 0) {
+        console.log("No files selected.");
+        return;
+    }
 
-    //     const chunkSize = 1024 * 1024;      //1Mb size
-    //     const totalChunks = Math.ceil(files[i].size / chunkSize);
+    // In chunks
+    for (let i = 0; i < files.length; i++) {
 
-    //     for (let j = 0; j < totalChunks; j++) {
-    //         let chunk = files[i].slice(j * chunkSize, Math.min(files[i].size, (j + 1) * chunkSize));
-    //         const formData = new FormData();
-    //         formData.append('fileChunk', chunk);
-    //         formData.append('chunkNumber', j);
+        if (!validateFile(files[i])) {
+            return;
+        }
 
-    //         const xhttp = new XMLHttpRequest();
-    //         xhttp.upload.addEventListener('progress', (e) => {
-    //             const progress = parseInt((e.loaded / e.total) * 100);
-    // progressBar.value = progress;
-    // message.textContent = `uploading....${progress}%`;
-    //         })
-    // xhttp.open('POST', "http://localhost:3500/upload/multipleFiles", true);
-    // xhttp.send(formData);
-    //     }
-    // }
+        progressBar.style.display = "block";
+        message.style.display = "block";
+
+        const chunkSize = 1024 * 1024;      //1Mb size
+        const totalChunks = Math.ceil(files[i].size / chunkSize);
+
+        for (let j = 0; j < totalChunks; j++) {
+            let chunk = files[i].slice(j * chunkSize, Math.min(files[i].size, (j + 1) * chunkSize));
+            const formData = new FormData();
+            formData.append('file', chunk,`${Date.now()}_${files[i].name}`);
+            formData.append('chunkNumber', j);
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.upload.addEventListener('progress', (e) => {
+                const progress = parseInt((e.loaded / e.total) * 100);
+                progressBar.value = progress;
+                message.textContent = `uploading....${progress}%`;
+            })
+            xhttp.open('POST', "http://localhost:3500/upload/singleFile", true);    //we send req. to singleFile route because we send one chunk at a time
+            xhttp.send(formData);
+        }
+    }
 }
 
 function validateFile(file) {
@@ -161,10 +176,26 @@ function validateFile(file) {
 }
 
 function deleteFile(fileId) {
-    console.log("fileId: ",fileId);
+    console.log("fileId: ", fileId);
+    let obj = { id: fileId }
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        if (xhttp.status === 200) {
+            let response = JSON.parse(this.responseText)
+            console.log("response: ", response);
+            uploadedFiles = [...response.files];
+            previewUploadedFiles();
+            // getUploadedFiles();
+        }
+    };
+    xhttp.open("POST", "http://localhost:3500/delete/files", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send(JSON.stringify(obj));
 }
 
 //using cache 
+//with delete button attach with every file
 function previewUploadedFiles() {
     const xhttp = new XMLHttpRequest();
 
@@ -225,4 +256,11 @@ function previewUploadedFiles() {
     xhttp.send();
 }
 
+//using cache
+//with checkboxes attach with every file
+function previewUploadedFiles_checkBoxes() {
+    //write the code here
+}
+
 previewUploadedFiles();
+previewUploadedFiles_checkBoxes();

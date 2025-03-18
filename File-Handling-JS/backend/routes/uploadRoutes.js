@@ -28,7 +28,7 @@ const storage2 = multer.diskStorage({
 })
 
 const singleUpload = multer({ storage });
-router.post('/singleFile',singleUpload.single('fileChunk'),uploadSingleFile);
+router.post('/singleFile',singleUpload.single('file'),uploadSingleFile);
 
 const multipleUpload = multer({ storage: storage2 });
 router.post('/multipleFiles',multipleUpload.array('files'),uploadMultipleFiles);

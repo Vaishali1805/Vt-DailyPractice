@@ -79,3 +79,29 @@ body,
 button {
   font-family: system-ui;
 }
+
+.check {
+  width: 1.2rem;
+  height: 1.2rem;
+  /* margin-top: 5rem; */
+}
+
+#mainCheckBox {
+  display: flex;
+}
+
+.selectAll {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: 1.1rem;
+  margin-left: 1rem;
+}
+
+.disabled {
+  background-color: gray;
+}
+
+.disabled:hover {
+  background-color: gray;
+  cursor: default;
+}
