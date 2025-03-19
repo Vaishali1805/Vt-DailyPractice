@@ -6,32 +6,34 @@ const progressBar = document.getElementById("progressBar");
 const message = document.getElementById("message");
 const dialog = document.getElementById("dialog");
 const yesBtn = document.getElementById("yesBtn");
+const mainCheckBoxDiv = document.getElementById("mainCheckBoxDiv");
 const mainCheckBox = document.getElementById("mainCheckBox");
 const deleteBtn = document.getElementById("deleteBtn");
 const submitBtn = document.getElementById("submitBtn");
 
-progressBar.style.display = "none";
-mainCheckBox.style.display = "none";
 let files = [];
 let uploadedFiles = [];
-let idArr = [];
-let selectedFiles;
+let selectedFiles = new Set();
 
-if (idArr.length === 0) {
+progressBar.style.display = "none";
+mainCheckBoxDiv.style.display = "none";
+
+if (selectedFiles.size === 0) {
     deleteBtn.disabled = true;
     deleteBtn.classList.add("disabled");
 } else {
     deleteBtn.disabled = false;
+    deleteBtn.classList.remove('disabled');
 }
 
 deleteBtn.addEventListener("click", deleteAllFiles);
-
+mainCheckBox.addEventListener("change", check_uncheck_all);
 fileSelectBtn.addEventListener(
     "click",
     (e) => {
         if (fileInput) {
             submitBtn.style.display = "block";
-            mainCheckBox.style.display = "none";
+            mainCheckBoxDiv.style.display = "none";
             fileInput.click();
         }
         e.preventDefault();     //prevent navigation to "#"
@@ -350,11 +352,6 @@ function previewUploadedFiles() {
 function previewUploadedFiles_checkBoxes() {
     deleteBtn.style.display = "block";
     submitBtn.style.display = "none";
-    
-    if(uploadedFiles.length == 0) {
-        mainCheckBox.style.display = 'none';
-    }else
-    mainCheckBox.style.display = "block";
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
@@ -364,11 +361,18 @@ function previewUploadedFiles_checkBoxes() {
             uploadedFiles = [...response];
             console.log("uploadedFiles: ", uploadedFiles);
 
+            if (uploadedFiles.length == 0) {
+                mainCheckBoxDiv.style.display = 'none';
+            } else
+                mainCheckBoxDiv.style.display = "block";
+
+            console.log("selectedFiles: ", selectedFiles);
+
             progressBar.style.display = "none";
             message.style.display = "none";
             preview.innerHTML = "";     //to remove the old preview
 
-            selectedFiles = new Set(); // Store selected file IDs
+            //selectedFiles = new Set(); // Store selected file IDs
 
             uploadedFiles.forEach((file, index) => {
                 let ext = file.path.split('.');
@@ -422,24 +426,60 @@ function updateMainCheckbox() {
     mainCheckBox.checked = checkBoxes.length > 0 && selectedFiles.size === checkBoxes.length;
 }
 
-
 function check(fileId) {
     selectedFiles.add(fileId);
+    console.log("selectedFiles: ", selectedFiles)
     deleteBtn.disabled = false;
     deleteBtn.classList.remove('disabled')
 }
 
 function unCheck(fileId) {
     selectedFiles.delete(fileId);
-    if (selectedFiles.length == 0) {
+    console.log("selectedFiles: uncheck ", selectedFiles)
+    if (selectedFiles.size == 0) {
         deleteBtn.disabled = true;
         deleteBtn.classList.add('disabled')
     }
 }
 
+function check_uncheck_all() {
+    const checkBoxes = document.getElementsByClassName('check');
+    if (this.checked) {
+        //update the selected files array and check all checkBoxes
+        for (let i = 0; i < checkBoxes.length; i++) {
+            checkBoxes[i].checked = true;
+        }
+        uploadedFiles.forEach((file, index) => {
+            selectedFiles.add(file.id);
+        })
+        console.log("selectedFiles: ", selectedFiles)
+        deleteBtn.disabled = false;
+        deleteBtn.classList.remove('disabled');
+    } else {
+        //update the selected files array and uncheck all checkBoxes
+        for (let i = 0; i < checkBoxes.length; i++) {
+            checkBoxes[i].checked = false;
+        }
+        selectedFiles.clear();
+        console.log("selectedFiles: ", selectedFiles)
+        deleteBtn.disabled = true;
+        deleteBtn.classList.add("disabled");
+    }
+}
+
 function deleteAllFiles() {
-    console.log("am in deleteAll Files");
-    //send req. to backend with idArr
+    let obj = { selectedFiles: Array.from(selectedFiles)};
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        if(xhttp.status == 200){
+            let response = JSON.parse(this.responseText);
+            console.log("message: ", response.message);
+            uploadedFiles = [...response.files];
+            previewUploadedFiles_checkBoxes();
+        }
+    }
+    xhttp.open("POST","http://localhost:3500/delete/AllFiles",true);
+    xhttp.send(JSON.stringify(obj));
 }
 
 function getFiles() {

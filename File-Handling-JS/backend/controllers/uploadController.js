@@ -14,7 +14,7 @@ const uploadSingleFile = (req, res) => {
     path: req.file.path,
   };
 
-  console.log("fileData: ",fileData); 
+  console.log("fileData: ",fileData);  
 
   let uploadedFiles = myCache.get("uploadedFiles") || [];
 

@@ -10,27 +10,25 @@
 </head>
 
 <body>
-    <h2>Upload Any One File or Image</h2>
+    <h2 id="heading">Upload Any One File or Image</h2>
 
     <form enctype="multipart/form-data" id="fileUploadForm" method="POST">
-        <label for="fileElem">Select a file:</label>
-        <input type="file" 
-        name="file"
-        id="fileElem" 
-        accept=".png, .jpg, .jpeg, .pdf" 
-        style="display:none" />
-        <button id="fileSelect" type="button" class="btn">Click Here</button>
-        <br /><br />
-        <div id="mainCheckBox">
-            <label>Select all Files: </label>
-            <input type="checkbox" class="selectAll">
+
+        <div id="selectFiles">
+            <label for="fileElem">Select a file:</label>
+            <input type="file" name="file" id="fileElem" accept=".png, .jpg, .jpeg, .pdf" style="display:none" />
+            <button id="fileSelect" type="button" class="btn">Click Here</button>
         </div>
+
+        <div id="mainCheckBoxDiv">
+            <label>Select all Files: </label>
+            <input type="checkbox" id="mainCheckBox" class="selectAll">
+        </div>
+
         <div id="preview"></div>
         <button class="btn" type="submit" id="submitBtn">Submit</button>
     </form>
 
-    <button class="btn" id="deleteBtn">Delete</button>
-    
     <div>
         <progress id="progressBar" value="0" max="100"></progress>
         <p id="message"></p>
@@ -44,7 +42,10 @@
         </form>
     </dialog>
 
-    <a href="index.html" id="message"><button class="btn">Back</button></a>
+    <div class="buttons">
+        <a href="index.html" id="message"><button class="btn">Back</button></a>
+        <button class="btn" id="deleteBtn">Delete</button>
+    </div>
 </body>
 
 </html>

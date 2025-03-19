@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors';
-import path from 'path'
+import path from 'path';
+import bodyParser from 'body-parser';
 
 const PORT = 3500;
 const app = express();

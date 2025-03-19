@@ -1,3 +1,26 @@
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#heading, #selectFiles, #mainCheckBoxDiv {
+  text-align: center;
+}
+
+form {
+  max-width: 80vw;
+  margin: auto;       /*margin property to auto to horizontally center the element*/
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .btn {
     background-color: rgb(71, 71, 71);
     cursor: pointer;
@@ -12,17 +35,62 @@
     background-color: #615e5e;
 }
 
-.setImg {
-    max-width: 20vw;
-    max-height: 20vh;
-    border-radius: 8px;
+#preview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin-top: 20px;
 }
 
-.pdfPreview {
-    max-width: 40vw;
-    max-height: 40vh;
+.file-container {
+  position: relative;
+  margin: 10px;
+  width: calc(33% - 20px); /* 3 files per row */
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;   /*Allow to include the padding and border in element's total width and height*/
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
+.file-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.setImg, .pdfPreview {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.check {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+#progressBar {
+  width: 100%;
+  margin-top: 10px;
+}
+
+#message {
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Dialog box style */
 dialog {
   animation: fade-out 0.7s ease-out;
 }
@@ -75,18 +143,7 @@ dialog:open::backdrop {
   }
 }
 
-body,
-button {
-  font-family: system-ui;
-}
-
-.check {
-  width: 1.2rem;
-  height: 1.2rem;
-  /* margin-top: 5rem; */
-}
-
-#mainCheckBox {
+#mainCheckBoxDiv {
   display: flex;
 }
 
@@ -104,4 +161,14 @@ button {
 .disabled:hover {
   background-color: gray;
   cursor: default;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
 }
