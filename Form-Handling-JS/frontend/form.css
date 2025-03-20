@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+fieldset.scheduler-border {
+    border: 1px groove #a09e9e !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow: 0px 0px 0px 0px #000;
+    box-shadow: 0px 0px 0px 0px #000;
+    margin-top: 30px !important;
+}
+
+legend.scheduler-border {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width: auto;
+    padding: 0 10px;
+    border-bottom: none;
+    margin-top: -15px;
+    background-color: white;
+    color: black;
+}
+
+fieldset.scheduler-border-2 {
+    border: 1px groove #c9c4c4 !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow: 0px 0px 0px 0px #000;
+    box-shadow: 0px 0px 0px 0px #000;
+    margin-top: 30px !important;
+}
+
+legend.scheduler-border-2 {
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    text-align: left !important;
+    width: auto;
+    padding: 0 10px;
+    border-bottom: none;
+    margin-top: -15px;
+    background-color: white;
+    color: black;
+}
+
+#main-div{
+    background-color: white;
+    margin: auto;
+    width: 75vw;
+    height: 90vh;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.3s
+}
+
+#main-div:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.35);
+}
+
+.rel, .contactNo, .emailAddress, .city, .state, .country{
+    width: 30%;
+}
+
+#parentInfo, .addressInfo, .contactNo-n-dob {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px; 
+}
+
+.dob {
+    margin: auto;
+}

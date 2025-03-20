@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student's Form</title>
+    <!-- custom css -->
+    <link rel="stylesheet" href="./form.css">
+    <!-- bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- custom JS -->
+    <script src="./form.js" defer></script>
+    <!-- bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>Student Information Collection Form</h1>
+
+    <div id="main-div">
+        <form action="/action_page.php">
+            <div class="container">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">General Information:</legend><br>
+
+                    <!-- username -->
+                    <div class="input-group">
+                        <label for="name" class="input-group-text">First and last name :</label>
+                        <input type="text" aria-label="First name" class="form-control" id="name"
+                            placeholder="Type here....">
+                        <input type="text" aria-label="Last name" class="form-control" id="name"
+                            placeholder="Type here....">
+                    </div> <br>
+
+                    <!-- Email address -->
+                    <label for="InputEmail">Email address :</label>
+                    <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp"
+                        placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                        else.</small><br><br>
+
+                    <!-- Phone Number and DOB -->
+                    <div class="contactNo-n-dob">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">+91</span>
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="contact Number">
+                                <label for="phoneNumber">Contact Number</label>
+                            </div>
+                        </div>
+                        <div class=" input-group mb-3 dateOfBirth">
+                            <label for="birthday" class="dob">Date of Birth :</label>
+                            <input type="date" id="birthday" class="form-control" name="birthday">
+                        </div>
+                    </div>
+
+                    <!-- StudentId and Gender -->
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="floatingInputGrid" placeholder="Ex-2345678">
+                                <label for="floatingInputGrid">Student Id :</label>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <select class="form-select" id="floatingSelectGrid">
+                                    <option selected>Select Gender :</option>
+                                    <option value="1">Male</option>
+                                    <option value="2">Female</option>
+                                    <option value="3">Other</option>
+                                </select>
+                                <label for="floatingSelectGrid">Works with selects</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parent and Guardian Information -->
+                    <fieldset class="scheduler-border-2">
+                        <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
+                        <label for="parentName">Parent/Guardian Name :</label>
+                        <input type="text" class="form-control" id="parentName" placeholder="Enter Name here....">
+
+                        <div id="parentInfo">
+                            <div class="rel">
+                                <label for="relation">Relatioship to student :</label>
+                                <input type="text" id="relation" class="form-control input" placeholder="Ex: Father">
+                            </div>
+                            <div class="contactNo">
+                                <label for="contactNo">Contact No. :</label>
+                                <input type="tel" id="contactNo" class="form-control input" placeholder="1123445567">
+                            </div>
+                            <div class="emailAddress">
+                                <label for="email">Email :</label>
+                                <input type="email" id="email" class="form-control input" placeholder="abc@gmail.com">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Address -->
+                    <fieldset class="scheduler-border-2">
+                        <legend class="scheduler-border-2">Address :</legend><br>
+                        <label for="streetAddress">Street Address :</label>
+                        <input type="text" class="form-control parentName" placeholder="Street Address...."
+                            id="streetAddress">
+                        <div class="addressInfo">
+                            <div class="country">
+                                <label for="inputCountry">Country :</label>
+                                <select type="text" id="countries" class="form-control" id="inputCountry"></select>
+                            </div>
+                            <div class="state">
+                                <label for="inputState">State :</label>
+                                <select id="inputState" class="form-control">
+                                    <option selected>Choose the state....</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                            <div class="city">
+                                <label for="inputCity">City :</label>
+                                <input type="text" class="form-control" id="inputCity">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button type="button" class="btn btn-secondary">Submit</button>
+                </fieldset>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

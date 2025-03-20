@@ -1,0 +1,15 @@
+{
+  "name": "form_handling",
+  "version": "1.0.0",
+  "main": "form.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "live-server": "^1.2.2"
+  }
+}
