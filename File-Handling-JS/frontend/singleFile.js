@@ -435,7 +435,7 @@ function check(fileId) {
 
 function unCheck(fileId) {
     selectedFiles.delete(fileId);
-    console.log("selectedFiles: uncheck ", selectedFiles)
+    console.log("selectedFiles: ", selectedFiles)
     if (selectedFiles.size == 0) {
         deleteBtn.disabled = true;
         deleteBtn.classList.add('disabled')
