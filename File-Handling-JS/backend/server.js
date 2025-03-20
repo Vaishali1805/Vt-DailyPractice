@@ -38,7 +38,6 @@ app.listen(PORT,() => {
 
 
 
-
 // const storage = multer.diskStorage({
 //     destination: (req,file,cb) => {
 //         cb(null,'uploads/');
