@@ -22,7 +22,7 @@
     <h1>Student Information Collection Form</h1>
 
     <div id="main-div">
-        <form action="/action_page.php">
+        <form action="">
             <div class="container">
                 <fieldset class="scheduler-border">
                     <legend class="scheduler-border">General Information:</legend><br>
@@ -30,39 +30,41 @@
                     <!-- username -->
                     <div class="input-group">
                         <label for="name" class="input-group-text">First and last name :</label>
-                        <input type="text" aria-label="First name" class="form-control" id="name"
-                            placeholder="Type here....">
-                        <input type="text" aria-label="Last name" class="form-control" id="name"
-                            placeholder="Type here....">
-                    </div> <br>
+                        <input type="text" aria-label="First name" name="firstName" id="firstName" class="form-control" placeholder="Type here...." autocomplete="off" required>
+                        <input type="text" aria-label="Last name" name="lastName" id="lastName" class="form-control" placeholder="Type here...." autocomplete="off" required>
+                    </div>
+                    <span id="nameError" class="error_msg"></span><br>
 
                     <!-- Email address -->
                     <label for="InputEmail">Email address :</label>
-                    <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp"
-                        placeholder="Enter email">
+                    <input type="email" class="form-control" id="inputEmail" name="userEmail" aria-describedby="emailHelp"
+                        placeholder="abc@gmail.com" autocomplete="off" required>
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                        else.</small><br><br>
+                        else.</small>
+                    <span id="emailError" class="error_msg"></span><br><br>
 
                     <!-- Phone Number and DOB -->
+                    <span id="ph_error" class="error_msg"></span>
                     <div class="contactNo-n-dob">
                         <div class="input-group mb-3">
                             <span class="input-group-text">+91</span>
                             <div class="form-floating">
-                                <input type="tel" class="form-control" id="phoneNumber" placeholder="contact Number">
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="contact Number" autocomplete="off">
                                 <label for="phoneNumber">Contact Number</label>
                             </div>
                         </div>
-                        <div class=" input-group mb-3 dateOfBirth">
+                        <div class="input-group mb-3 dateOfBirth">
                             <label for="birthday" class="dob">Date of Birth :</label>
-                            <input type="date" id="birthday" class="form-control" name="birthday">
+                            <input type="date" id="birthday" class="form-control" name="birthday" autocomplete="off">
                         </div>
+                        <span id="dob_error" class="error_msg"></span>
                     </div>
 
                     <!-- StudentId and Gender -->
                     <div class="row g-2">
                         <div class="col-md">
                             <div class="form-floating">
-                                <input type="tel" class="form-control" id="floatingInputGrid" placeholder="Ex-2345678">
+                                <input type="tel" class="form-control" id="floatingInputGrid" placeholder="Ex-2345678" autocomplete="off">
                                 <label for="floatingInputGrid">Student Id :</label>
                             </div>
                         </div>
@@ -70,9 +72,9 @@
                             <div class="form-floating">
                                 <select class="form-select" id="floatingSelectGrid">
                                     <option selected>Select Gender :</option>
-                                    <option value="1">Male</option>
-                                    <option value="2">Female</option>
-                                    <option value="3">Other</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
                                 </select>
                                 <label for="floatingSelectGrid">Works with selects</label>
                             </div>
@@ -83,20 +85,20 @@
                     <fieldset class="scheduler-border-2">
                         <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
                         <label for="parentName">Parent/Guardian Name :</label>
-                        <input type="text" class="form-control" id="parentName" placeholder="Enter Name here....">
+                        <input type="text" class="form-control" id="parentName" placeholder="Enter Name here...." autocomplete="off">
 
                         <div id="parentInfo">
                             <div class="rel">
                                 <label for="relation">Relatioship to student :</label>
-                                <input type="text" id="relation" class="form-control input" placeholder="Ex: Father">
+                                <input type="text" id="relation" class="form-control input" placeholder="Ex: Father" autocomplete="off">
                             </div>
                             <div class="contactNo">
                                 <label for="contactNo">Contact No. :</label>
-                                <input type="tel" id="contactNo" class="form-control input" placeholder="1123445567">
+                                <input type="tel" id="contactNo" class="form-control input" placeholder="1123445567" autocomplete="off">
                             </div>
                             <div class="emailAddress">
                                 <label for="email">Email :</label>
-                                <input type="email" id="email" class="form-control input" placeholder="abc@gmail.com">
+                                <input type="email" id="email" class="form-control input" placeholder="abc@gmail.com" autocomplete="off">
                             </div>
                         </div>
                     </fieldset>
@@ -106,30 +108,58 @@
                         <legend class="scheduler-border-2">Address :</legend><br>
                         <label for="streetAddress">Street Address :</label>
                         <input type="text" class="form-control parentName" placeholder="Street Address...."
-                            id="streetAddress">
+                            id="streetAddress" autocomplete="off">
                         <div class="addressInfo">
                             <div class="country">
                                 <label for="inputCountry">Country :</label>
-                                <select type="text" id="countries" class="form-control" id="inputCountry"></select>
+                                <select type="text" id="countries" class="form-control" >
+                                    <option value="">Select Country</option>
+                                </select>
                             </div>
                             <div class="state">
                                 <label for="inputState">State :</label>
                                 <select id="inputState" class="form-control">
-                                    <option selected>Choose the state....</option>
-                                    <option>...</option>
+                                    <option value="">Select State</option>
                                 </select>
                             </div>
                             <div class="city">
                                 <label for="inputCity">City :</label>
-                                <input type="text" class="form-control" id="inputCity">
+                                <select id="inputCity" class="form-control">
+                                    <option value="">Select City</option>
+                                </select>
                             </div>
                         </div>
                     </fieldset>
-                    <button type="button" class="btn btn-secondary">Submit</button>
+                    <button type="submit" id="submitBtn" class="btn btn-secondary">Submit</button>
                 </fieldset>
             </div>
         </form>
     </div>
+
+    <table id="formDataTable" border="1">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Date of Birth</th>
+            <th>Student ID</th>
+            <th>Gender</th>
+            <th>Parent Name</th>
+            <th>Parent Relation</th>
+            <th>Parent Contact No</th>
+            <th>Parent Email</th>
+            <th>Street Address</th>
+            <th>Country</th>
+            <th>State</th>
+            <th>City</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table rows will be added here -->
+        </tbody>
+      </table>
 
 </body>
 
