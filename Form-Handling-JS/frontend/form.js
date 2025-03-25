@@ -2,7 +2,7 @@ const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const nameErr_msg = document.getElementById('nameError');
 
-const inputEmail = document.getElementById('inputEmail');
+const userEmail = document.getElementById('inputEmail');
 const emailError_msg = document.getElementById('emailError');
 
 const ph_Number = document.getElementById("phoneNumber");
@@ -10,18 +10,30 @@ const phError_msg = document.getElementById("ph_error");
 
 const dateOfBirth = document.getElementById("birthday");
 const dobError_msg = document.getElementById("dob_error");
+
 const studentId = document.getElementById('floatingInputGrid');
+const studentIdError_msg = document.getElementById('studentId_error');
+
 const gender = document.getElementById('floatingSelectGrid');
+const genderErr_msg = document.getElementById('gender_error');
 
 const parentName = document.getElementById('parentName');
+const parentNameError_msg = document.getElementById('parentName_error');
 const parentRel = document.getElementById('relation');
+const parentRelErr_msg = document.getElementById('parentRel_error');
 const parent_contactNo = document.getElementById('contactNo');
+const parent_contactNoErr_msg = document.getElementById('parentContactNo_error')
 const parent_email = document.getElementById('email');
+const parent_emailErr_msg = document.getElementById('parentEmail_error');
 
 const streetAddress = document.getElementById('streetAddress');
+const streetAddressErr_msg = document.getElementById('address_error');
 const inputCountry = document.getElementById('countries');
+const countryErr_msg = document.getElementById('country_error');
 const inputState = document.getElementById('inputState');
+const stateErr_msg = document.getElementById('state_error');
 const inputCity = document.getElementById('inputCity');
+const cityErr_msg = document.getElementById('city_error');
 
 const selectCountry = document.querySelector("#countries");
 const selectState = document.querySelector("#inputState");
@@ -44,59 +56,70 @@ submitBtn.addEventListener('click', (e) => {
   handleSubmit(e);
 });
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
 
-  if(!validate_form()){
+  if (!validate_form()) {
     return;
   }
 
-  // Accessing form values
-  const firstNameValue = firstName.value;
-  const lastNameValue = lastName.value;
-  const userEmailValue = inputEmail.value;
-  const phNumberValue = ph_Number.value;
-  const dateOfBirthValue = dateOfBirth.value;
-  const studentIdValue = studentId.value;
-  const genderValue = gender.value;
-  const parentNameValue = parentName.value;
-  const parentRelValue = parentRel.value;
-  const parentContactNoValue = parent_contactNo.value;
-  const parentEmailValue = parent_email.value;
-  const streetAddressValue = streetAddress.value;
+  const formData = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    userEmail: userEmail.value,
+    contactNo: ph_Number.value,
+    dateOfBirth: dateOfBirth.value,
+    gender: gender.value,
+    studentId: studentId.value,
+    gender: gender.value,
+    parentName: parentName.value,
+    parentRel: parentRel.value,
+    parentContactNo: parent_contactNo.value,
+    parentEmail: parent_email.value,
+    address: streetAddress.value,
+    country: JSON.parse(inputCountry.value).name,
+    state: JSON.parse(inputState.value).name,
+    city: JSON.parse(inputCity.value).name,
+  }
 
-  const selectedCountry = JSON.parse(inputCountry.value).name;
-  const selectedState = JSON.parse(inputState.value).name;
-  const selectedCity = JSON.parse(inputCity.value).name;
+  // console.log("formData: ", formData);
+  try {
+    // const formData = {
+    //   firstName: "firstName.value",
+    //   lastName: "lastName.value",
+    //   userEmail: "userEmail.value@gdxsgfd.dfgh",
+    //   contactNo: 3543454543,
+    //   dateOfBirth: new Date(),
+    //   gender: "gender.value",
+    //   studentId: 34432,
+    //   gender: "gender.value",
+    //   parentName: "parentName.value",
+    //   parentRel:" parentRel.value",
+    //   parentContactNo: 34534675646,
+    //   parentEmail:" parent_email.value@gdsgfds.ghf",
+    //   address: "streetAddress.value",
+    //   country: JSON.parse(inputCountry.value).name,
+    //   state: JSON.parse(inputState.value).name,
+    //   city: JSON.parse(inputCity.value).name,
+    // }
+    const response = await fetch("http://localhost:4500/submit/formData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ formData: formData }),
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+    window.location.href = '/table.html';
 
-  // Now add a new row to the table
-  const tableBody = document.querySelector('#formDataTable tbody');
-  const newRow = document.createElement('tr');
-
-  // Create and append each table cell for the new row
-  newRow.innerHTML = `
-    <td>${firstNameValue}</td>
-    <td>${lastNameValue}</td>
-    <td>${userEmailValue}</td>
-    <td>${phNumberValue}</td>
-    <td>${dateOfBirthValue}</td>
-    <td>${studentIdValue}</td>
-    <td>${genderValue}</td>
-    <td>${parentNameValue}</td>
-    <td>${parentRelValue}</td>
-    <td>${parentContactNoValue}</td>
-    <td>${parentEmailValue}</td>
-    <td>${streetAddressValue}</td>
-    <td>${selectedCountry}</td>
-    <td>${selectedState}</td>
-    <td>${selectedCity}</td>
-  `;
-
-  // Append the new row to the table body
-  tableBody.appendChild(newRow);
-
-  // Optionally, clear the form after submission
-  document.querySelector('form').reset();
+  } catch (error) {
+    console.log("Error: ", error);
+    // console.error(error.message);
+  }
 }
 
 function validate_form() {
@@ -104,37 +127,117 @@ function validate_form() {
   const ph_Pattern = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
   let flag = true;
 
+  function setError(element, message) {
+    element.textContent = message;
+    flag = false;
+  }
+
+  //Name Validation
+  console.log("firstName: ", firstName.value.length);
+  console.log("lastName: ", lastName.value.length);
   if (firstName.value.trim() == "" || lastName.value.trim() == "") {
-    nameErr_msg.textContent = '*First name and last name is required';
-    flag = false;       //max 30 char,and not less than 2 char
+    setError(nameErr_msg, '*First name and last name are required');
+  } else if (firstName.value.length < 2 || firstName.value.length > 30 || lastName.value.length < 2 || lastName.value.length > 30) {
+    setError(nameErr_msg, '*First and last name must be between 2 and 30 characters');
+  } else {
+    nameErr_msg.textContent = "";         // Clear error if valid
   }
 
+  //Email Validation
   if (inputEmail.value.trim() == "") {
-    emailError_msg.textContent = '*Email is required';
-    flag = false;
+    setError(emailError_msg, '*Email is required');
+  } else if (!EmailPattern.test(inputEmail.value)) {
+    setError(emailError_msg, '*Invalid email address');
+  } else {
+    emailError_msg.textContent = "";
   }
 
-  if (!EmailPattern.test(inputEmail.value)) {
-    emailError_msg.textContent = '*Invalid email address';
-    flag = false;
+  //Phone Number Validation
+  if (!ph_Number.value.trim()) {
+    setError(phError_msg, '*Contact number is required');
+  } else if (!ph_Pattern.test(ph_Number.value)) {
+    setError(phError_msg, '*Invalid contact number');
+  } else {
+    phError_msg.textContent = "";
   }
 
-  if (!ph_Number.value) {
-    phError_msg.textContent = '*Contact Number is required';
-    flag = false;
+  //Date of Birth Validation
+  if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
+    setError(dobError_msg, '*Invalid date of birth');
+  } else {
+    dobError_msg.textContent = "";
   }
 
-  if (!ph_Pattern.test(ph_Number.value)) {
-    phError_msg.textContent = '*Invalid Contact Number';
-    flag = false;
+  //StudentId validation
+  console.log("studentId: ", studentId.value.length);
+  if (!studentId.value.trim()) {
+    setError(studentIdError_msg, '*Student ID is required');
+  } else {
+    studentIdError_msg.textContent = "";
   }
 
-  if (isNaN(new Date(dateOfBirth.value))) {
-    dobError_msg.textContent = '*Invalid Date of Birth'
-    flag = false;
+  //Gender Validation   -- don't know why it is not working
+  if (!gender.value) {
+    setError(genderErr_msg, '*Gender is required');
   }
 
-  //validate studentId and guardian Info
+  // Parent/Guardian Name Validation
+  if (!parentName.value.trim()) {
+    setError(parentNameError_msg, '*Guardian name is required');
+  } else if (parentName.value.length < 2 || parentName.value.length > 30) {
+    setError(parentNameError_msg, '*Parent Name must be between 2 and 30 characters');
+  } else {
+    parentNameError_msg.textContent = "";
+  }
+
+  // Parent/Guardian Relation Validation
+  if (parentRel.value.trim() == "") {
+    setError(parentRelErr_msg, 'Relation is required');
+  } else if (parentRel.value.length < 2 || parentRel.value.length > 10) {
+    setError(parentRelErr_msg, 'Relation must be between 2 and 10 characters');
+  } else {
+    parentRelErr_msg.textContent = "";
+  }
+
+  // Parent/Guardian contact no. Validation
+  if (!parent_contactNo.value.trim()) {
+    setError(parent_contactNoErr_msg, '*Contact number is required');
+  } else if (!ph_Pattern.test(parent_contactNo.value)) {
+    setError(parent_contactNoErr_msg, '*Invalid contact number');
+  } else {
+    parent_contactNoErr_msg.textContent = "";
+  }
+
+  // Parent/Guardian Email Validation
+  if (parent_email.value.trim() == "") {
+    setError(parent_emailErr_msg, '*Email is required');
+  } else if (!EmailPattern.test(parent_email.value)) {
+    setError(parent_emailErr_msg, '*Invalid email address');
+  } else {
+    parent_emailErr_msg.textContent = "";
+  }
+
+  //Street Address Validation
+  if (streetAddress.value.trim() == "") {
+    setError(streetAddressErr_msg, '*Street address is required');
+  }
+
+  //country,state,city validation
+  if (!inputCountry.value) {
+    setError(countryErr_msg, '*Country is required')
+  } else
+    countryErr_msg.textContent = "";
+
+  if (!inputState.value) {
+    setError(stateErr_msg, '*state is required')
+  } else
+    stateErr_msg.textContent = "";
+
+  if (!inputCity.value) {
+    setError(cityErr_msg, '*City is required')
+  } else
+    cityErr_msg.textContent = "";
+
   return flag;
 }
 
@@ -166,6 +269,11 @@ function getStates_API(countryCode) {
     .then(res => res.json())
     .then((data) => {
       selectState.innerHTML = '<option value="">Select State</option>';
+
+      if (!data.length) {
+        console.log("no states available");
+      }
+
       data.forEach((state) => {
         let option = document.createElement("option");
         const obj = { code: state.iso2, name: state.name };
@@ -181,17 +289,28 @@ function getStates_API(countryCode) {
 
   selectState.addEventListener("change", function () {
     const obj = JSON.parse(this.value);
-    const stateCode = obj.code;    
-    getCities_API(countryCode, stateCode);
+    const stateCode = obj.code;
+
+    if (countryCode && stateCode) {
+      getCities_API(countryCode, stateCode);
+    }
   })
 }
 
 //using API
 function getCities_API(countryCode, stateCode) {
+
   fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`, { headers: { "X-CSCAPI-KEY": api_key } })
     .then(res => res.json())
-    .then((data) => {      
+    .then((data) => {
       selectCity.innerHTML = '<option value="">Select City</option>';
+      console.log("data for cities: ", data);
+      console.log("data.length for cities: ", data.length);
+
+      if (!data.length) {
+        console.log("no cities available")
+      }
+
       data.forEach((city) => {
         let option = document.createElement("option");
         const obj = { code: city.iso2, name: city.name };
@@ -204,6 +323,7 @@ function getCities_API(countryCode, stateCode) {
     .catch((err) => {
       console.log("Error: ", err);
     })
+
 }
 
 //using JSON File

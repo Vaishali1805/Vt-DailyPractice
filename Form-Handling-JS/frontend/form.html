@@ -64,18 +64,20 @@
                     <div class="row g-2">
                         <div class="col-md">
                             <div class="form-floating">
-                                <input type="tel" class="form-control" id="floatingInputGrid" placeholder="Ex-2345678" autocomplete="off">
+                                <input type="text" class="form-control" id="floatingInputGrid" placeholder="Ex-2345678" autocomplete="off">
                                 <label for="floatingInputGrid">Student Id :</label>
                             </div>
                         </div>
+                        <span id="studentId_error" class="error_msg"></span>
                         <div class="col-md">
                             <div class="form-floating">
-                                <select class="form-select" id="floatingSelectGrid">
+                                <select class="form-select" id="floatingSelectGrid" required>
                                     <option selected>Select Gender :</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
+                                <span id="gender_error" class="error_msg"></span>
                                 <label for="floatingSelectGrid">Works with selects</label>
                             </div>
                         </div>
@@ -86,19 +88,23 @@
                         <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
                         <label for="parentName">Parent/Guardian Name :</label>
                         <input type="text" class="form-control" id="parentName" placeholder="Enter Name here...." autocomplete="off">
+                        <span id="parentName_error" class="error_msg"></span>
 
                         <div id="parentInfo">
                             <div class="rel">
                                 <label for="relation">Relatioship to student :</label>
-                                <input type="text" id="relation" class="form-control input" placeholder="Ex: Father" autocomplete="off">
+                                <input type="text" id="relation" name="relation" class="form-control input" placeholder="Ex: Father" autocomplete="off" required>
+                                <span id="parentRel_error" class="error_msg"></span>
                             </div>
                             <div class="contactNo">
                                 <label for="contactNo">Contact No. :</label>
                                 <input type="tel" id="contactNo" class="form-control input" placeholder="1123445567" autocomplete="off">
+                                <span id="parentContactNo_error" class="error_msg"></span>
                             </div>
                             <div class="emailAddress">
                                 <label for="email">Email :</label>
                                 <input type="email" id="email" class="form-control input" placeholder="abc@gmail.com" autocomplete="off">
+                                <span id="parentEmail_error" class="error_msg"></span>
                             </div>
                         </div>
                     </fieldset>
@@ -109,24 +115,28 @@
                         <label for="streetAddress">Street Address :</label>
                         <input type="text" class="form-control parentName" placeholder="Street Address...."
                             id="streetAddress" autocomplete="off">
+                        <span id="address_error" class="error_msg"></span>
                         <div class="addressInfo">
                             <div class="country">
                                 <label for="inputCountry">Country :</label>
-                                <select type="text" id="countries" class="form-control" >
+                                <select type="text" id="countries" class="form-control" required>
                                     <option value="">Select Country</option>
                                 </select>
+                                <span id="country_error" class="error_msg"></span>
                             </div>
                             <div class="state">
                                 <label for="inputState">State :</label>
-                                <select id="inputState" class="form-control">
+                                <select id="inputState" class="form-control" required>
                                     <option value="">Select State</option>
                                 </select>
+                                <span id="state_error" class="error_msg"></span>
                             </div>
                             <div class="city">
                                 <label for="inputCity">City :</label>
-                                <select id="inputCity" class="form-control">
+                                <select id="inputCity" class="form-control" required>
                                     <option value="">Select City</option>
                                 </select>
+                                <span id="city_error" class="error_msg"></span>
                             </div>
                         </div>
                     </fieldset>
@@ -135,31 +145,6 @@
             </div>
         </form>
     </div>
-
-    <table id="formDataTable" border="1">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Date of Birth</th>
-            <th>Student ID</th>
-            <th>Gender</th>
-            <th>Parent Name</th>
-            <th>Parent Relation</th>
-            <th>Parent Contact No</th>
-            <th>Parent Email</th>
-            <th>Street Address</th>
-            <th>Country</th>
-            <th>State</th>
-            <th>City</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Table rows will be added here -->
-        </tbody>
-      </table>
 
 </body>
 
