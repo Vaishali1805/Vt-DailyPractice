@@ -1,6 +1,21 @@
 #myTable {
     margin: auto;
     margin-top: 40px;
-    width: 40vw;
+    width: 60vw;
     /* height: 50vh; */
+}
+
+.btn {
+    margin-left: 1rem;
+}
+
+.btn_div{
+    display: flex;
+    margin: 3rem 20rem;
+}
+
+input[type=checkbox] {
+    width: 2.5rem;
+    height: 1rem;
+    cursor: pointer;
 }

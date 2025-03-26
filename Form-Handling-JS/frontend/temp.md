@@ -1,6 +1,8 @@
 npx live-server --port=5500 --no-browser
 
 add profile pic
+also add the delete functionality
+implement a condition in the form.js ki jab user edit pe click karke from.html me jaaye data tab hi append ho bss - check karo condition lgake ki page pr kese ja rha hai wo back karke ya redirect karke
 
 <!DOCTYPE html>
 <html lang="en">
@@ -98,3 +100,104 @@ tableBody.appendChild(newRow);
 
 // Optionally, clear the form after submission
 document.querySelector('form').reset();
+
+
+document.getElementById('myTable').addEventListener('change', (event) => {
+    if (event.target.classList.contains('check')) {
+        const checkbox = event.target;
+        const isChecked = checkbox.checked;
+        console.log(`Checkbox ${checkbox.parentElement.parentElement.querySelector('th').innerText} clicked: ${isChecked ? 'Checked' : 'Unchecked'}`);
+    }
+});
+
+
+
+async function getFormData() {
+    try {
+        const response = await fetch("http://localhost:4500/get/formData", {
+            method: "GET",
+        });
+        const data = await response.json();
+        formData = data.formData;
+        console.log("data: ", formData);
+
+        let count = 1;
+
+        // general information
+        let info = {
+            Name: `${formData.firstName} ${formData.lastName}`,
+            Email: formData.userEmail,
+            ContactNo: formData.contactNo,
+            Date_Of_Birth: formData.dateOfBirth,
+            Gender: formData.gender,
+            StudentId: formData.studentId,
+        };
+
+        // Add data to table
+        for (const [key, value] of Object.entries(info)) {
+            const newRow = document.createElement('tr');
+            const td = document.createElement('td');
+            td.innerHTML = '<input type="checkbox" name="select" class="check">';
+            newRow.innerHTML = `
+                <th>${count++}</th>
+                <td>${key}</td>
+                <td>${value}</td>
+            `;
+            newRow.appendChild(td);
+            personal_info.appendChild(newRow);
+        }
+
+        // Parent/Guardian Information
+        let parent_obj = {
+            parentName: formData.parentName,
+            parentRel: formData.parentRel,
+            parentContactNo: formData.parentContactNo,
+            parentEmail: formData.parentEmail,
+        };
+        for (const [key, value] of Object.entries(parent_obj)) {
+            const newRow = document.createElement('tr');
+            const td = document.createElement('td');
+            td.innerHTML = '<input type="checkbox" name="select" class="check">';
+            newRow.innerHTML = `
+                <th>${count++}</th>
+                <td>${key}</td>
+                <td>${value}</td>
+            `;
+            newRow.appendChild(td);
+            parent_info.appendChild(newRow);
+        }
+
+        // Address Information
+        let address_obj = {
+            Address: formData.address,
+            Country: formData.country,
+            State: formData.state,
+            City: formData.city,
+        };
+        for (const [key, value] of Object.entries(address_obj)) {
+            const newRow = document.createElement('tr');
+            const td = document.createElement('td');
+            td.innerHTML = '<input type="checkbox" name="select" class="check">';
+            newRow.innerHTML = `
+                <th>${count++}</th>
+                <td>${key}</td>
+                <td>${value}</td>
+            `;
+            newRow.appendChild(td);
+            address_info.appendChild(newRow);
+        }
+
+        // Now add the event listeners after the table is populated
+        const checkBoxes = document.getElementsByClassName('check');
+        for (let i = 0; i < checkBoxes.length; i++) {
+            checkBoxes[i].addEventListener('change', (event) => {
+                const checkbox = event.target;
+                const isChecked = checkbox.checked;
+                console.log(`Checkbox ${i + 1} clicked: ${isChecked ? 'Checked' : 'Unchecked'}`);
+            });
+        }
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}

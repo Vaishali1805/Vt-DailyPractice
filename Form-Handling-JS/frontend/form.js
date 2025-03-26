@@ -66,42 +66,41 @@ async function handleSubmit(event) {
   const formData = {
     firstName: firstName.value,
     lastName: lastName.value,
-    userEmail: userEmail.value,
-    contactNo: ph_Number.value,
-    dateOfBirth: dateOfBirth.value,
-    gender: gender.value,
-    studentId: studentId.value,
-    gender: gender.value,
-    parentName: parentName.value,
-    parentRel: parentRel.value,
-    parentContactNo: parent_contactNo.value,
-    parentEmail: parent_email.value,
-    address: streetAddress.value,
-    country: JSON.parse(inputCountry.value).name,
-    state: JSON.parse(inputState.value).name,
-    city: JSON.parse(inputCity.value).name,
+    Email: userEmail.value,
+    ContactNo: ph_Number.value,
+    Date_Of_Birth: dateOfBirth.value,
+    Gender: gender.value,
+    StudentId: studentId.value,
+    ParentName: parentName.value,
+    ParentRel: parentRel.value,
+    ParentContactNo: parent_contactNo.value,
+    ParentEmail: parent_email.value,
+    Address: streetAddress.value,
+    Country: JSON.parse(inputCountry.value).name,
+    State: JSON.parse(inputState.value).name,
+    City: JSON.parse(inputCity.value).name,
   }
 
   // console.log("formData: ", formData);
   try {
     // const formData = {
-    //   firstName: "firstName.value",
-    //   lastName: "lastName.value",
-    //   userEmail: "userEmail.value@gdxsgfd.dfgh",
-    //   contactNo: 3543454543,
-    //   dateOfBirth: new Date(),
-    //   gender: "gender.value",
-    //   studentId: 34432,
-    //   gender: "gender.value",
-    //   parentName: "parentName.value",
-    //   parentRel:" parentRel.value",
-    //   parentContactNo: 34534675646,
-    //   parentEmail:" parent_email.value@gdsgfds.ghf",
-    //   address: "streetAddress.value",
-    //   country: JSON.parse(inputCountry.value).name,
-    //   state: JSON.parse(inputState.value).name,
-    //   city: JSON.parse(inputCity.value).name,
+    //   firstName: "Vaishali",
+    //   lastName: "Sharma",
+    //   Email: "userEmail.value@gdxsgfd.dfgh",
+    //   ContactNo: 354345454,
+    //   Date_Of_Birth: '2025-03-26',
+    //   Gender: "Female",
+    //   StudentId: 34432,
+    //   ParentName: "parentName.value",
+    //   ParentRel:" parentRel.value",
+    //   ParentContactNo: 34534675646,
+    //   ParentEmail:" parent_email.value@gdsgfds.ghf",
+    //   Address: "streetAddress.value",
+    //   Country: 'India',
+    //   State: 'Haryana',
+    //   City: 'Jagadhri',
     // }
+
     const response = await fetch("http://localhost:4500/submit/formData", {
       method: "POST",
       headers: {
@@ -374,3 +373,33 @@ function getStates(countryCode) {
     })
 }
 
+//get the data and append it into the form
+async function getData() {
+
+  let formData = JSON.parse(localStorage.getItem("formData"));
+  console.log("🚀 ~ getData ~ formData:", formData)
+
+  if (formData) {
+    firstName.value = formData.firstName;
+    lastName.value = formData.lastName;
+    userEmail.value = formData.userEmail;
+    ph_Number.value = formData.contactNo;
+    dateOfBirth.value = formData.dateOfBirth;
+    studentId.value = formData.studentId;
+    gender.value = formData.gender;
+    parentName.value = formData.parentName;
+    parentRel.value = formData.parentRel;
+    parent_contactNo.value = formData.parentContactNo;
+    parent_email.value = formData.parentEmail;
+    streetAddress.value = formData.address;
+    inputCountry.value = formData.country;    //Not append?
+    inputState.vlaue = formData.state;
+    inputCity.value = formData.city;
+  }
+
+  // const urlParams = new URLSearchParams(window.location.search);
+  // const greetingValue = urlParams.get('formData');
+  // console.log(JSON.parse(greetingValue));      //not a good approach to store the data in params
+}
+
+getData();
