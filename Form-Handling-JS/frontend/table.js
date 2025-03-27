@@ -64,6 +64,7 @@ async function getFormData() {
         const img = document.createElement('img');
         img.src = fileUrl;
         img.alt = 'userImage';
+        img.classList.add("userImg")
         imageContainer.appendChild(img);
         newRow.appendChild(imageContainer);
         newRow.appendChild(td);

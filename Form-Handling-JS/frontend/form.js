@@ -463,7 +463,7 @@ async function getData() {
     parent_email.value = formData.ParentEmail;
     streetAddress.value = formData.Address;
     inputCountry.value = formData.Country;    //Not append?
-    inputState.vlaue = formData.State;
+    inputState.value = formData.State;
     inputCity.value = formData.City;
   }
 
