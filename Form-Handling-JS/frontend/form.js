@@ -34,14 +34,30 @@ const inputState = document.getElementById('inputState');
 const stateErr_msg = document.getElementById('state_error');
 const inputCity = document.getElementById('inputCity');
 const cityErr_msg = document.getElementById('city_error');
-
+                                                                
 const selectCountry = document.querySelector("#countries");
 const selectState = document.querySelector("#inputState");
 const selectCity = document.querySelector("#inputCity");
 
 const submitBtn = document.getElementById('submitBtn');
 
+const inputProfile = document.getElementById('inputProfile');
+const inputProfileBtn = document.getElementById('inputProfileBtn');
+const profileError_msg = document.getElementById('profileError');
+const preview = document.getElementById('preview');
+
 const api_key = 'TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==';
+
+inputProfileBtn.addEventListener('click', (e) => {
+  if (inputProfile) {
+    inputProfile.click();
+  }
+  e.preventDefault();     //prevent navigation to "#"
+},
+  false
+)
+
+inputProfile.addEventListener('change', handleFileSelection)
 
 document.addEventListener("DOMContentLoaded", getAllCountries_API);
 
@@ -56,57 +72,104 @@ submitBtn.addEventListener('click', (e) => {
   handleSubmit(e);
 });
 
+function handleFileSelection(event) {
+  const file = event.target.files[0];
+  console.log("file: ", file);
+
+  if (!validateFile(file)) {
+    inputProfile.value = "";   // clear the input if file is invalid
+    preview.innerHTML = "";
+    return;
+  }
+
+  preview.innerHTML = "";     //to remove the old preview
+  const img = document.createElement("img");
+  img.classList.add("setImg");
+  img.src = URL.createObjectURL(file);
+  preview.appendChild(img);
+}
+
+function validateFile(file) {
+  if (!file) {
+    profileError_msg.textContent = 'Please select a file';
+    // alert("Please select a file.");
+    return false;
+  }
+
+  const validTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+  ];
+
+  const maxSize = 5 * 1024 * 1024; //5MB
+  if (!validTypes.includes(file.type)) {
+    profileError_msg.textContent = "Invalid file type. Please select an image (JPG, JPEG, PNG)"
+    // alert("Invalid file type. Please select an image (JPG, JPEG, PNG).");
+    return false;
+  }
+
+  if (file.size > maxSize) {
+    profileError_msg.textContent = "File size exceeds 5MB. Please select a smaller image";
+    // alert("File size exceeds 5MB. Please select a smaller image.");
+    return false;
+  }
+
+  return true;
+}
+
 async function handleSubmit(event) {
+  try {
   event.preventDefault();
 
   if (!validate_form()) {
     return;
   }
 
-  const formData = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    Email: userEmail.value,
-    ContactNo: ph_Number.value,
-    Date_Of_Birth: dateOfBirth.value,
-    Gender: gender.value,
-    StudentId: studentId.value,
-    ParentName: parentName.value,
-    ParentRel: parentRel.value,
-    ParentContactNo: parent_contactNo.value,
-    ParentEmail: parent_email.value,
-    Address: streetAddress.value,
-    Country: JSON.parse(inputCountry.value).name,
-    State: JSON.parse(inputState.value).name,
-    City: JSON.parse(inputCity.value).name,
-  }
+  // const formDataObj = {
+  //   FirstName: firstName.value,
+  //   LastName: lastName.value,
+  //   Email: userEmail.value,
+  //   ContactNo: ph_Number.value,
+  //   Date_Of_Birth: dateOfBirth.value,
+  //   Gender: gender.value,
+  //   StudentId: studentId.value,
+  //   ParentName: parentName.value,
+  //   ParentRel: parentRel.value,
+  //   ParentContactNo: parent_contactNo.value,
+  //   ParentEmail: parent_email.value,
+  //   Address: streetAddress.value,
+  //   Country: JSON.parse(inputCountry.value).name,
+  //   State: JSON.parse(inputState.value).name,
+  //   City: JSON.parse(inputCity.value).name,
+  // }
+  // console.log("formDataObj: ", formDataObj);
+  const file = inputProfile.files[0];
+  console.log("file: ",file);
 
-  // console.log("formData: ", formData);
-  try {
-    // const formData = {
-    //   firstName: "Vaishali",
-    //   lastName: "Sharma",
-    //   Email: "userEmail.value@gdxsgfd.dfgh",
-    //   ContactNo: 354345454,
-    //   Date_Of_Birth: '2025-03-26',
-    //   Gender: "Female",
-    //   StudentId: 34432,
-    //   ParentName: "parentName.value",
-    //   ParentRel:" parentRel.value",
-    //   ParentContactNo: 34534675646,
-    //   ParentEmail:" parent_email.value@gdsgfds.ghf",
-    //   Address: "streetAddress.value",
-    //   Country: 'India',
-    //   State: 'Haryana',
-    //   City: 'Jagadhri',
-    // }
+  const formData = new FormData();
+  formData.append("profilePic", file, `${Date.now()}_${file.name}`);
+  // fileData.append("formData",formData);       //other fields of form     -- an error payload too large
+  formData.append('FirstName',firstName.value);
+  formData.append('LastName',lastName.value);
+  formData.append('Email',userEmail.value);
+  formData.append('ContactNo',ph_Number.value);
+  formData.append('Date_Of_Birth',dateOfBirth.value);
+  formData.append('Gender',gender.value);
+  formData.append('StudentId',studentId.value);
+  formData.append('ParentName',parentName.value);
+  formData.append('ParentRel',parentRel.value);
+  formData.append('ParentContactNo',parent_contactNo.value);
+  formData.append('ParentEmail',parent_email.value);
+  formData.append('Address',streetAddress.value);
+  formData.append('Country',JSON.parse(inputCountry.value).name);
+  formData.append('State',JSON.parse(inputState.value).name);
+  formData.append('City',JSON.parse(inputCity.value).name);
 
     const response = await fetch("http://localhost:4500/submit/formData", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ formData: formData }),
+      body: formData,
+      // body: JSON.stringify({ formData: formDataObj }),
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
@@ -132,14 +195,21 @@ function validate_form() {
   }
 
   //Name Validation
-  console.log("firstName: ", firstName.value.length);
-  console.log("lastName: ", lastName.value.length);
+  // console.log("firstName: ", firstName.value.length);
+  // console.log("lastName: ", lastName.value.length);
   if (firstName.value.trim() == "" || lastName.value.trim() == "") {
     setError(nameErr_msg, '*First name and last name are required');
   } else if (firstName.value.length < 2 || firstName.value.length > 30 || lastName.value.length < 2 || lastName.value.length > 30) {
     setError(nameErr_msg, '*First and last name must be between 2 and 30 characters');
   } else {
     nameErr_msg.textContent = "";         // Clear error if valid
+  }
+
+  //profile picture validation
+  if (!inputProfile.value) {
+    setError(profileError_msg, "Profile picture is required");
+  } else {
+    profileError_msg.textContent = "";
   }
 
   //Email Validation
@@ -373,28 +443,28 @@ function getStates(countryCode) {
     })
 }
 
-//get the data and append it into the form
+//get the data from the local storage and append it into the form
 async function getData() {
 
   let formData = JSON.parse(localStorage.getItem("formData"));
   console.log("🚀 ~ getData ~ formData:", formData)
 
   if (formData) {
-    firstName.value = formData.firstName;
-    lastName.value = formData.lastName;
-    userEmail.value = formData.userEmail;
-    ph_Number.value = formData.contactNo;
-    dateOfBirth.value = formData.dateOfBirth;
-    studentId.value = formData.studentId;
-    gender.value = formData.gender;
-    parentName.value = formData.parentName;
-    parentRel.value = formData.parentRel;
-    parent_contactNo.value = formData.parentContactNo;
-    parent_email.value = formData.parentEmail;
-    streetAddress.value = formData.address;
-    inputCountry.value = formData.country;    //Not append?
-    inputState.vlaue = formData.state;
-    inputCity.value = formData.city;
+    firstName.value = formData.FirstName;
+    lastName.value = formData.LastName;
+    userEmail.value = formData.Email;
+    ph_Number.value = formData.ContactNo;
+    dateOfBirth.value = formData.Date_Of_Birth;
+    studentId.value = formData.StudentId;
+    gender.value = formData.Gender;
+    parentName.value = formData.ParentName;
+    parentRel.value = formData.ParentRel;
+    parent_contactNo.value = formData.ParentContactNo;
+    parent_email.value = formData.ParentEmail;
+    streetAddress.value = formData.Address;
+    inputCountry.value = formData.Country;    //Not append?
+    inputState.vlaue = formData.State;
+    inputCity.value = formData.City;
   }
 
   // const urlParams = new URLSearchParams(window.location.search);
@@ -402,4 +472,12 @@ async function getData() {
   // console.log(JSON.parse(greetingValue));      //not a good approach to store the data in params
 }
 
-getData();
+const urlParams = new URLSearchParams(window.location.search);
+const type = urlParams.get('type');
+
+if (type == 4) {
+  console.log("here")
+  getData();
+}
+
+// console.log("navigation type: ", window.performance.navigation.type)

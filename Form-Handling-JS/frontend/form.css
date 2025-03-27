@@ -80,3 +80,18 @@ legend.scheduler-border-2 {
 .error_msg {
     color: red;
 }
+
+#selectProfilePic {
+    background-color: rgb(110, 110, 110);
+    cursor: pointer;
+    padding: 0.5rem;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin: 1px;
+}
+
+.setImg {
+    width: 10rem;
+    height: 10rem;
+}

@@ -22,7 +22,7 @@
     <h1>Student Information Collection Form</h1>
 
     <div id="main-div">
-        <form action="">
+        <form enctype="multipart/form-data" method="POST">
             <div class="container">
                 <fieldset class="scheduler-border">
                     <legend class="scheduler-border">General Information:</legend><br>
@@ -34,6 +34,15 @@
                         <input type="text" aria-label="Last name" name="lastName" id="lastName" class="form-control" placeholder="Type here...." autocomplete="off" required>
                     </div>
                     <span id="nameError" class="error_msg"></span><br>
+
+                    <!-- profile picture -->
+                    <div id="selectFile">
+                        <label for="profilePic">Select your Profile Picture:</label>
+                        <input type="file" id="inputProfile" name="profilePic" id="profilePic" accept=".png, .jpg, .jpeg" style="display:none" />
+                        <button type="button" id="inputProfileBtn">Click Here</button>
+                    </div>
+                    <span id="profileError" class="error_msg"></span><br>
+                    <div id="preview"></div>
 
                     <!-- Email address -->
                     <label for="InputEmail">Email address :</label>
