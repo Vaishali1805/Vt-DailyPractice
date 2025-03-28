@@ -36,39 +36,41 @@ async function getFormData() {
         // const {formData} = data;
         formData = data.formData;
         fileData = data.fileData;
-        console.log("fileData: ", fileData);
+        // console.log("formData: ", formData);
+        // console.log("fileData: ", fileData);
+
+        if (!formData)
+            return;
 
         general_info.textContent = "";
         let count = 1;
 
-        // http://localhost:3500/uploads\singleUploads\1743078963892_gabriel-lebel-bernier-singles2.jpg
-        // http://localhost:4500/uploads\1743079391781_pexels-matthew-montrone-230847-1324803.jpg
-        
-        //profile picture
-        console.log("fileData.path: ",fileData.path);
-        const fileUrl = `http://localhost:4500/${fileData.path}`;
-        console.log("fileUrl: ",fileUrl);
+        if (fileData) {
+            //profile picture
+            const fileUrl = `http://localhost:4500/${fileData.path}`;
+            // console.log("fileUrl: ",fileUrl);
 
-        // const url = fileUrl.replace(/\\/g, "/");
-        // console.log("fileUrl:------------------ ",url);
+            // const url = fileUrl.replace(/\\/g, "/");
+            // console.log("fileUrl:------------------ ",url);
 
-        const newRow = document.createElement('tr');
-        const td = document.createElement('td');
-        td.innerHTML = '<input type="checkbox" name="select" class="check">'
+            const newRow = document.createElement('tr');
+            const td = document.createElement('td');
+            td.innerHTML = '<input type="checkbox" name="select" class="check">'
 
-        newRow.innerHTML = `
+            newRow.innerHTML = `
             <th>${count++}</th>
-            <td>${`Profile Picture`}</td>
+            <td>${`User_Profile`}</td>
             `;
-        const imageContainer = document.createElement('td');
-        const img = document.createElement('img');
-        img.src = fileUrl;
-        img.alt = 'userImage';
-        img.classList.add("userImg")
-        imageContainer.appendChild(img);
-        newRow.appendChild(imageContainer);
-        newRow.appendChild(td);
-        general_info.appendChild(newRow);
+            const imageContainer = document.createElement('td');
+            const img = document.createElement('img');
+            img.src = fileUrl;
+            img.alt = 'userImage';
+            img.classList.add("userImg")
+            imageContainer.appendChild(img);
+            newRow.appendChild(imageContainer);
+            newRow.appendChild(td);
+            general_info.appendChild(newRow);
+        }
 
         //other form fields
         for (const [key, value] of Object.entries(formData)) {
@@ -181,12 +183,12 @@ async function getFormData() {
 
 function check(key) {
     selectedFields.add(key);
-    // console.log("selectedFields: ", selectedFields);
+    console.log("selectedFields: ", selectedFields);
 }
 
 function unCheck(key) {
     selectedFields.delete(key);
-    // console.log("selectedFields: ", selectedFields);
+    console.log("selectedFields: ", selectedFields);
 }
 
 function updateMainCheckbox() {
@@ -204,13 +206,13 @@ function check_uncheck_all() {
         for (key in formData) {
             selectedFields.add(key);
         }
-        // console.log("selectedFields: ", selectedFields);
+        console.log("selectedFields: ", selectedFields);
     } else {
         for (let i = 0; i < checkBoxes.length; i++) {
             checkBoxes[i].checked = false;
         }
         selectedFields.clear();
-        // console.log("selectedFields: ", selectedFields);
+        console.log("selectedFields: ", selectedFields);
     }
 }
 

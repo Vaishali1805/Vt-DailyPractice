@@ -47,6 +47,7 @@ const profileError_msg = document.getElementById('profileError');
 const preview = document.getElementById('preview');
 
 const api_key = 'TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==';
+let countryCode;
 
 inputProfileBtn.addEventListener('click', (e) => {
   if (inputProfile) {
@@ -63,9 +64,18 @@ document.addEventListener("DOMContentLoaded", getAllCountries_API);
 
 selectCountry.addEventListener("change", function () {
   const obj = JSON.parse(this.value);
-  const countryCode = obj.code;
+  countryCode = obj.code;
   getStates_API(countryCode);
   // getStates(countryCode);
+})
+
+selectState.addEventListener("change", function () {
+  const obj = JSON.parse(this.value);
+  const stateCode = obj.code;
+
+  if (countryCode && stateCode) {
+    getCities_API(countryCode, stateCode);
+  }
 })
 
 submitBtn.addEventListener('click', (e) => {
@@ -126,45 +136,30 @@ async function handleSubmit(event) {
     return;
   }
 
-  // const formDataObj = {
-  //   FirstName: firstName.value,
-  //   LastName: lastName.value,
-  //   Email: userEmail.value,
-  //   ContactNo: ph_Number.value,
-  //   Date_Of_Birth: dateOfBirth.value,
-  //   Gender: gender.value,
-  //   StudentId: studentId.value,
-  //   ParentName: parentName.value,
-  //   ParentRel: parentRel.value,
-  //   ParentContactNo: parent_contactNo.value,
-  //   ParentEmail: parent_email.value,
-  //   Address: streetAddress.value,
-  //   Country: JSON.parse(inputCountry.value).name,
-  //   State: JSON.parse(inputState.value).name,
-  //   City: JSON.parse(inputCity.value).name,
-  // }
+  const formDataObj = {
+    FirstName: firstName.value,
+    LastName: lastName.value,
+    Email: userEmail.value,
+    ContactNo: ph_Number.value,
+    Date_Of_Birth: dateOfBirth.value,
+    Gender: gender.value,
+    StudentId: studentId.value,
+    ParentName: parentName.value,
+    ParentRel: parentRel.value,
+    ParentContactNo: parent_contactNo.value,
+    ParentEmail: parent_email.value,
+    Address: streetAddress.value,
+    Country: JSON.parse(inputCountry.value).name,
+    State: JSON.parse(inputState.value).name,
+    City: JSON.parse(inputCity.value).name,
+  }
   // console.log("formDataObj: ", formDataObj);
   const file = inputProfile.files[0];
   console.log("file: ",file);
 
   const formData = new FormData();
   formData.append("profilePic", file, `${Date.now()}_${file.name}`);
-  // fileData.append("formData",formData);       //other fields of form     -- an error payload too large
-  formData.append('FirstName',firstName.value);
-  formData.append('LastName',lastName.value);
-  formData.append('Email',userEmail.value);
-  formData.append('ContactNo',ph_Number.value);
-  formData.append('Date_Of_Birth',dateOfBirth.value);
-  formData.append('Gender',gender.value);
-  formData.append('StudentId',studentId.value);
-  formData.append('ParentName',parentName.value);
-  formData.append('ParentRel',parentRel.value);
-  formData.append('ParentContactNo',parent_contactNo.value);
-  formData.append('ParentEmail',parent_email.value);
-  formData.append('Address',streetAddress.value);
-  formData.append('Country',JSON.parse(inputCountry.value).name);
-  formData.append('State',JSON.parse(inputState.value).name);
-  formData.append('City',JSON.parse(inputCity.value).name);
+  formData.append("formData",JSON.stringify(formDataObj));       //other fields of form
 
     const response = await fetch("http://localhost:4500/submit/formData", {
       method: "POST",
@@ -355,15 +350,6 @@ function getStates_API(countryCode) {
     .catch((err) => {
       console.log("Error: ", err);
     })
-
-  selectState.addEventListener("change", function () {
-    const obj = JSON.parse(this.value);
-    const stateCode = obj.code;
-
-    if (countryCode && stateCode) {
-      getCities_API(countryCode, stateCode);
-    }
-  })
 }
 
 //using API
@@ -476,7 +462,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const type = urlParams.get('type');
 
 if (type == 4) {
-  console.log("here")
   getData();
 }
 

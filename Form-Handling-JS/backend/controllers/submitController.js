@@ -5,14 +5,10 @@ const __dirname = path.resolve();
 
 const submitFormData = (req, res) => {
     console.log("in submitFormData")
-    // const {formData} = req.body;
-    const { FirstName, LastName, Email, ContactNo, Date_Of_Birth, Gender, StudentId, ParentName, ParentRel, ParentContactNo, ParentEmail, Address, Country, State, City } = req.body;
-
-    const formData = {
-        FirstName, LastName, Email, ContactNo, Date_Of_Birth, Gender, StudentId, ParentName, ParentRel, ParentContactNo, ParentEmail, Address, Country, State, City
-    }
-    console.log("formData: ",formData);
-    myCache.set("submittedData",formData);
+    const {formData} = req.body;
+    
+    const data = JSON.parse(formData);
+    myCache.set("submittedData",data);
 
     // const filePath = path.join(__dirname,req.file.path);
     // console.log("🚀 ~ submitFormData ~ filePath:", filePath);

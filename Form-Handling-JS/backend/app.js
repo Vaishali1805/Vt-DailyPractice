@@ -4,7 +4,7 @@ const PORT = 4500;
 const app = express();
 
 app.use(cors());
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({limit: '50mb'}));     //limit to remove the error -payload too large
 app.use('/uploads', express.static('uploads'));
 // app.use(express.json());
 
