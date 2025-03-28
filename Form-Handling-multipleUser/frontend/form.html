@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student's Form</title>
+    <!-- custom css -->
+    <link rel="stylesheet" href="./form.css">
+    <!-- bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- custom JS -->
+    <script src="./form.js" defer></script>
+</head>
+<body>
+    <h3>Student Registration Form</h3>
+
+    <div id="main-div">
+        <form enctype="multipart/form-data" method="POST">
+            <div class="container">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">General Information:</legend><br>
+
+                    <!-- username -->
+                    <div class="input-group">
+                        <label for="firstName" class="input-group-text">First and last name :</label>
+                        <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Type here...." autocomplete="off" required>
+                        <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Type here...." autocomplete="off" required>
+                    </div>
+                    <span id="nameError" class="error_msg"></span><br>
+
+                    <!-- profile picture -->
+                    <div id="selectFile">
+                        <label for="profilePic">Select your Profile Picture:</label>
+                        <input type="file" id="inputProfile" name="profilePic" id="profilePic" accept=".png, .jpg, .jpeg" style="display:none" />
+                        <button type="button" id="inputProfileBtn">Click Here</button>
+                    </div>
+                    <span id="profileError" class="error_msg"></span><br>
+                    <div id="preview"></div>
+
+                    <!-- Email address -->
+                    <label for="InputEmail">Email address :</label>
+                    <input type="email" class="form-control" id="inputEmail" name="userEmail" placeholder="abc@gmail.com" autocomplete="off" required>
+                    <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    <span id="emailError" class="error_msg"></span><br><br>
+
+                    <!-- Contact Number and DOB -->
+                    <span id="contactNoError" class="error_msg"></span>
+                    <div class="contactNo-n-dob">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">+91</span>
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="contactNo" placeholder="contact Number" autocomplete="off">
+                                <label for="contactNo">Contact Number</label>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 dateOfBirth">
+                            <label for="dateOfBirth" class="dob">Date of Birth :</label>
+                            <input type="date" id="dateOfBirth" class="form-control" name="birthday" autocomplete="off">
+                        </div>
+                        <span id="dobError" class="error_msg"></span>
+                    </div>
+
+                    <!-- StudentId and Gender -->
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="studentId" placeholder="Ex-2345678" autocomplete="off">
+                                <label for="StudentId">Student Id :</label>
+                            </div>
+                        </div>
+                        <span id="studentId_error" class="error_msg"></span>
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <select class="form-select" id="selectGender" required>
+                                    <option selected>Select Gender :</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <span id="genderError" class="error_msg"></span>
+                                <label for="gender">Works with selects</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parent and Guardian Information -->
+                    <fieldset class="scheduler-border-2">
+                        <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
+                        <label for="parentName">Parent/Guardian Name :</label>
+                        <input type="text" class="form-control" id="parentName" placeholder="Enter Name here...." autocomplete="off">
+                        <span id="parentNameError" class="error_msg"></span>
+
+                        <div id="parentInfo">
+                            <div class="rel">
+                                <label for="parentRelation">Relatioship to student :</label>
+                                <input type="text" id="parentRelation" name="relation" class="form-control input" placeholder="Ex: Father" autocomplete="off" required>
+                                <span id="parentRelError" class="error_msg"></span>
+                            </div>
+                            <div class="contactNo">
+                                <label for="parentContactNo">Contact No. :</label>
+                                <input type="tel" id="parentContactNo" class="form-control input" placeholder="1123445567" autocomplete="off">
+                                <span id="parentContactNoError" class="error_msg"></span>
+                            </div>
+                            <div class="emailAddress">
+                                <label for="parentEmail">Email :</label>
+                                <input type="email" id="parentEmail" class="form-control input" placeholder="abc@gmail.com" autocomplete="off">
+                                <span id="parentEmailError" class="error_msg"></span>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Address -->
+                    <fieldset class="scheduler-border-2">
+                        <legend class="scheduler-border-2">Address :</legend><br>
+                        <label for="address">Street Address :</label>
+                        <input type="text" class="form-control parentName" placeholder="Street Address...." id="address" autocomplete="off">
+                        <span id="addressError" class="error_msg"></span>
+                        <div class="addressInfo">
+                            <div class="country">
+                                <label for="inputCountry">Country :</label>
+                                <select type="text" id="inputCountry" class="form-control" required>
+                                    <option value="">Select Country</option>
+                                </select>
+                                <span id="countryError" class="error_msg"></span>
+                            </div>
+                            <div class="state">
+                                <label for="inputState">State :</label>
+                                <select id="inputState" class="form-control" required>
+                                    <option value="">Select State</option>
+                                </select>
+                                <span id="state_error" class="error_msg"></span>
+                            </div>
+                            <div class="city">
+                                <label for="inputCity">City :</label>
+                                <select id="inputCity" class="form-control" required>
+                                    <option value="">Select City</option>
+                                </select>
+                                <span id="city_error" class="error_msg"></span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="btn btn-secondary">Submit</button>
+                </fieldset>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
