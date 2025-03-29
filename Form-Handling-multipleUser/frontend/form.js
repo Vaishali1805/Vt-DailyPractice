@@ -1,14 +1,15 @@
-//Get elements from HTML file
+// Get form input elements from the DOM
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const nameError_msg = document.getElementById('nameError');
 
-//for profile
+// Profile picture upload elements
 const inputProfile = document.getElementById('inputProfile');
 const inputProfileBtn = document.getElementById('inputProfileBtn');
 const preview = document.getElementById('preview');
 const profileError_msg = document.getElementById('profileError');
 
+// Other form fields and their error messages
 const inputEmail = document.getElementById('inputEmail');
 const emailError_msg = document.getElementById('emailError');
 
@@ -37,16 +38,17 @@ const address = document.getElementById('address');
 const addressError_msg = document.getElementById('addressError');
 const countryError_msg = document.getElementById('countryError');
 
-//for country,state,city
+// Country, state, and city selection elements
 const selectCountry = document.getElementById('inputCountry');
 const selectState = document.getElementById('inputState');
 const selectCity = document.getElementById('inputCity');
 const api_key = 'TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==';
 let countryCode;
 
-//submit Button 
+// Form submission button 
 const submitBtn = document.getElementById('submitBtn');
 
+// Handle form submission
 submitBtn.addEventListener('click', (e) => {
     handleSubmit(e);
 });
@@ -54,10 +56,12 @@ submitBtn.addEventListener('click', (e) => {
 function handleSubmit(event) {
     try {
         event.preventDefault();
-
+        // Validate form before proceeding
         if (!validate_form()) {
             return;
         }
+
+        //send data to the backend
 
     } catch (error) {
         console.log("Error: ", error);
@@ -74,7 +78,7 @@ function validate_form() {
         flag = false;
     }
 
-    //Name validation
+    // Validate first name
     if (firstName.value.trim() == "") {
         setError(nameError_msg, '*First name is required');
     } else if (firstName.value.length < 2 || firstName.value.length > 30) {
@@ -83,7 +87,7 @@ function validate_form() {
         nameError_msg.textContent = "";         // Clear error if valid
     }
 
-    //Email Validation
+    // Validate email format
     if (inputEmail.value.trim() == "") {
         setError(emailError_msg, '*Email is required');
     } else if (!EmailPattern.test(inputEmail.value)) {
@@ -92,7 +96,7 @@ function validate_form() {
         emailError_msg.textContent = "";
     }
 
-    //Phone Number Validation
+    // Validate phone number
     if (!contactNo.value.trim()) {
         setError(contactNoError_msg, '*Contact number is required');
     } else if (!ph_Pattern.test(contactNo.value)) {
@@ -101,14 +105,14 @@ function validate_form() {
         contactNoError_msg.textContent = "";
     }
 
-    //Date of Birth Validation
+    //Validate Date of Birth
     if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
         setError(dobError_msg, '*Invalid date of birth');
     } else {
         dobError_msg.textContent = "";
     }
 
-    //StudentId validation
+    //Validate StudentId
     console.log("studentId: ", studentId.value.length);
     if (!studentId.value.trim()) {
         setError(studentIdError_msg, '*Student ID is required');
@@ -116,7 +120,7 @@ function validate_form() {
         studentIdError_msg.textContent = "";
     }
 
-    // Parent/Guardian Name Validation
+    // Validate Parent/Guardian Name
     if (!parentName.value.trim()) {
         setError(parentNameError_msg, '*Parent/Guardian name is required');
     } else if (parentName.value.length < 2 || parentName.value.length > 30) {
@@ -125,7 +129,7 @@ function validate_form() {
         parentNameError_msg.textContent = "";
     }
 
-    // Parent/Guardian contact no. Validation
+    // Validate Parent/Guardian contact no.
     if (!parentContactNo.value.trim()) {
         setError(parentContactNoError_msg, '*Contact number is required');
     } else if (!ph_Pattern.test(parentContactNo.value)) {
@@ -134,7 +138,7 @@ function validate_form() {
         parentContactNoError_msg.textContent = "";
     }
 
-    //country validation
+    //Validate country
     if (!selectCountry.value) {
         setError(countryError_msg, '*Country is required')
     } else
@@ -143,7 +147,7 @@ function validate_form() {
     return flag;
 }
 
-//Profile section
+// Profile picture upload event
 inputProfileBtn.addEventListener('click', (e) => {
     if (inputProfile) {
         inputProfile.click();
@@ -158,6 +162,7 @@ function handleFileSelection(event) {
     const file = event.target.files[0];
     console.log("file: ", file);
 
+    // Validate selected file before displaying preview
     if (!validateFile(file)) {
         inputProfile.value = "";   // clear the input if file is invalid
         preview.innerHTML = "";
@@ -200,16 +205,19 @@ function validateFile(file) {
     return true;
 }
 
-//Get country,states and API section
+// Fetch and populate country, state, and city dropdowns
 document.addEventListener("DOMContentLoaded", getAllCountries);
 selectCountry.addEventListener('change', function () {
     const obj = JSON.parse(this.value);
     countryCode = obj.code;
+    selectState.innerHTML = '<option value="">Select State</option>';
+    selectCity.innerHTML = '<option value="">Select City</option>';
     getAllStates(countryCode);
 })
 selectState.addEventListener("change", function () {
     const obj = JSON.parse(this.value);
     const stateCode = obj.code;
+    selectCity.innerHTML = '<option value="">Select City</option>';
     getAllCities(stateCode);
 })
 
@@ -223,8 +231,14 @@ async function getAllCountries() {
             throw new Error(`Response status: ${response.status}`);
         }
         const countries = await response.json();
-        console.log(countries);
-        selectCountry.innerHTML = '<option value="">Select Country</option>'; // Default option
+        // console.log(countries);
+        if (!countries.length) {
+            console.error("No countries available.");
+            selectCountry.innerHTML = '<option value="">No countries available</option>';
+            selectCountry.disabled = true;
+            return;
+        }
+        selectCountry.innerHTML = '<option value="">Select Country</option>'; //Default option
         countries.map((country) => {
             let option = document.createElement("option");
             const obj = { code: country.iso2, name: country.name };
@@ -232,6 +246,7 @@ async function getAllCountries() {
             option.textContent = country.name;      // Country name as text
             selectCountry.appendChild(option);
         });
+        selectCountry.disabled = false;
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -248,10 +263,13 @@ async function getAllStates(countryCode) {
         }
         const state = await response.json();
         if (!state.length) {
-            console.log("No states Available");
+            console.warn("No states available for this country.");
+            selectState.innerHTML = '<option value="">No cities available</option>';
+            selectState.disabled = true;  // Disable dropdown
             return;
         }
-
+        selectState.disabled = false;
+        selectState.innerHTML = '<option value="">Select State</option>'; //Default option
         state.map((state) => {
             let option = document.createElement("option");
             const obj = { code: state.iso2, name: state.name };
@@ -273,20 +291,24 @@ async function getAllCities(stateCode) {
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
-        const city = await response.json();
-        if (!city.length) {
-            console.log("No cities Available");
+        const cities = await response.json();
+        if (!cities.length) {
+            console.warn("No cities available for this state.");
+            selectCity.innerHTML = '<option value="">No cities available</option>';
+            selectCity.disabled = true;  // Disable dropdown
             return;
         }
 
-        city.map((state) => {
+        selectCity.disabled = false;
+        selectCity.innerHTML = '<option value="">Select city</option>'; //Default option
+        cities.map((city) => {
             let option = document.createElement("option");
             const obj = { code: city.iso2, name: city.name };
             option.value = JSON.stringify(obj);
-            option.textContent = state.name;      // city name as text
+            option.textContent = city.name;      // city name as text
             selectCity.appendChild(option);
         })
     } catch (error) {
-        console.log("Error: ", err);
+        console.log("Error: ", error);
     }
 }
