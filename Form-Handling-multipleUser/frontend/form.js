@@ -10,7 +10,7 @@ const preview = document.getElementById('preview');
 const profileError_msg = document.getElementById('profileError');
 
 // Other form fields and their error messages
-const inputEmail = document.getElementById('inputEmail');
+const email = document.getElementById('inputEmail');
 const emailError_msg = document.getElementById('emailError');
 
 const contactNo = document.getElementById('contactNo');
@@ -22,17 +22,17 @@ const dobError_msg = document.getElementById('dobError');
 const studentId = document.getElementById('studentId');
 const studentIdError_msg = document.getElementById('studentId_error');
 
-const selectGender = document.getElementById('selectGender');
+const gender = document.getElementById('selectGender');
 const genderError_msg = document.getElementById('genderError');
 
-const parentName = document.getElementById('parentName');
-const parentNameError_msg = document.getElementById('parentNameError');
-const parentRelation = document.getElementById('parentRelation');
-const parentRelError_msg = document.getElementById('parentRelError');
-const parentContactNo = document.getElementById('parentContactNo');
-const parentContactNoError_msg = document.getElementById('parentContactNoError');
-const parentEmail = document.getElementById('parentEmail');
-const parentEmailError_msg = document.getElementById('parentEmailError');
+// const parentName = document.getElementById('parentName');
+// const parentNameError_msg = document.getElementById('parentNameError');
+// const parentRelation = document.getElementById('parentRelation');
+// const parentRelError_msg = document.getElementById('parentRelError');
+// const parentContactNo = document.getElementById('parentContactNo');
+// const parentContactNoError_msg = document.getElementById('parentContactNoError');
+// const parentEmail = document.getElementById('parentEmail');
+// const parentEmailError_msg = document.getElementById('parentEmailError');
 
 const address = document.getElementById('address');
 const addressError_msg = document.getElementById('addressError');
@@ -45,15 +45,31 @@ const selectCity = document.getElementById('inputCity');
 const api_key = 'TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==';
 let countryCode;
 
+const terms_Condn_check = document.getElementById('terms_Condn_check');
+
 // Form submission button 
 const submitBtn = document.getElementById('submitBtn');
+
+if (!terms_Condn_check.checked) {
+    submitBtn.disabled = true;
+} else {
+    submitBtn.disabled = false;
+}
+
+terms_Condn_check.addEventListener('change', function () {
+    if (this.checked) {
+        submitBtn.disabled = false;
+    }
+    else
+        submitBtn.disabled = true;
+})
 
 // Handle form submission
 submitBtn.addEventListener('click', (e) => {
     handleSubmit(e);
 });
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     try {
         event.preventDefault();
         // Validate form before proceeding
@@ -61,8 +77,57 @@ function handleSubmit(event) {
             return;
         }
 
-        //send data to the backend
+        const formDataObj = {
+            firstName: firstName.value || null,
+            lastName: lastName.value || null,
+            email: email.value || null,
+            contactNo: contactNo.value || null,
+            dateOfBirth: dateOfBirth.value || null,
+            studentId: studentId.value || null,
+            gender: gender?.value || null,
+            address: address.value || null,
+            country: selectCountry && selectCountry.value ? JSON.parse(selectCountry.value).name : null,
+            state: selectState && selectState.value ? JSON.parse(selectState.value).name : null,
+            city: selectCity && selectCity.value ? JSON.parse(selectCity.value).name : null,
+        }
+        console.log("formDataObj: ", formDataObj);
 
+        // // Handle Profile Picture
+        // const formData = new FormData();
+        // const file = inputProfile.files[0];
+        // const defaultImage = 'default_userImage.webp';
+
+        // const fileToUpload = file ? file : new File([], defaultImage);
+        // console.log("fileToUpload: ", fileToUpload);
+        // formData.append("profile", fileToUpload, `${Date.now()}_${fileToUpload.name}`);
+        // formData.append("formData", JSON.stringify(formDataObj));
+
+        // Handle Profile Picture
+        const formData = new FormData();
+        const file = inputProfile.files[0];
+        const defaultImage = 'defaultImage.webp';
+        const fileToUpload = file ? file : null; // Set to null if no file
+
+        if (fileToUpload) {
+            formData.append("profile", fileToUpload, `${Date.now()}_${fileToUpload.name}`);
+        } else {
+            formData.append("profile", defaultImage); // Send the image path as a string
+        }
+        formData.append("formData", JSON.stringify(formDataObj));
+
+
+        // submit the student data
+        const url = 'http://localhost:5000/submit/formData';
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+        });
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        window.location.href = '/table.html';
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -113,32 +178,31 @@ function validate_form() {
     }
 
     //Validate StudentId
-    console.log("studentId: ", studentId.value.length);
     if (!studentId.value.trim()) {
         setError(studentIdError_msg, '*Student ID is required');
     } else {
         studentIdError_msg.textContent = "";
     }
 
-    // Validate Parent/Guardian Name
-    if (!parentName.value.trim()) {
-        setError(parentNameError_msg, '*Parent/Guardian name is required');
-    } else if (parentName.value.length < 2 || parentName.value.length > 30) {
-        setError(parentNameError_msg, '*Parent Name must be between 2 and 30 characters');
-    } else {
-        parentNameError_msg.textContent = "";
-    }
+    // // Validate Parent/Guardian Name
+    // if (!parentName.value.trim()) {
+    //     setError(parentNameError_msg, '*Parent/Guardian name is required');
+    // } else if (parentName.value.length < 2 || parentName.value.length > 30) {
+    //     setError(parentNameError_msg, '*Parent Name must be between 2 and 30 characters');
+    // } else {
+    //     parentNameError_msg.textContent = "";
+    // }
 
-    // Validate Parent/Guardian contact no.
-    if (!parentContactNo.value.trim()) {
-        setError(parentContactNoError_msg, '*Contact number is required');
-    } else if (!ph_Pattern.test(parentContactNo.value)) {
-        setError(parentContactNoError_msg, '*Invalid contact number');
-    } else {
-        parentContactNoError_msg.textContent = "";
-    }
+    // // Validate Parent/Guardian contact no.
+    // if (!parentContactNo.value.trim()) {
+    //     setError(parentContactNoError_msg, '*Contact number is required');
+    // } else if (!ph_Pattern.test(parentContactNo.value)) {
+    //     setError(parentContactNoError_msg, '*Invalid contact number');
+    // } else {
+    //     parentContactNoError_msg.textContent = "";
+    // }
 
-    //Validate country
+    // Validate country
     if (!selectCountry.value) {
         setError(countryError_msg, '*Country is required')
     } else
@@ -264,7 +328,7 @@ async function getAllStates(countryCode) {
         const state = await response.json();
         if (!state.length) {
             console.warn("No states available for this country.");
-            selectState.innerHTML = '<option value="">No cities available</option>';
+            selectState.innerHTML = '<option value="">No states available</option>';
             selectState.disabled = true;  // Disable dropdown
             return;
         }

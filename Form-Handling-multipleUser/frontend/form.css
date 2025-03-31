@@ -103,7 +103,10 @@ legend.scheduler-border-2 {
 .fileContainer {
     position: relative;
     margin: 10px;
-    width: 13vw;
+    width: 15vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #fff;
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -118,6 +121,18 @@ legend.scheduler-border-2 {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
+
+.radio {
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+}
+
 
 /* #selectProfilePic {
     background-color: rgb(110, 110, 110);

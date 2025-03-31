@@ -32,7 +32,7 @@
                     <!-- profile picture -->
                     <div id="selectFile">
                         <label for="profilePic">Select your Profile Picture:</label>
-                        <input type="file" id="inputProfile" name="profilePic" id="profilePic" accept=".png, .jpg, .jpeg" style="display:none" />
+                        <input type="file" id="inputProfile" name="profilePic" accept=".png, .jpg, .jpeg" style="display:none" />
                         <button type="button" id="inputProfileBtn">Click Here</button>
                     </div>
                     <span id="profileError" class="error_msg"></span><br>
@@ -71,20 +71,20 @@
                         </div>
                         <span id="studentId_error" class="error_msg"></span>
                         <div class="col-md">
-                            <div class="form-floating">
-                                <select class="form-select" id="selectGender" required>
-                                    <option selected>Select Gender :</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                            <div>
+                                <p class="form-control">Please Select your gender</p>
+                                <input type="radio" id="male" name="gender" value="female" class="radio">
+                                <label for="male">Male</label>
+                                <input type="radio" id="female" name="gender" value="male" class="radio">
+                                <label for="female">Female</label>
+                                <input type="radio" id="other" name="gender" value="other" class="radio">
+                                <label for="other">Other</label>
                                 <span id="genderError" class="error_msg"></span>
-                                <label for="gender">Works with selects</label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Parent and Guardian Information -->
+                    <!-- Parent and Guardian Information
                     <fieldset class="scheduler-border-2">
                         <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
                         <label for="parentName">Parent/Guardian Name :</label>
@@ -108,7 +108,7 @@
                                 <span id="parentEmailError" class="error_msg"></span>
                             </div>
                         </div>
-                    </fieldset>
+                    </fieldset> -->
 
                     <!-- Address -->
                     <fieldset class="scheduler-border-2">
@@ -140,6 +140,12 @@
                             </div>
                         </div>
                     </fieldset>
+
+                    <div>
+                        <input type="checkbox" id="terms_Condn_check" required>
+                        <label for="terms_Condn_check">By registering,you accept our Terms and Conditions.</label>
+                    </div><br>
+
                     <!-- Submit Button -->
                     <button type="submit" id="submitBtn" class="btn btn-secondary">Submit</button>
                 </fieldset>

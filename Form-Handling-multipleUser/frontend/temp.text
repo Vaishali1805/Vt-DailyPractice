@@ -1,0 +1,109 @@
+async function handleSubmit(event) {
+    try {
+        event.preventDefault();
+        // Validate form before proceeding
+        if (!validate_form()) {
+            return;
+        }
+
+        console.log("selectState: ", selectState.value);
+        console.log("selectCity: ", selectCity.value);
+
+        const formDataObj = {
+            firstName: firstName.value || null,
+            lastName: lastName.value || null,
+            email: email.value || null,
+            contactNo: contactNo.value || null,
+            dateOfBirth: dateOfBirth.value || null,
+            studentId: studentId.value || null,
+            gender: gender?.value || null,
+            address: address.value || null,
+            Country: selectCountry && selectCountry.value ? JSON.parse(selectCountry.value).name : null,
+            State: selectState && selectState.value ? JSON.parse(selectState.value).name : null,
+            City: selectCity && selectCity.value ? JSON.parse(selectCity.value).name : null,
+        };
+
+        console.log("formDataObj: ", formDataObj);
+
+        // Handle Profile Picture
+        const file = inputProfile.files[0];
+        console.log("file: ", file);
+
+        const formData = new FormData();
+
+        // Default profile picture if none uploaded
+        const defaultImage = 'default_profile.png'; // Replace with your default image path
+        const fileToUpload = file ? file : new File([], defaultImage);
+
+        formData.append("profile", fileToUpload, `${Date.now()}_${fileToUpload.name || defaultImage}`);
+        formData.append("formData", JSON.stringify(formDataObj)); // Ensure it's a string
+
+        // Submit the data
+        const url = 'http://localhost:5000/submit/formData';
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        window.location.href = '/table.html';
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
+
+studentData = [
+    {
+        "firstName": "Vaishali",
+        "lastName": "asjkbh",
+        "email": "sdf@jhasv.com",
+        "contactNo": "3657823578",
+        "dateOfBirth": "2025-03-31",
+        "studentId": "23765",
+        "gender": null,
+        "address": "fdresih",
+        "country": "Afghanistan",
+        "state": "Ghazni",
+        "city": "Ghazni",
+        "profile": {
+            "fieldname": "profile",
+            "originalname": "1743417031000_image_2025_01_09T06_08_27_533Z (2).png",
+            "encoding": "7bit",
+            "mimetype": "image/png",
+            "destination": "uploads",
+            "filename": "1743417031000_image_2025_01_09T06_08_27_533Z (2).png",
+            "path": "uploads\\1743417031000_image_2025_01_09T06_08_27_533Z (2).png",
+            "size": 50309
+        }
+    },
+    {
+        "firstName": "Ritika",
+        "lastName": "sdn",
+        "email": "sfrj@sdfk.com",
+        "contactNo": "2134123424",
+        "dateOfBirth": "2025-03-18",
+        "studentId": "23",
+        "gender": null,
+        "address": null,
+        "country": "Bangladesh",
+        "state": "Chandpur District",
+        "city": null,
+        "profile": {
+            "fieldname": "profile",
+            "originalname": "1743417086864_default_userImage.webp",
+            "encoding": "7bit",
+            "mimetype": "application/octet-stream",
+            "destination": "uploads",
+            "filename": "1743417086864_default_userImage.webp",
+            "path": "uploads\\1743417086864_default_userImage.webp",
+            "size": 0
+        }
+    }
+]

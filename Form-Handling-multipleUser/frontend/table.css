@@ -1,0 +1,48 @@
+#heading {
+    text-align: center;
+}
+
+#btnDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+#deleteBtn,#registerBtn {
+    color:white;
+    padding: 0.5rem;
+    background-color: #2e2d2d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 3px 15px;
+}
+
+#deleteBtn:hover,#regiterBtn:hover{
+    background-color:#4d4c4c
+}
+
+#table_container {
+    margin:15px;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.userImg {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+}
+
+.editIcon, .deleteIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+}
