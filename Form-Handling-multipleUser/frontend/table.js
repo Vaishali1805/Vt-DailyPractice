@@ -8,8 +8,17 @@ const selectedIds = new Set();
 let studentData;
 
 deleteBtn.addEventListener('click', () => {
-    //add a confirmation modal here
-    handleBulkDelete();
+    const popup = document.getElementById("confirmPopup");
+    popup.style.display = "flex";
+
+    document.getElementById("confirmDelete").onclick = function () {
+        handleBulkDelete();
+        popup.style.display = "none"; // Close popup after confirming
+    };
+
+    document.getElementById("cancelDelete").onclick = function () {
+        popup.style.display = "none"; // Close popup without deleting
+    };
 })
 
 registerBtn.addEventListener('click', function () {
@@ -110,9 +119,19 @@ async function getStudentData() {
             rowContainer.appendChild(newRow);
 
             deleteImg.addEventListener("click", function () {
-                //add a pop confirm here
-                deleteSingleStudent(obj.studentId);
+                const popup = document.getElementById("confirmPopup");
+                popup.style.display = "flex";
+            
+                document.getElementById("confirmDelete").onclick = function () {
+                    deleteSingleStudent(obj.studentId);
+                    popup.style.display = "none"; // Close popup after confirming
+                };
+            
+                document.getElementById("cancelDelete").onclick = function () {
+                    popup.style.display = "none"; // Close popup without deleting
+                };
             });
+            
 
             editImg.addEventListener("click", function () {
                 //add a pop confirm here
