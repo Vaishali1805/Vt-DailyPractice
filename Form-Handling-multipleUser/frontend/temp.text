@@ -1,3 +1,15 @@
+// to access the radio button
+
+const radios = document.querySelectorAll('input[name="gender"]');
+radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        if (radio.checked) {
+            console.log(radio.value);
+        }
+    });
+});
+
+
 async function handleSubmit(event) {
     try {
         event.preventDefault();
@@ -107,3 +119,173 @@ studentData = [
         }
     }
 ]
+
+
+
+async function getStudentData() {
+    try {
+        const url = 'http://localhost:5000/get/studentData';
+        const response = await fetch(url, {
+            method: "GET",
+        });
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        studentData = data.studentData;
+        console.log("studentData:", studentData);
+        rowContainer.innerHTML = "";
+
+        let count = 1;
+        studentData.forEach((obj) => {
+            const newRow = document.createElement('tr');
+
+            // Create checkbox cell
+            const td = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.name = "select";
+            checkbox.classList.add("check");
+            checkbox.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    check(obj.studentId);
+                } else {
+                    uncheck(obj.studentId);
+                }
+                updateMainCheckbox();
+            });
+            td.appendChild(checkbox);
+            newRow.appendChild(td);
+
+            // Serial Number
+            newRow.innerHTML += `<td>${count++}</td>`;
+
+            // Image Preview
+            const tdImage = document.createElement('td');
+            const fileUrl = obj.profile && obj.profile.path
+                ? `http://localhost:5000/${obj.profile.path}`
+                : `http://localhost:5000/uploads/${obj.profile}`;
+
+            const img = document.createElement('img');
+            img.src = fileUrl;
+            img.alt = "Student Profile";
+            img.classList.add("userImg");
+            tdImage.appendChild(img);
+            newRow.appendChild(tdImage);
+
+            // Other data cells
+            newRow.innerHTML += `
+                <td>${obj.firstName !== null ? obj.firstName : "-"}</td>
+                <td>${obj.lastName !== null ? obj.lastName : "-"}</td>
+                <td>${obj.email !== null ? obj.email : "-"}</td>
+                <td>${obj.contactNo !== null ? obj.contactNo : "-"}</td>
+                <td>${obj.dateOfBirth !== null ? obj.dateOfBirth : "-"}</td>
+                <td>${obj.studentId !== null ? obj.studentId : "-"}</td>
+                <td>${obj.gender !== null ? obj.gender : "-"}</td>
+                <td>${obj.address !== null ? obj.address : "-"}</td>
+                <td>${obj.country !== null ? obj.country : "-"}</td>
+                <td>${obj.state !== null ? obj.state : "-"}</td>
+                <td>${obj.city !== null ? obj.city : "-"}</td>
+            `;
+
+            // Edit Icon
+            const editTd = document.createElement('td');
+            const editImg = document.createElement('img');
+            editImg.src = './assets/edit.svg';
+            editImg.classList.add('editIcon');
+            editTd.appendChild(editImg);
+            newRow.appendChild(editTd);
+
+            // Delete Icon
+            const deleteTd = document.createElement('td');
+            const deleteImg = document.createElement('img');
+            deleteImg.src = './assets/delete.svg';
+            deleteImg.classList.add('deleteIcon');
+            deleteTd.appendChild(deleteImg);
+            newRow.appendChild(deleteTd);
+
+            rowContainer.appendChild(newRow);
+
+            deleteImg.addEventListener("click", function () {
+                // Add a confirmation dialog here
+                deleteSingleStudent(obj.studentId);
+            });
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
+
+
+
+
+// Event Listener for Row Container (Event Delegation)
+rowContainer.addEventListener("change", (event) => {
+    if (event.target && event.target.classList.contains("check")) {
+        const checkbox = event.target;
+        const studentId = checkbox.closest('tr').dataset.studentId;
+
+        if (checkbox.checked) {
+            check(studentId);
+        } else {
+            uncheck(studentId);
+        }
+        updateMainCheckbox();
+    }
+});
+
+// Main Checkbox for Select/Deselect All
+mainCheckBox.addEventListener("change", () => {
+    const checkBoxes = document.getElementsByClassName('check');
+    const isChecked = mainCheckBox.checked;
+
+    for (let checkbox of checkBoxes) {
+        checkbox.checked = isChecked;
+        const studentId = checkbox.closest('tr').dataset.studentId;
+        if (isChecked) {
+            selectedIds.add(studentId);
+        } else {
+            selectedIds.delete(studentId);
+        }
+    }
+    console.log("selectedIds: ", selectedIds);
+});
+
+async function getStudentData() {
+    try {
+        const url = 'http://localhost:5000/get/studentData';
+        const response = await fetch(url);
+        const data = await response.json();
+        studentData = data.studentData;
+
+        rowContainer.innerHTML = "";
+        studentData.forEach((obj, index) => {
+            const newRow = document.createElement('tr');
+            newRow.dataset.studentId = obj.studentId;  // Add data attribute for easy access
+
+            newRow.innerHTML = `
+                <td><input type="checkbox" class="check"></td>
+                <td>${index + 1}</td>
+                <td><img src="http://localhost:5000/${obj.profile?.path || obj.profile}" class="userImg" alt="Profile"></td>
+                <td>${obj.firstName || "-"}</td>
+                <td>${obj.lastName || "-"}</td>
+                <td>${obj.email || "-"}</td>
+                <td>${obj.contactNo || "-"}</td>
+                <td>${obj.dateOfBirth || "-"}</td>
+                <td>${obj.studentId || "-"}</td>
+                <td>${obj.gender || "-"}</td>
+                <td>${obj.address || "-"}</td>
+                <td>${obj.country || "-"}</td>
+                <td>${obj.state || "-"}</td>
+                <td>${obj.city || "-"}</td>
+                <td><img src="./assets/edit.svg" class="editIcon"></td>
+                <td><img src="./assets/delete.svg" class="deleteIcon"></td>
+            `;
+
+            rowContainer.appendChild(newRow);
+        });
+    } catch (error) {
+        console.log("Error:", error);
+    }
+}

@@ -22,9 +22,6 @@ const dobError_msg = document.getElementById('dobError');
 const studentId = document.getElementById('studentId');
 const studentIdError_msg = document.getElementById('studentId_error');
 
-const gender = document.getElementById('selectGender');
-const genderError_msg = document.getElementById('genderError');
-
 // const parentName = document.getElementById('parentName');
 // const parentNameError_msg = document.getElementById('parentNameError');
 // const parentRelation = document.getElementById('parentRelation');
@@ -49,6 +46,16 @@ const terms_Condn_check = document.getElementById('terms_Condn_check');
 
 // Form submission button 
 const submitBtn = document.getElementById('submitBtn');
+
+let selectedGender;
+const radios = document.querySelectorAll('input[name="gender"]');
+radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        if (radio.checked) {
+            selectedGender = radio.value;
+        }
+    });
+});
 
 if (!terms_Condn_check.checked) {
     submitBtn.disabled = true;
@@ -84,7 +91,7 @@ async function handleSubmit(event) {
             contactNo: contactNo.value || null,
             dateOfBirth: dateOfBirth.value || null,
             studentId: studentId.value || null,
-            gender: gender?.value || null,
+            gender: selectedGender || null,
             address: address.value || null,
             country: selectCountry && selectCountry.value ? JSON.parse(selectCountry.value).name : null,
             state: selectState && selectState.value ? JSON.parse(selectState.value).name : null,
@@ -126,8 +133,9 @@ async function handleSubmit(event) {
             throw new Error(`Response status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
-        window.location.href = '/table.html';
+        if(data.success){
+            window.location.href = '/table.html';
+        }
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -375,4 +383,36 @@ async function getAllCities(stateCode) {
     } catch (error) {
         console.log("Error: ", error);
     }
+}
+
+
+function getStudentData() {
+    try {
+        const data = JSON.parse(localStorage.getItem('studentData'));
+        console.log("data: ", data);
+
+        if (data) {
+            console.log("here")
+            firstName.value = data[0]?.firstName || "";
+            lastName.value = data[0]?.lastName || "";
+            email.value = data[0]?.email || "";
+            contactNo.value = data[0]?.contactNo || "";
+            dateOfBirth.value = data[0]?.dateOfBirth || "";
+            studentId.value = data[0]?.studentId || "";
+            selectedGender = data[0]?.gender || "";
+            address.value = data[0]?.address || "";
+            selectCountry.value = data[0]?.country || "";
+            selectState.value = data[0]?.state || "";
+            selectCity.value = data[0]?.city || "";
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('studentId');
+
+if (id) {
+    getStudentData();
 }

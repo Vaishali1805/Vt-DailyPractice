@@ -1,10 +1,36 @@
 const studentTable = document.getElementById('studentTable');
 const rowContainer = document.getElementById('rowContainer');
 const registerBtn = document.getElementById('registerBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+const mainCheckBox = document.getElementById('mainCheckBox');
 
-registerBtn.addEventListener('click',function() {
+const selectedIds = new Set();
+let studentData;
+
+deleteBtn.addEventListener('click', () => {
+    //add a confirmation modal here
+    handleBulkDelete();
+})
+
+registerBtn.addEventListener('click', function () {
     window.location.href = 'form.html';
 })
+
+mainCheckBox.addEventListener('change', check_uncheck_all);
+
+rowContainer.addEventListener("change", (event) => {
+    if (event.target && event.target.classList.contains("check")) {
+        const checkbox = event.target;
+        const studentId = checkbox.closest('tr').dataset.studentId;
+
+        if (checkbox.checked) {
+            check(studentId);
+        } else {
+            uncheck(studentId);
+        }
+        updateMainCheckbox();
+    }
+});
 
 async function getStudentData() {
     try {
@@ -16,17 +42,27 @@ async function getStudentData() {
             throw new Error(`Response status: ${response.status}`);
         }
         const data = await response.json();
-        const { studentData } = data;
+        // const { studentData } = data;
+        studentData = data.studentData;
         console.log("studentData:", studentData);
+        rowContainer.innerHTML = "";
 
         let count = 1;
-        studentData.map((obj) => {
+        studentData.forEach((obj) => {
             const newRow = document.createElement('tr');
+            newRow.dataset.studentId = obj.studentId;  // Add data attribute for easy access
 
             // Create checkbox cell
             const td = document.createElement('td');
-            td.innerHTML = '<input type="checkbox" name="select" class="check">';
+            const checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.name = "select";
+            checkbox.classList.add("check");
+            td.appendChild(checkbox);
             newRow.appendChild(td);
+
+            //serial Number
+            newRow.innerHTML += `<td>${count++}</td>`;
 
             // Image Preview
             const tdImage = document.createElement('td');
@@ -38,14 +74,12 @@ async function getStudentData() {
             img.src = fileUrl;
             img.alt = "Student Profile";
             img.classList.add("userImg");
-
             tdImage.appendChild(img);
             newRow.appendChild(tdImage);
 
             //other data cells
             //Without += overwriting the newRow's inner content after appending the checkbox
             newRow.innerHTML += `       
-            <td>${count++}</td>
             <td>${obj.firstName !== null ? obj.firstName : "-"}</td>
             <td>${obj.lastName !== null ? obj.lastName : "-"}</td>
             <td>${obj.email !== null ? obj.email : "-"}</td>
@@ -74,10 +108,127 @@ async function getStudentData() {
             deleteTd.appendChild(deleteImg);
             newRow.appendChild(deleteTd);
             rowContainer.appendChild(newRow);
+
+            deleteImg.addEventListener("click", function () {
+                //add a pop confirm here
+                deleteSingleStudent(obj.studentId);
+            });
+
+            editImg.addEventListener("click", function () {
+                //add a pop confirm here
+                editStudentData(obj.studentId);
+            })
+
+            // const checkBoxes = document.getElementsByClassName('check');     //not working correctly
+            // for(let i=0; i<checkBoxes.length; i++){
+            // checkbox.addEventListener("change", (event) => {         
+            //     console.log("event.target",event.target);
+            //     if (event.target.checked) {
+            //         console.log("check")
+            //         check(obj.studentId);
+            //     } else {
+            //         console.log("uncheck")
+            //         uncheck(obj.studentId);
+            //     }
+            //     updateMainCheckbox();
+            // });
+            // }
+
         })
     } catch (error) {
         console.log("Error: ", error);
     }
+}
+
+function check(id) {
+    selectedIds.add(id);
+    console.log("🚀 ~ check ~ selectedIds:", selectedIds)
+}
+
+function uncheck(id) {
+    selectedIds.delete(id);
+    console.log("🚀 ~ uncheck ~ selectedIds:", selectedIds)
+}
+
+function updateMainCheckbox() {
+    const checkBoxes = document.getElementsByClassName('check');
+    mainCheckBox.checked = checkBoxes.length > 0 && selectedIds.size === checkBoxes.length;
+}
+
+function check_uncheck_all() {
+    const checkBoxes = document.getElementsByClassName('check');
+    const isChecked = mainCheckBox.checked;
+
+    for (let checkbox of checkBoxes) {
+        checkbox.checked = isChecked;
+        const studentId = checkbox.closest('tr').dataset.studentId;
+        if (isChecked) {
+            selectedIds.add(studentId);
+        } else {
+            selectedIds.delete(studentId);
+        }
+    }
+    console.log("selectedIds: ", selectedIds);
+}
+
+async function deleteSingleStudent(studentId) {
+    try {
+        console.log("studentId: ", studentId);
+        const url = 'http://localhost:5000/delete/studentRecord';
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // body: JSON.stringify(studentId),
+            body: JSON.stringify({ studentId }),
+        });
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success) {
+            console.log(data.message);
+            getStudentData();
+        } else {
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+async function handleBulkDelete() {
+    try {
+        let obj = { selectedIds: Array.from(selectedIds) };
+        const url = 'http://localhost:5000/delete/bulkDelete';
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ obj }),
+        });
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success) {
+            console.log(data.message);
+            getStudentData();
+        } else {
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+function editStudentData(studentId) {
+    console.log(studentId);
+    const data = studentData.filter(obj => obj.studentId == studentId);
+    localStorage.setItem("studentData", JSON.stringify(data));
+    window.location.href = `/form.html?studentId=${studentId}`;
 }
 
 getStudentData();
