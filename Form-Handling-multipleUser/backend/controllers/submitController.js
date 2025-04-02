@@ -8,7 +8,6 @@ export const submitFormData = (req, res) => {
         if(!data){
             return res.status(400).json({message: "Data not Found",success: false});
         }
-        //In the studentData if id is already present then update the data where id matches
 
         let file;
         if (req.file) {

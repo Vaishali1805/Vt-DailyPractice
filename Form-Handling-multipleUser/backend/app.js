@@ -10,9 +10,11 @@ app.use('/uploads', express.static('uploads'));
 import submitRoute from './routes/submitRoute.js';
 import getDataRoute from './routes/getDataRoute.js';
 import deleteRoute from './routes/deleteRoute.js';
+import editRoute from './routes/editRoute.js';
 
 app.use('/submit',submitRoute);
 app.use('/get',getDataRoute);
+app.use('/edit',editRoute);
 app.use('/delete',deleteRoute);
 
 app.listen(PORT,(req,res) => {

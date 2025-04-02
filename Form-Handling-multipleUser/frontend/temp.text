@@ -289,3 +289,52 @@ async function getStudentData() {
         console.log("Error:", error);
     }
 }
+
+
+//controller
+export const editFormData = (req, res) => {
+  const formData = JSON.parse(req.body.formData);
+  const profile = req.file ? req.file.buffer : null; // Handle missing file
+
+  console.log("Form Data:", formData);
+  console.log("Profile:", profile ? 'Profile uploaded' : 'No profile uploaded');
+
+  // Logic to update the data
+  res.json({ success: true, message: "Data updated successfully!" });
+};
+
+
+import myCache from "../myCache.js";
+import path from 'path';
+
+export const editFormData = (req, res) => {
+    try {
+        console.log("am in editFormData");
+        console.log("req.body: ", req.body);
+        const { formData } = JSON.parse(req.body.formData); // Assuming it's a JSON string
+        const profile = req.file ? req.file.path : null; // Using path instead of buffer
+
+        console.log("formData:", formData);
+        console.log("profile:", profile);
+
+        res.json({ message: "Data edited Successfully", success: true });
+    } catch (error) {
+        console.error("Error editing student records:", error);
+        res.status(500).json({ message: "An unexpected error occurred", success: false });
+    }
+};
+
+
+const uploadProfile = multer({ 
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only JPEG and PNG are allowed.'));
+        }
+    }
+});
+

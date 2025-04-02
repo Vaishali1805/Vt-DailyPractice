@@ -88,18 +88,20 @@ async function getStudentData() {
 
             //other data cells
             //Without += overwriting the newRow's inner content after appending the checkbox
+            const city = !obj.city ? "-" : obj.city.name;
+
             newRow.innerHTML += `       
-            <td>${obj.firstName !== null ? obj.firstName : "-"}</td>
-            <td>${obj.lastName !== null ? obj.lastName : "-"}</td>
-            <td>${obj.email !== null ? obj.email : "-"}</td>
-            <td>${obj.contactNo !== null ? obj.contactNo : "-"}</td>
-            <td>${obj.dateOfBirth !== null ? obj.dateOfBirth : "-"}</td>
-            <td>${obj.studentId !== null ? obj.studentId : "-"}</td>
-            <td>${obj.gender !== null ? obj.gender : "-"}</td>
-            <td>${obj.address !== null ? obj.address : "-"}</td>
-            <td>${obj.country !== null ? obj.country : "-"}</td>
-            <td>${obj.state !== null ? obj.state : "-"}</td>
-            <td>${obj.city !== null ? obj.city : "-"}</td>
+            <td>${!obj.firstName ? "-" : obj.firstName}</td>
+            <td>${!obj.lastName ? "-" : obj.lastName}</td>
+            <td>${!obj.email ? "-" : obj.email}</td>
+            <td>${!obj.contactNo ? "-" : obj.contactNo}</td>
+            <td>${!obj.dateOfBirth ? "-" : obj.dateOfBirth}</td>
+            <td>${!obj.studentId ? "-" : obj.studentId}</td>
+            <td>${!obj.gender ? "-" : obj.gender}</td>
+            <td>${!obj.address ? "-" : obj.address}</td>
+            <td>${!obj.country ? "-" : obj.country?.name}</td>
+            <td>${!obj.state ? "-" : obj.state?.name}</td>
+            <td>${!obj.city ? "-" : obj.city?.name}</td>
             `
             //Edit Icon
             const editTd = document.createElement('td');
@@ -161,12 +163,12 @@ async function getStudentData() {
 
 function check(id) {
     selectedIds.add(id);
-    console.log("🚀 ~ check ~ selectedIds:", selectedIds)
+    // console.log("🚀 ~ check ~ selectedIds:", selectedIds)
 }
 
 function uncheck(id) {
     selectedIds.delete(id);
-    console.log("🚀 ~ uncheck ~ selectedIds:", selectedIds)
+    // console.log("🚀 ~ uncheck ~ selectedIds:", selectedIds)
 }
 
 function updateMainCheckbox() {
@@ -237,7 +239,7 @@ async function handleBulkDelete() {
             getStudentData();
         } else {
             console.log(data.message);
-        }
+        }      
     } catch (error) {
         console.error("Error: ", error);
     }
