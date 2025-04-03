@@ -194,14 +194,13 @@ function check_uncheck_all() {
 
 async function deleteSingleStudent(studentId) {
     try {
-        console.log("studentId: ", studentId);
         const url = 'http://localhost:5000/delete/studentRecord';
         const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            // body: JSON.stringify(studentId),
+            // body: JSON.stringify(studentId),     // Dont send the id alone
             body: JSON.stringify({ studentId }),
         });
         if (!response.ok) {
@@ -246,7 +245,7 @@ async function handleBulkDelete() {
 }
 
 function editStudentData(studentId) {
-    console.log(studentId);
+    // console.log(studentId);
     const data = studentData.filter(obj => obj.studentId == studentId);
     localStorage.setItem("studentData", JSON.stringify(data));
     window.location.href = `/form.html?studentId=${studentId}`;

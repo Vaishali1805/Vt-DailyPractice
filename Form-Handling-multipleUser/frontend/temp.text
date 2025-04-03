@@ -338,3 +338,336 @@ const uploadProfile = multer({
     }
 });
 
+
+India states
+{
+        "id": 4006,
+        "name": "Meghalaya",
+        "code": "ML",
+        "countryId": 3
+    },
+    {
+        "id": 4007,
+        "name": "Haryana",
+        "code": "HR",
+        "countryId": 3
+    },
+    {
+        "id": 4008,
+        "name": "Maharashtra",
+        "code": "MH",
+        "countryId": 3
+    },
+    {
+        "id": 4009,
+        "name": "Goa",
+        "code": "GA",
+        "countryId": 3
+    },
+    {
+        "id": 4010,
+        "name": "Manipur",
+        "code": "MN",
+        "countryId": 3
+    },
+    {
+        "id": 4011,
+        "name": "Puducherry",
+        "code": "PY",
+        "countryId": 3
+    },
+    {
+        "id": 4012,
+        "name": "Telangana",
+        "code": "TG",
+        "countryId": 3
+    },
+    {
+        "id": 4013,
+        "name": "Odisha",
+        "code": "OR",
+        "countryId": 3
+    },
+    {
+        "id": 4014,
+        "name": "Rajasthan",
+        "code": "RJ",
+        "countryId": 3
+    },
+    {
+        "id": 4015,
+        "name": "Punjab",
+        "code": "PB",
+        "countryId": 3
+    },
+    {
+        "id": 4016,
+        "name": "Uttarakhand",
+        "code": "UT",
+        "countryId": 3
+    },
+    {
+        "id": 4017,
+        "name": "Andhra Pradesh",
+        "code": "AP",
+        "countryId": 3
+    },
+    {
+        "id": 4018,
+        "name": "Nagaland",
+        "code": "NL",
+        "countryId": 3
+    },
+    {
+        "id": 4019,
+        "name": "Lakshadweep",
+        "code": "LD",
+        "countryId": 3
+    },
+    {
+        "id": 4020,
+        "name": "Himachal Pradesh",
+        "code": "HP",
+        "countryId": 3
+    },
+    {
+        "id": 4021,
+        "name": "Delhi",
+        "code": "DL",
+        "countryId": 3
+    },
+    {
+        "id": 4022,
+        "name": "Uttar Pradesh",
+        "code": "UP",
+        "countryId": 3
+    },
+    {
+        "id": 4023,
+        "name": "Andaman and Nicobar Islands",
+        "code": "AN",
+        "countryId": 3
+    },
+    {
+        "id": 4024,
+        "name": "Arunachal Pradesh",
+        "code": "AR",
+        "countryId": 3
+    },
+    {
+        "id": 4025,
+        "name": "Jharkhand",
+        "code": "JH",
+        "countryId": 3
+    },
+    {
+        "id": 4026,
+        "name": "Karnataka",
+        "code": "KA",
+        "countryId": 3
+    },
+    {
+        "id": 4027,
+        "name": "Assam",
+        "code": "AS",
+        "countryId": 3
+    },
+    {
+        "id": 4028,
+        "name": "Kerala",
+        "code": "KL",
+        "countryId": 3
+    },
+    {
+        "id": 4029,
+        "name": "Jammu and Kashmir",
+        "code": "JK",
+        "countryId": 3
+    },
+    {
+        "id": 4030,
+        "name": "Gujarat",
+        "code": "GJ",
+        "countryId": 3
+    },
+    {
+        "id": 4031,
+        "name": "Chandigarh",
+        "code": "CH",
+        "countryId": 3
+    },
+    {
+        "id": 4033,
+        "name": "Dadra and Nagar Haveli and Daman and Diu",
+        "code": "DH",
+        "countryId": 3
+    },
+    {
+        "id": 4034,
+        "name": "Sikkim",
+        "code": "SK",
+        "countryId": 3
+    },
+    {
+        "id": 4035,
+        "name": "Tamil Nadu",
+        "code": "TN",
+        "countryId": 3
+    },
+    {
+        "id": 4036,
+        "name": "Mizoram",
+        "code": "MZ",
+        "countryId": 3
+    },
+    {
+        "id": 4037,
+        "name": "Bihar",
+        "code": "BR",
+        "countryId": 3
+    },
+    {
+        "id": 4038,
+        "name": "Tripura",
+        "code": "TR",
+        "countryId": 3
+    },
+    {
+        "id": 4039,
+        "name": "Madhya Pradesh",
+        "code": "MP",
+        "countryId": 3
+    },
+    {
+        "id": 4040,
+        "name": "Chhattisgarh",
+        "code": "CT",
+        "countryId": 3
+    },
+    {
+        "id": 4852,
+        "name": "Ladakh",
+        "code": "LA",
+        "countryId": 3
+    },
+    {
+        "id": 4853,
+        "name": "West Bengal",
+        "code": "WB",
+        "countryId": 3
+    },
+
+NewZealand states:
+{
+        "id": 4059,
+        "name": "Northland Region",
+        "code": "NTL",
+        "countryId": 4
+    },
+    {
+        "id": 4060,
+        "name": "Manawatu-Wanganui Region",
+        "code": "MWT",
+        "countryId": 4
+    },
+    {
+        "id": 4061,
+        "name": "Waikato Region",
+        "code": "WKO",
+        "countryId": 4
+    },
+    {
+        "id": 4062,
+        "name": "Otago Region",
+        "code": "OTA",
+        "countryId": 4
+    },
+    {
+        "id": 4063,
+        "name": "Marlborough Region",
+        "code": "MBH",
+        "countryId": 4
+    },
+    {
+        "id": 4064,
+        "name": "West Coast Region",
+        "code": "WTC",
+        "countryId": 4
+    },
+    {
+        "id": 4065,
+        "name": "Wellington Region",
+        "code": "WGN",
+        "countryId": 4
+    },
+    {
+        "id": 4066,
+        "name": "Canterbury Region",
+        "code": "CAN",
+        "countryId": 4
+    },
+    {
+        "id": 4067,
+        "name": "Chatham Islands",
+        "code": "CIT",
+        "countryId": 4
+    },
+    {
+        "id": 4068,
+        "name": "Gisborne District",
+        "code": "GIS",
+        "countryId": 4
+    },
+    {
+        "id": 4069,
+        "name": "Taranaki Region",
+        "code": "TKI",
+        "countryId": 4
+    },
+    {
+        "id": 4070,
+        "name": "Nelson Region",
+        "code": "NSN",
+        "countryId": 4
+    },
+    {
+        "id": 4071,
+        "name": "Southland Region",
+        "code": "STL",
+        "countryId": 4
+    },
+    {
+        "id": 4072,
+        "name": "Auckland Region",
+        "code": "AUK",
+        "countryId": 4
+    },
+    {
+        "id": 4073,
+        "name": "Tasman District",
+        "code": "TAS",
+        "countryId": 4
+    },
+    {
+        "id": 4074,
+        "name": "Bay of Plenty Region",
+        "code": "BOP",
+        "countryId": 4
+    },
+    {
+        "id": 4075,
+        "name": "Hawke's Bay Region",
+        "code": "HKB",
+        "countryId": 4
+    }
+
+
+app.get('/data', (req, res) => {
+    const dataPath = path.join(__dirname, 'data.json');
+    fs.readFile(dataPath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to read data' });
+        }
+        res.json(JSON.parse(data));
+    });
+});

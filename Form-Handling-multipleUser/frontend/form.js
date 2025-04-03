@@ -41,9 +41,6 @@ const selectState = document.getElementById("inputState");
 const selectCity = document.getElementById("inputCity");
 const api_key = "TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==";
 let countryCode;
-let countries;
-let states;
-let cities;
 
 const terms_Condn_check = document.getElementById("terms_Condn_check");
 let selectedGender;
@@ -87,6 +84,7 @@ submitBtn.addEventListener("click", (e) => {
   handleSubmit(e);
 });
 
+//Function to submit the form
 async function handleSubmit(event) {
   try {
     event.preventDefault();
@@ -95,28 +93,6 @@ async function handleSubmit(event) {
       return;
     }
 
-    // const formDataObj = {
-    //   firstName: firstName.value || null,
-    //   lastName: lastName.value || null,
-    //   email: email.value || null,
-    //   contactNo: contactNo.value || null,
-    //   dateOfBirth: dateOfBirth.value || null,
-    //   studentId: studentId.value || null,
-    //   gender: selectedGender || null,
-    //   address: address.value || null,
-    //   country:
-    //     selectCountry && selectCountry.value
-    //       ? JSON.parse(selectCountry.value)
-    //       : null,
-    //   state:
-    //     selectState && selectState.value
-    //       ? JSON.parse(selectState.value)
-    //       : null,
-    //   city:
-    //     selectCity && selectCity.value
-    //       ? JSON.parse(selectCity.value)
-    //       : null,
-    // };
     const formDataObj = create_FormDataObj();
     console.log("formDataObj: ", formDataObj);
 
@@ -166,9 +142,9 @@ async function handleSubmit(event) {
   }
 }
 
+//Function to edit the form
 async function handleEditForm(event) {
   try {
-    console.log("handleEditForm")
     event.preventDefault();
     // Validate form before proceeding
     if (!validate_form()) {
@@ -179,10 +155,8 @@ async function handleEditForm(event) {
     console.log("formDataObj: ",formDataObj);
     const formData = new FormData();
     const file = inputProfile.files[0];
-    console.log("outside: file: ", file);
 
     if(file){
-      console.log("file: ", file);
       formData.append(
         "profile",
         file,
@@ -235,6 +209,7 @@ function create_FormDataObj(){
   };
   return formDataObj;
 }
+
 function validate_form() {
   const EmailPattern =
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -391,15 +366,16 @@ selectState.addEventListener("change", function () {
 
 async function getAllCountries() {
   try {
-    const url = "https://api.countrystatecity.in/v1/countries";
+    // const url = "https://api.countrystatecity.in/v1/countries";
+    const url = "http://localhost:5000/get/countries";
     const response = await fetch(url, {
       headers: { "X-CSCAPI-KEY": api_key },
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    countries = await response.json();
-    // console.log(countries);
+    const countries = await response.json();
+    console.log(countries);
     if (!countries.length) {
       console.error("No countries available.");
       selectCountry.innerHTML =
@@ -430,7 +406,8 @@ async function getAllStates(countryCode) {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    states = await response.json();
+    const states = await response.json();
+    console.log("states:", states);
     if (!states.length) {
       console.warn("No states available for this country.");
       selectState.innerHTML = '<option value="">No states available</option>';
@@ -460,7 +437,8 @@ async function getAllCities(stateCode) {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    cities = await response.json();
+    const cities = await response.json();
+    console.log("cities:", cities);
     if (!cities.length) {
       console.warn("No cities available for this state.");
       selectCity.innerHTML = '<option value="">No cities available</option>';
@@ -503,7 +481,6 @@ function getStudentData() {
           radio.checked = true;
         }
       });
-      // console.log("selectedGender: ",selectedGender);
 
       // Handle Profile Image Preview
       preview.innerHTML = ""; //to remove the old preview
