@@ -6,6 +6,9 @@ const mainCheckBox = document.getElementById('mainCheckBox');
 
 const selectedIds = new Set();
 let studentData;
+let countries;
+let states;
+let cities;
 
 deleteBtn.addEventListener('click', () => {
     const popup = document.getElementById("confirmPopup");
@@ -53,7 +56,13 @@ async function getStudentData() {
         const data = await response.json();
         // const { studentData } = data;
         studentData = data.studentData;
+        countries = data.countries;
+        states = data.states;
+        cities = data.cities;
         console.log("studentData:", studentData);
+        console.log("countries:", countries)
+        console.log("states:", states)
+        console.log("cities:", cities)
         rowContainer.innerHTML = "";
 
         let count = 1;
@@ -99,9 +108,9 @@ async function getStudentData() {
             <td>${!obj.studentId ? "-" : obj.studentId}</td>
             <td>${!obj.gender ? "-" : obj.gender}</td>
             <td>${!obj.address ? "-" : obj.address}</td>
-            <td>${!obj.country ? "-" : obj.country?.name}</td>
-            <td>${!obj.state ? "-" : obj.state?.name}</td>
-            <td>${!obj.city ? "-" : obj.city?.name}</td>
+            <td>${!obj.country ? "-" : obj.country}</td>
+            <td>${!obj.state ? "-" : obj.state}</td>
+            <td>${!obj.city ? "-" : obj.city}</td>
             `
             //Edit Icon
             const editTd = document.createElement('td');
