@@ -8,33 +8,11 @@ export const getStudentData = async (req,res) => {
         const studentData = myCache.get('studentData') || [];
         console.log("studentData:", studentData);
 
-        let countries;
-        let states;
-        let cities;
-
-        const countryFilePath = path.join(__dirname,'countries.json');
-        fs.readFile(countryFilePath, 'utf8',(err,data) => {
-            if(err){
-                return res.status(500).json({error: 'Failed to read data'});
-            }
-            countries = JSON.parse(data);
-        })
-        
-        const stateFilePath = path.join(__dirname,'states.json');
-        fs.readFile(stateFilePath, 'utf8',(err,data) => {
-            if(err){
-                return res.status(500).json({error: 'Failed to read data'});
-            }
-            states = JSON.parse(data);
-        })
-
-        const cityFilePath = path.join(__dirname,'cities.json');
-        fs.readFile(cityFilePath, 'utf8',(err,data) => {
-            if(err){
-                return res.status(500).json({error: 'Failed to read data'});
-            }
-            cities = JSON.parse(data);
-        })
+        const [countries, states, cities] = await Promise.all([
+            readJsonFile('countries.json'),
+            readJsonFile('states.json'),
+            readJsonFile('cities.json')
+        ]);
 
         //GET countries,states and cities and also send it in the response
         res.json({studentData,countries,states,cities});
@@ -43,17 +21,15 @@ export const getStudentData = async (req,res) => {
     }
 }
 
-function readJSONFile(fileName) {
-    const filePath = path.join(__dirname,fileName);
-        fs.readFile(filePath, 'utf8',(err,data) => {
-            if(err){
-                return false;
-            }
-            console.log("data: ",JSON.parse(data))
-            const fileData = JSON.parse(data);
-            return fileData;
-        })
-}
+const readJsonFile = async (filename) => {
+    const filePath = path.join(__dirname, filename);
+    try {
+        const data = await fs.promises.readFile(filePath, 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        throw new Error(`Failed to read ${filename}: ${err.message}`);
+    }
+};
 
 export const getCountries = async (req,res) => {
     try {
