@@ -56,7 +56,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text">+91</span>
                             <div class="form-floating">
-                                <input type="tel" class="form-control" id="contactNo" placeholder="contact Number"
+                                <input type="tel" patter="[0-9]{10}" class="form-control" id="contactNo" placeholder="contact Number"
                                     autocomplete="off">
                                 <label for="contactNo">Contact Number</label>
                             </div>
@@ -90,32 +90,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Parent and Guardian Information
-                    <fieldset class="scheduler-border-2">
-                        <legend class="scheduler-border-2">Parent/Guardian Info :</legend><br>
-                        <label for="parentName">Parent/Guardian Name :</label>
-                        <input type="text" class="form-control" id="parentName" placeholder="Enter Name here...." autocomplete="off">
-                        <span id="parentNameError" class="error_msg"></span>
-
-                        <div id="parentInfo">
-                            <div class="rel">
-                                <label for="parentRelation">Relatioship to student :</label>
-                                <input type="text" id="parentRelation" name="relation" class="form-control input" placeholder="Ex: Father" autocomplete="off" required>
-                                <span id="parentRelError" class="error_msg"></span>
-                            </div>
-                            <div class="contactNo">
-                                <label for="parentContactNo">Contact No. :</label>
-                                <input type="tel" id="parentContactNo" class="form-control input" placeholder="1123445567" autocomplete="off">
-                                <span id="parentContactNoError" class="error_msg"></span>
-                            </div>
-                            <div class="emailAddress">
-                                <label for="parentEmail">Email :</label>
-                                <input type="email" id="parentEmail" class="form-control input" placeholder="abc@gmail.com" autocomplete="off">
-                                <span id="parentEmailError" class="error_msg"></span>
-                            </div>
-                        </div>
-                    </fieldset> -->
 
                     <!-- Address -->
                     <fieldset class="scheduler-border-2">

@@ -22,15 +22,6 @@ const dobError_msg = document.getElementById("dobError");
 const studentId = document.getElementById("studentId");
 const studentIdError_msg = document.getElementById("studentId_error");
 
-// const parentName = document.getElementById('parentName');
-// const parentNameError_msg = document.getElementById('parentNameError');
-// const parentRelation = document.getElementById('parentRelation');
-// const parentRelError_msg = document.getElementById('parentRelError');
-// const parentContactNo = document.getElementById('parentContactNo');
-// const parentContactNoError_msg = document.getElementById('parentContactNoError');
-// const parentEmail = document.getElementById('parentEmail');
-// const parentEmailError_msg = document.getElementById('parentEmailError');
-
 const address = document.getElementById("address");
 const addressError_msg = document.getElementById("addressError");
 const countryError_msg = document.getElementById("countryError");
@@ -40,11 +31,7 @@ const selectCountry = document.getElementById("inputCountry");
 const selectState = document.getElementById("inputState");
 const selectCity = document.getElementById("inputCity");
 const api_key = "TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==";
-// let countryCode;
 let countryId;
-let countries;
-let states;
-let cities;
 
 const terms_Condn_check = document.getElementById("terms_Condn_check");
 let selectedGender;
@@ -53,7 +40,17 @@ const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
 
 if (id) {
-  getStudentData();
+  const data = JSON.parse(localStorage.getItem("studentData"));
+  const selectedCountryId = data[0]?.country || "";
+  const selectedStateID = data[0]?.state || "";
+
+  Promise.all([getAllCountries(), getAllStates(selectedCountryId), getAllCities(selectedCountryId, selectedStateID)]).then(() => {
+    getStudentData();
+  }).catch((err) => {
+    console.log("Error: ",err);
+  });
+} else {
+  document.addEventListener("DOMContentLoaded", getAllCountries);
 }
 
 // Form submission button
@@ -82,10 +79,10 @@ terms_Condn_check.addEventListener("change", function () {
 
 // Handle form submission
 submitBtn.addEventListener("click", (e) => {
-  if(id){
+  if (id) {
     handleEditForm(e);
-  }else
-  handleSubmit(e);
+  } else
+    handleSubmit(e);
 });
 
 //Function to submit the form
@@ -99,16 +96,6 @@ async function handleSubmit(event) {
 
     const formDataObj = create_FormDataObj();
     console.log("formDataObj: ", formDataObj);
-
-    // // Handle Profile Picture
-    // const formData = new FormData();
-    // const file = inputProfile.files[0];
-    // const defaultImage = 'default_userImage.webp';
-
-    // const fileToUpload = file ? file : new File([], defaultImage);
-    // console.log("fileToUpload: ", fileToUpload);
-    // formData.append("profile", fileToUpload, `${Date.now()}_${fileToUpload.name}`);
-    // formData.append("formData", JSON.stringify(formDataObj));
 
     // Handle Profile Picture
     const formData = new FormData();
@@ -129,7 +116,7 @@ async function handleSubmit(event) {
     formData.append("formData", JSON.stringify(formDataObj));
 
     // submit the student data
-    const url = "http://localhost:5000/submit/formData";
+    const url = "http://localhost:5000/user/submit/formData";
     const response = await fetch(url, {
       method: "POST",
       body: formData,
@@ -156,11 +143,11 @@ async function handleEditForm(event) {
     }
 
     const formDataObj = create_FormDataObj();
-    console.log("formDataObj: ",formDataObj);
+    console.log("formDataObj: ", formDataObj);
     const formData = new FormData();
     const file = inputProfile.files[0];
 
-    if(file){
+    if (file) {
       formData.append(
         "profile",
         file,
@@ -170,7 +157,7 @@ async function handleEditForm(event) {
     formData.append("formData", JSON.stringify(formDataObj));
 
     //submit the edited data
-    const url = "http://localhost:5000/edit/formData";
+    const url = "http://localhost:5000/user/edit/formData";
     const response = await fetch(url, {
       method: "POST",
       body: formData,
@@ -188,7 +175,7 @@ async function handleEditForm(event) {
   }
 }
 
-function create_FormDataObj(){
+function create_FormDataObj() {
   const formDataObj = {
     firstName: firstName.value || null,
     lastName: lastName.value || null,
@@ -270,24 +257,6 @@ function validate_form() {
     studentIdError_msg.textContent = "";
   }
 
-  // // Validate Parent/Guardian Name
-  // if (!parentName.value.trim()) {
-  //     setError(parentNameError_msg, '*Parent/Guardian name is required');
-  // } else if (parentName.value.length < 2 || parentName.value.length > 30) {
-  //     setError(parentNameError_msg, '*Parent Name must be between 2 and 30 characters');
-  // } else {
-  //     parentNameError_msg.textContent = "";
-  // }
-
-  // // Validate Parent/Guardian contact no.
-  // if (!parentContactNo.value.trim()) {
-  //     setError(parentContactNoError_msg, '*Contact number is required');
-  // } else if (!ph_Pattern.test(parentContactNo.value)) {
-  //     setError(parentContactNoError_msg, '*Invalid contact number');
-  // } else {
-  //     parentContactNoError_msg.textContent = "";
-  // }
-
   // Validate country
   if (!selectCountry.value) {
     setError(countryError_msg, "*Country is required");
@@ -356,7 +325,7 @@ function validateFile(file) {
 }
 
 // Fetch and populate country, state, and city dropdowns
-document.addEventListener("DOMContentLoaded", getAllCountries);
+// document.addEventListener("DOMContentLoaded", getAllCountries);
 selectCountry.addEventListener("change", function () {
   // const obj = JSON.parse(this.value);
   // countryCode = obj.code;
@@ -370,23 +339,24 @@ selectState.addEventListener("change", function () {
   // const stateCode = obj.code;
   const stateId = this.value;
   selectCity.innerHTML = '<option value="">Select City</option>';
-  getAllCities(stateId);
+  getAllCities(countryId, stateId);
 });
 
 async function getAllCountries() {
   try {
+    console.log("getAllCountries")
     // const url = "https://api.countrystatecity.in/v1/countries";
     // const response = await fetch(url, {
     //   headers: { "X-CSCAPI-KEY": api_key },
     // });
-    const url = "http://localhost:5000/get/countries";
+    const url = "http://localhost:5000/user/get/countries";
     const response = await fetch(url, {
       method: "get",
     })
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    countries = await response.json();
+    let countries = await response.json();
     // console.log(countries);
     if (!countries.length) {
       console.error("No countries available.");
@@ -405,6 +375,8 @@ async function getAllCountries() {
       selectCountry.appendChild(option);
     });
     selectCountry.disabled = false;
+
+    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -412,18 +384,19 @@ async function getAllCountries() {
 
 async function getAllStates(countryId) {
   try {
+    console.log("getAllStates")
     // const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states`;
     // const response = await fetch(url, {
     //   headers: { "X-CSCAPI-KEY": api_key },
     // });
-    const url = `http://localhost:5000/get/states?countryId=${countryId}`;  
+    const url = `http://localhost:5000/user/get/states?countryId=${countryId}`;
     const response = await fetch(url, {
       method: "get",
     })
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    states = await response.json();
+    let states = await response.json();
     // console.log("states:", states);
     if (!states.length) {
       console.warn("No states available for this country.");
@@ -441,25 +414,28 @@ async function getAllStates(countryId) {
       option.textContent = state.name; // state name as text
       selectState.appendChild(option);
     });
+
+    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
 }
 
-async function getAllCities(stateId) {
+async function getAllCities(countryId, stateId) {
   try {
+    console.log("getAllCities")
     // const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`;
     // const response = await fetch(url, {
     //   headers: { "X-CSCAPI-KEY": api_key },
     // });
-    const url = `http://localhost:5000/get/cities?countryId=${countryId}&stateId=${stateId}`;
+    const url = `http://localhost:5000/user/get/cities?countryId=${countryId}&stateId=${stateId}`;
     const response = await fetch(url, {
       method: "get",
     })
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
-    cities = await response.json();
+    let cities = await response.json();
     // console.log("cities:", cities);
     if (!cities.length) {
       console.warn("No cities available for this state.");
@@ -478,6 +454,8 @@ async function getAllCities(stateId) {
       option.textContent = city.name; // city name as text
       selectCity.appendChild(option);
     });
+
+    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -485,6 +463,7 @@ async function getAllCities(stateId) {
 
 function getStudentData() {
   try {
+    //get student data from backend
     const data = JSON.parse(localStorage.getItem("studentData"));
     console.log("data: ", data);
 
@@ -520,27 +499,38 @@ function getStudentData() {
       fileContainer.appendChild(profileImg);
       preview.appendChild(fileContainer);
 
-
       const selectedCountryId = data[0]?.country || "";
-      console.log("selectedCountryId:", selectedCountryId)
       const selectedStateID = data[0]?.state || "";
-      console.log("selectedStateID:", selectedStateID)
       const selectedCityId = data[0]?.city || "";
+      console.log("selectedCountryId:", selectedCountryId)
+      console.log("selectedStateID:", selectedStateID)
       console.log("selectedCityId:", selectedCityId)
-      
-      console.log("selectCountry: ", selectCountry);
-      const options = Array.from(selectCountry.options);
-      console.log("options:",options);
 
-      const optionVal = options.map(option => option.value);
-      console.log("optionVal:", optionVal)
+      const countryOptions = Array.from(selectCountry.options);
+      console.log("options:", countryOptions);
+      for (let i = 1; i < countryOptions.length; i++) {
+        console.log("countryOptions[i].value: ", countryOptions[i].value);
+        if (countryOptions[i].value === selectedCountryId) {
+          countryOptions[i].selected = true;
+          break;
+        }
+      }
 
-      // for(let i=0; i<options.length; i++){
-      //   console.log("option value: ",options[i].value);
-      //   if(options[i].value === selectedCountryId)
-      //     options[i].selected = true;
-      //   break;
-      // }
+      const stateOptions = Array.from(selectState.options);
+      for (let i = 1; i < stateOptions.length; i++) {
+        if (stateOptions[i].value === selectedStateID) {
+          stateOptions[i].selected = true;
+          break;
+        }
+      }
+
+      const cityOptions = Array.from(selectCity.options);
+      for (let i = 1; i < cityOptions.length; i++) {
+        if (cityOptions[i].value === selectedCityId) {
+          cityOptions[i].selected = true;
+          break;
+        }
+      }
 
     }
   } catch (error) {
