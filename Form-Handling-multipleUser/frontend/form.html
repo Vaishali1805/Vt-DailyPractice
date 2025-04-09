@@ -25,13 +25,16 @@
 
                     <!-- username -->
                     <div class="input-group">
-                        <label for="firstName" class="input-group-text">First and last name :</label>
+                        <label for="firstName" class="input-group-text">First name :</label>
                         <input type="text" name="firstName" id="firstName" class="form-control"
-                            placeholder="Type here...." autocomplete="off" required>
-                        <input type="text" name="lastName" id="lastName" class="form-control"
                             placeholder="Type here...." autocomplete="off" required>
                     </div>
                     <span id="nameError" class="error_msg"></span><br>
+                    <div class="input-group">
+                        <label for="lastName" class="input-group-text">Last name :</label>
+                        <input type="text" name="lastName" id="lastName" class="form-control"
+                            placeholder="Type here...." autocomplete="off" required>
+                    </div> <br>
 
                     <!-- profile picture -->
                     <div id="selectFile">
@@ -47,26 +50,28 @@
                     <label for="InputEmail">Email address :</label>
                     <input type="email" class="form-control" id="inputEmail" name="userEmail"
                         placeholder="abc@gmail.com" autocomplete="off" required>
-                    <small class="form-text text-muted">We'll never share your email with anyone else.</small>
-                    <span id="emailError" class="error_msg"></span><br><br>
+                    <!-- <small class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                    <span id="emailError" class="error_msg"></span> <br>
 
                     <!-- Contact Number and DOB -->
-                    <span id="contactNoError" class="error_msg"></span>
                     <div class="contactNo-n-dob">
-                        <div class="input-group mb-3">
+                        <div id="forMargin" class="input-group mb-3">
                             <span class="input-group-text">+91</span>
                             <div class="form-floating">
-                                <input type="tel" patter="[0-9]{10}" class="form-control" id="contactNo" placeholder="contact Number"
-                                    autocomplete="off">
+                                <input type="tel" patter="[0-9]{10}" class="form-control" id="contactNo"
+                                    placeholder="contact Number" autocomplete="off">
                                 <label for="contactNo">Contact Number</label>
                             </div>
                         </div>
-                        <div class="input-group mb-3 dateOfBirth">
+                        <div id="forMargin" class="input-group mb-3 dateOfBirth">
                             <label for="dateOfBirth" class="dob">Date of Birth :</label>
                             <input type="date" id="dateOfBirth" class="form-control" name="birthday" autocomplete="off">
                         </div>
-                        <span id="dobError" class="error_msg"></span>
                     </div>
+                    <div class="flex">
+                        <span id="contactNoError" class="error_msg"></span>
+                        <span id="dobError" class="error_msg"></span>
+                    </div> <br>
 
                     <!-- StudentId and Gender -->
                     <div class="row g-2">
@@ -89,6 +94,7 @@
                                 <label for="other">Other</label>
                             </div>
                         </div>
+                        <span id="genderError" class="error_msg"></span>
                     </div>
 
                     <!-- Address -->

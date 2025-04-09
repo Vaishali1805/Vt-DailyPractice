@@ -12,16 +12,14 @@ const profileError_msg = document.getElementById("profileError");
 // Other form fields and their error messages
 const email = document.getElementById("inputEmail");
 const emailError_msg = document.getElementById("emailError");
-
 const contactNo = document.getElementById("contactNo");
 const contactNoError_msg = document.getElementById("contactNoError");
-
 const dateOfBirth = document.getElementById("dateOfBirth");
 const dobError_msg = document.getElementById("dobError");
-
 const studentId = document.getElementById("studentId");
 const studentIdError_msg = document.getElementById("studentId_error");
-
+const radios = document.querySelectorAll('input[name="gender"]');
+const genderError_msg = document.getElementById("genderError");
 const address = document.getElementById("address");
 const addressError_msg = document.getElementById("addressError");
 const countryError_msg = document.getElementById("countryError");
@@ -31,32 +29,21 @@ const selectCountry = document.getElementById("inputCountry");
 const selectState = document.getElementById("inputState");
 const selectCity = document.getElementById("inputCity");
 const api_key = "TUNvRDM2cXJkWkZ1cURYODlqWWJQc2lXb0YzNDZPUWtpY2JsOERieg==";
-let countryId;
 
+const submitBtn = document.getElementById("submitBtn");
 const terms_Condn_check = document.getElementById("terms_Condn_check");
+let countryId;
 let selectedGender;
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
 
 if (id) {
-  const data = JSON.parse(localStorage.getItem("studentData"));
-  const selectedCountryId = data[0]?.country || "";
-  const selectedStateID = data[0]?.state || "";
-
-  Promise.all([getAllCountries(), getAllStates(selectedCountryId), getAllCities(selectedCountryId, selectedStateID)]).then(() => {
-    getStudentData();
-  }).catch((err) => {
-    console.log("Error: ",err);
-  });
+  getData(id);
 } else {
   document.addEventListener("DOMContentLoaded", getAllCountries);
 }
 
-// Form submission button
-const submitBtn = document.getElementById("submitBtn");
-
-const radios = document.querySelectorAll('input[name="gender"]');
 radios.forEach((radio) => {
   radio.addEventListener("change", () => {
     if (radio.checked) {
@@ -77,6 +64,25 @@ terms_Condn_check.addEventListener("change", function () {
   } else submitBtn.disabled = true;
 });
 
+email.addEventListener('keypress', validateEmail);
+contactNo.addEventListener('keypress', validateContactNo);
+
+function validateEmail() {
+  const EmailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!EmailPattern.test(email.value))
+    emailError_msg.textContent = "*Invalid Email Address";
+  else
+    emailError_msg.textContent = "";
+}
+
+function validateContactNo() {
+  const ph_Pattern = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
+  if (!ph_Pattern.test(contactNo.value))
+    contactNoError_msg.textContent = "*Invalid contact number";
+  else
+    contactNoError_msg.textContent = "";
+}
+
 // Handle form submission
 submitBtn.addEventListener("click", (e) => {
   if (id) {
@@ -95,37 +101,24 @@ async function handleSubmit(event) {
     }
 
     const formDataObj = create_FormDataObj();
-    console.log("formDataObj: ", formDataObj);
-
     // Handle Profile Picture
     const formData = new FormData();
     const file = inputProfile.files[0];
-    console.log("file: ", file);
     const defaultImage = "defaultImage.webp";
     const fileToUpload = file ? file : null; // Set to null if no file
 
     if (fileToUpload) {
-      formData.append(
-        "profile",
-        fileToUpload,
-        `${Date.now()}_${fileToUpload.name}`
-      );
-    } else {
+      const originalname = fileToUpload.name;
+      const safeName = originalname.replace(/\s+/g, '_');
+      formData.append("profile", fileToUpload, `${Date.now()}_${safeName}`);
+    } else
       formData.append("profile", defaultImage); // Send the image path as a string
-    }
     formData.append("formData", JSON.stringify(formDataObj));
 
     // submit the student data
     const url = "http://localhost:5000/user/submit/formData";
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    const data = await response.json();
-    if (data.success) {
+    const result = await postFetchReq(url,formData)
+    if(result){
       window.location.href = "/table.html";
     }
   } catch (error) {
@@ -143,31 +136,20 @@ async function handleEditForm(event) {
     }
 
     const formDataObj = create_FormDataObj();
-    console.log("formDataObj: ", formDataObj);
     const formData = new FormData();
     const file = inputProfile.files[0];
 
     if (file) {
-      formData.append(
-        "profile",
-        file,
-        `${Date.now()}_${file.name}`
-      );
+      const originalname = file.name;
+      const safeName = originalname.replace(/\s+/g, '_');
+      formData.append("profile",file,`${Date.now()}_${safeName}`);
     }
     formData.append("formData", JSON.stringify(formDataObj));
 
     //submit the edited data
     const url = "http://localhost:5000/user/edit/formData";
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log("🚀 ~ handleEditForm ~ data:", data);
-    if (data.success) {
+    const result = await postFetchReq(url,formData)
+    if(result){
       window.location.href = "/table.html";
     }
   } catch (error) {
@@ -188,27 +170,11 @@ function create_FormDataObj() {
     country: selectCountry && selectCountry.value ? selectCountry.value : null,
     state: selectState && selectState.value ? selectState.value : null,
     city: selectCity && selectCity.value ? selectCity.value : null,
-    // country:
-    //   selectCountry && selectCountry.value
-    //     ? JSON.parse(selectCountry.value)
-    //     : null,
-    // state:
-    //   selectState && selectState.value
-    //     ? JSON.parse(selectState.value)
-    //     : null,
-    // city:
-    //   selectCity && selectCity.value
-    //     ? JSON.parse(selectCity.value)
-    //     : null,
   };
   return formDataObj;
 }
 
 function validate_form() {
-  const EmailPattern =
-    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const ph_Pattern =
-    /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
   let flag = true;
 
   function setError(element, message) {
@@ -226,10 +192,8 @@ function validate_form() {
   }
 
   // Validate email format
-  if (inputEmail.value.trim() == "") {
+  if (email.value.trim() == "") {
     setError(emailError_msg, "*Email is required");
-  } else if (!EmailPattern.test(inputEmail.value)) {
-    setError(emailError_msg, "*Invalid email address");
   } else {
     emailError_msg.textContent = "";
   }
@@ -237,8 +201,6 @@ function validate_form() {
   // Validate phone number
   if (!contactNo.value.trim()) {
     setError(contactNoError_msg, "*Contact number is required");
-  } else if (!ph_Pattern.test(contactNo.value)) {
-    setError(contactNoError_msg, "*Invalid contact number");
   } else {
     contactNoError_msg.textContent = "";
   }
@@ -255,6 +217,14 @@ function validate_form() {
     setError(studentIdError_msg, "*Student ID is required");
   } else {
     studentIdError_msg.textContent = "";
+  }
+
+  //Validate gender
+  const selectedRadio = document.querySelector('input[name="gender"]:checked');
+  if (!selectedRadio) {
+    setError(genderError_msg, "*Gender is required");
+  } else {
+    genderError_msg.textContent = "";
   }
 
   // Validate country
@@ -281,7 +251,6 @@ inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
   const file = event.target.files[0];
-  console.log("file: ", file);
 
   // Validate selected file before displaying preview
   if (!validateFile(file)) {
@@ -291,6 +260,7 @@ function handleFileSelection(event) {
   }
 
   preview.innerHTML = ""; //to remove the old preview
+
   const fileContainer = document.createElement("div");
   fileContainer.classList.add("fileContainer");
   const img = document.createElement("img");
@@ -302,7 +272,7 @@ function handleFileSelection(event) {
 
 function validateFile(file) {
   if (!file) {
-    profileError_msg.textContent = "Please select a file";
+    // profileError_msg.textContent = "Please select a file";
     return false;
   }
 
@@ -313,30 +283,29 @@ function validateFile(file) {
     profileError_msg.textContent =
       "Invalid file type. Please select an image (JPG, JPEG, PNG)";
     return false;
+  } else {
+    profileError_msg.textContent = "";
   }
 
   if (file.size > maxSize) {
     profileError_msg.textContent =
       "File size exceeds 5MB. Please select a smaller image";
     return false;
+  } else {
+    profileError_msg.textContent = "";
   }
 
   return true;
 }
 
 // Fetch and populate country, state, and city dropdowns
-// document.addEventListener("DOMContentLoaded", getAllCountries);
 selectCountry.addEventListener("change", function () {
-  // const obj = JSON.parse(this.value);
-  // countryCode = obj.code;
   countryId = this.value;
   selectState.innerHTML = '<option value="">Select State</option>';
   selectCity.innerHTML = '<option value="">Select City</option>';
   getAllStates(countryId);
 });
 selectState.addEventListener("change", function () {
-  // const obj = JSON.parse(this.value);
-  // const stateCode = obj.code;
   const stateId = this.value;
   selectCity.innerHTML = '<option value="">Select City</option>';
   getAllCities(countryId, stateId);
@@ -344,39 +313,12 @@ selectState.addEventListener("change", function () {
 
 async function getAllCountries() {
   try {
-    console.log("getAllCountries")
-    // const url = "https://api.countrystatecity.in/v1/countries";
-    // const response = await fetch(url, {
-    //   headers: { "X-CSCAPI-KEY": api_key },
-    // });
     const url = "http://localhost:5000/user/get/countries";
-    const response = await fetch(url, {
-      method: "get",
-    })
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    let countries = await response.json();
-    // console.log(countries);
-    if (!countries.length) {
-      console.error("No countries available.");
-      selectCountry.innerHTML =
-        '<option value="">No countries available</option>';
-      selectCountry.disabled = true;
-      return;
-    }
-    selectCountry.innerHTML = '<option value="">Select Country</option>'; //Default option
-    countries.map((country) => {
-      let option = document.createElement("option");
-      // const obj = { code: country.iso2, name: country.name };
-      // option.value = JSON.stringify(obj);
-      option.value = country.id;
-      option.textContent = country.name; // Country name as text
-      selectCountry.appendChild(option);
-    });
-    selectCountry.disabled = false;
+    let { countries } = await getFetchReq(url);
+    const result = await createOptions(countries, selectCountry, 'countries');
+    if(result) return true;
+    else return;
 
-    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -384,38 +326,12 @@ async function getAllCountries() {
 
 async function getAllStates(countryId) {
   try {
-    console.log("getAllStates")
-    // const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states`;
-    // const response = await fetch(url, {
-    //   headers: { "X-CSCAPI-KEY": api_key },
-    // });
     const url = `http://localhost:5000/user/get/states?countryId=${countryId}`;
-    const response = await fetch(url, {
-      method: "get",
-    })
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    let states = await response.json();
-    // console.log("states:", states);
-    if (!states.length) {
-      console.warn("No states available for this country.");
-      selectState.innerHTML = '<option value="">No states available</option>';
-      selectState.disabled = true; // Disable dropdown
-      return;
-    }
-    selectState.disabled = false;
-    selectState.innerHTML = '<option value="">Select State</option>'; //Default option
-    states.map((state) => {
-      let option = document.createElement("option");
-      // const obj = { code: state.iso2, name: state.name };
-      // option.value = JSON.stringify(obj);
-      option.value = state.id;
-      option.textContent = state.name; // state name as text
-      selectState.appendChild(option);
-    });
+    const { states } = await getFetchReq(url);
+    const result = await createOptions(states, selectState, 'states');
+    if(result) return true;
+    else return;
 
-    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -423,117 +339,144 @@ async function getAllStates(countryId) {
 
 async function getAllCities(countryId, stateId) {
   try {
-    console.log("getAllCities")
-    // const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`;
-    // const response = await fetch(url, {
-    //   headers: { "X-CSCAPI-KEY": api_key },
-    // });
     const url = `http://localhost:5000/user/get/cities?countryId=${countryId}&stateId=${stateId}`;
-    const response = await fetch(url, {
-      method: "get",
-    })
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    let cities = await response.json();
-    // console.log("cities:", cities);
-    if (!cities.length) {
-      console.warn("No cities available for this state.");
-      selectCity.innerHTML = '<option value="">No cities available</option>';
-      selectCity.disabled = true; // Disable dropdown
-      return;
-    }
+    const { cities } = await getFetchReq(url);
+    const result = await createOptions(cities,selectCity,'cities');
+    if(result) return true;
+    else return;
 
-    selectCity.disabled = false;
-    selectCity.innerHTML = '<option value="">Select city</option>'; //Default option
-    cities.map((city) => {
-      let option = document.createElement("option");
-      // const obj = { code: city.iso2, name: city.name };
-      // option.value = JSON.stringify(obj);
-      option.value = city.id;
-      option.textContent = city.name; // city name as text
-      selectCity.appendChild(option);
-    });
-
-    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
 }
 
-function getStudentData() {
+async function getFetchReq(url) {
   try {
-    //get student data from backend
-    const data = JSON.parse(localStorage.getItem("studentData"));
-    console.log("data: ", data);
-
-    if (data) {
-      firstName.value = data[0]?.firstName || "";
-      lastName.value = data[0]?.lastName || "";
-      email.value = data[0]?.email || "";
-      contactNo.value = data[0]?.contactNo || "";
-      dateOfBirth.value = data[0]?.dateOfBirth || "";
-      studentId.value = data[0]?.studentId || "";
-      address.value = data[0]?.address || "";
-
-      const genderRadios = document.querySelectorAll('input[name="gender"]');
-      genderRadios.forEach((radio) => {
-        if (radio.value === data[0]?.gender) {
-          selectedGender = radio.value;
-          radio.checked = true;
-        }
-      });
-
-      // Handle Profile Image Preview
-      preview.innerHTML = ""; //to remove the old preview
-      const fileContainer = document.createElement("div");
-      fileContainer.classList.add("fileContainer");
-      const profileImg = document.createElement('img');
-      if (data[0]?.profile) {
-        const fileUrl = data[0].profile && data[0].profile.path
-          ? `http://localhost:5000/${data[0]?.profile.path}`
-          : `http://localhost:5000/uploads/${data[0]?.profile}`;
-        profileImg.src = fileUrl;
-        profileImg.classList.add('setImg');
-      }
-      fileContainer.appendChild(profileImg);
-      preview.appendChild(fileContainer);
-
-      const selectedCountryId = data[0]?.country || "";
-      const selectedStateID = data[0]?.state || "";
-      const selectedCityId = data[0]?.city || "";
-      console.log("selectedCountryId:", selectedCountryId)
-      console.log("selectedStateID:", selectedStateID)
-      console.log("selectedCityId:", selectedCityId)
-
-      const countryOptions = Array.from(selectCountry.options);
-      console.log("options:", countryOptions);
-      for (let i = 1; i < countryOptions.length; i++) {
-        console.log("countryOptions[i].value: ", countryOptions[i].value);
-        if (countryOptions[i].value === selectedCountryId) {
-          countryOptions[i].selected = true;
-          break;
-        }
-      }
-
-      const stateOptions = Array.from(selectState.options);
-      for (let i = 1; i < stateOptions.length; i++) {
-        if (stateOptions[i].value === selectedStateID) {
-          stateOptions[i].selected = true;
-          break;
-        }
-      }
-
-      const cityOptions = Array.from(selectCity.options);
-      for (let i = 1; i < cityOptions.length; i++) {
-        if (cityOptions[i].value === selectedCityId) {
-          cityOptions[i].selected = true;
-          break;
-        }
-      }
-
+    const response = await fetch(url, {
+      method: "GET",
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    let data = await response.json();
+    if (data.success) {
+      return data;
     }
   } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function postFetchReq(url,formData) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.success) {
+      return true;
+    }
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function createOptions(data, element, name) {
+  if (!data.length) {
+    console.error(`No ${name} available.`);
+    element.innerHTML =
+      `<option value="">No ${name} available</option>`;
+    element.disabled = true;
+    return false;
+  }
+  element.innerHTML = `<option value="">Select ${name}</option>`; //Default option
+  data.map((elem) => {
+    let option = document.createElement("option");
+    option.value = elem.id;
+    option.textContent = elem.name; // name as text
+    element.appendChild(option);
+  });
+  element.disabled = false;
+  return true;
+}
+
+function appendData(data) {
+  try {
+    firstName.value = data[0]?.firstName || "";
+    lastName.value = data[0]?.lastName || "";
+    email.value = data[0]?.email || "";
+    contactNo.value = data[0]?.contactNo || "";
+    dateOfBirth.value = data[0]?.dateOfBirth || "";
+    studentId.value = data[0]?.studentId || "";
+    address.value = data[0]?.address || "";
+
+    // const genderRadios = document.querySelectorAll('input[name="gender"]');
+    radios.forEach((radio) => {
+      if (radio.value === data[0]?.gender) {
+        selectedGender = radio.value;
+        radio.checked = true;
+      }
+    });
+
+    // Handle Profile Image Preview
+    preview.innerHTML = ""; //to remove the old preview
+    const fileContainer = document.createElement("div");
+    fileContainer.classList.add("fileContainer");
+    const profileImg = document.createElement('img');
+    if (data[0]?.profile) {
+      const fileUrl = data[0].profile && data[0].profile.path
+        ? `http://localhost:5000/${data[0]?.profile.path}`
+        : `http://localhost:5000/uploads/${data[0]?.profile}`;
+      profileImg.src = fileUrl;
+      profileImg.classList.add('setImg');
+    }
+    fileContainer.appendChild(profileImg);
+    preview.appendChild(fileContainer);
+
+    const selectedCountryId = data[0]?.country || "";
+    const selectedStateID = data[0]?.state || "";
+    const selectedCityId = data[0]?.city || "";
+
+    selectOption(selectCountry,selectedCountryId);
+    selectOption(selectState,selectedStateID);
+    selectOption(selectCity,selectedCityId);
+  } catch (error) {
     console.error("Error: ", error);
+  }
+}
+
+async function selectOption(element,selectedId) {
+  const optionArr = Array.from(element.options);
+    for (let i = 1; i < optionArr.length; i++) {
+      if (optionArr[i].value === selectedId) {
+        optionArr[i].selected = true;
+        break;
+      }
+    }
+}
+
+async function getData(id) {
+  const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
+  const response = await fetch(url, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+  const data = await response.json();
+  if (data.success) {
+    const { studentData } = data;
+    console.log("studentData: ", studentData);
+    const selectedCountryId = studentData[0].country;
+    const selectedStateID = studentData[0].state;
+    Promise.all([getAllCountries(), getAllStates(selectedCountryId), getAllCities(selectedCountryId, selectedStateID)]).then(() => {
+      appendData(studentData);
+    }).catch((err) => {
+      console.log("Error: ", err);
+    });
   }
 }

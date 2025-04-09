@@ -1,3 +1,22 @@
+3rd party API for country,state and cities
+//for countries
+const url = "https://api.countrystatecity.in/v1/countries";
+const response = await fetch(url, {
+    headers: { "X-CSCAPI-KEY": api_key },
+});
+
+//for states
+const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states`;
+const response = await fetch(url, {
+    headers: { "X-CSCAPI-KEY": api_key },
+});
+
+//for cities
+const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`;
+const response = await fetch(url, {
+    headers: { "X-CSCAPI-KEY": api_key },
+});
+
 
 // to access the radio button
 const radios = document.querySelectorAll('input[name="gender"]');

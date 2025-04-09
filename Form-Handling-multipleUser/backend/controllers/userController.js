@@ -7,7 +7,6 @@ export const submitFormData = (req, res) => {
     try {
         const { formData } = req.body;
         const data = JSON.parse(formData);
-
         if(!data){
             return res.status(400).json({message: "Data not Found",success: false});
         }
@@ -18,13 +17,11 @@ export const submitFormData = (req, res) => {
         } else {
             file = req.profilePath;
         }
-
         data.profile = file;
 
         const studentData = myCache.get("studentData") || [];
         studentData.push(data);
         myCache.set("studentData", studentData);
-
         res.json({message: "Data submitted Successfully",success: true});
     } catch (error) {
         console.log("Error: ", error);
@@ -43,7 +40,7 @@ export const getStudentData = async (req,res) => {
         ]);
 
         //GET countries,states and cities and also send it in the response
-        res.json({studentData,countries,states,cities});
+        res.json({studentData,countries,states,cities,success: true});
     } catch (error) {
         console.log("Error: ",error);
     }
@@ -64,9 +61,9 @@ export const getCountries = async (req,res) => {
         const filePath = path.join(__dirname,'countries.json');
         fs.readFile(filePath, 'utf8',(err,data) => {
             if(err){
-                return res.status(500).json({error: 'Failed to read data'});
+                return res.status(500).json({error: 'Failed to read data',success: false});
             }
-            res.json(JSON.parse(data));
+            res.json({countries: JSON.parse(data),success: true});
         })
     } catch (error) {
         console.log("Error: ",error);
@@ -79,13 +76,11 @@ export const getStates = async (req,res) => {
         const filePath = path.join(__dirname,'states.json');
         fs.readFile(filePath,'utf-8',(err,data) => {
             if(err){
-                return read.status(500).json({error:'Failes to read data'});
+                return read.status(500).json({error:'Failes to read data',success: false});
             }
             const statesData = JSON.parse(data);
-            // console.log("statesData: ",statesData)
             const states = statesData.filter(state => state.countryId == countryId)
-            // console.log("🚀 ~ fs.readFile ~ states:", states)
-            res.json(states);
+            res.json({states,success: true});
         })
     } catch (error) {
         console.log("Error: ",error);
@@ -95,19 +90,15 @@ export const getStates = async (req,res) => {
 export const getCities = async (req,res) => {
     try {
         const countryId = req.query.countryId;
-        console.log("🚀 ~ getCities ~ countryId:", countryId)
         const stateId = req.query.stateId;
-        console.log("🚀 ~ getCities ~ stateId:", stateId)
         const filePath = path.join(__dirname,'cities.json');
         fs.readFile(filePath,'utf-8',(err,data) => {
             if(err){
-                return read.status(500).json({error:'Failes to read data'});
+                return read.status(500).json({error:'Failes to read data',success: false});
             }
             const citiesData = JSON.parse(data);
-            // console.log("citiesData: ",citiesData)
             const cities = citiesData.filter(city => city.stateId == stateId && city.countryId == countryId)
-            // console.log("🚀 ~ fs.readFile ~ cities:", cities)
-            res.json(cities);
+            res.json({cities,success: true});
         })
     } catch (error) {
         console.log("Error: ",error);
@@ -117,9 +108,10 @@ export const getCities = async (req,res) => {
 export const editFormData = (req, res) => {
     try {
         const editedData = JSON.parse(req.body.formData);
+        if(!editedData) {
+            return res.status(400).json({message: "Data Not Found",success: false});
+        }
         const profile = req.file ? req.file : null;
-        console.log("editedData:", editedData);
-        console.log("profile:", profile);
 
         const studentsData = myCache.get("studentData") || [];
         console.log("studentsData: ", studentsData);
@@ -136,10 +128,7 @@ export const editFormData = (req, res) => {
 
         const updatedArr = studentsData.filter((data) => data.studentId != editedData.studentId);
         updatedArr.push(editedData);
-        console.log("updatedArr: ", updatedArr);
-
         myCache.set("studentData",updatedArr);
-
         res.json({ message: "Data edited Successfully", success: true });
     } catch (error) {
         console.error("Error editing student records:", error);
@@ -161,7 +150,6 @@ export const deleteStudentRecord = (req, res) => {
                 return obj;
             }
         }).filter(Boolean);
-        console.log("updatedArr: ", updatedArr);
         myCache.set('studentData', updatedArr);
         res.json({ message: "Record Deleted Successfully", success: true });
     } catch (error) {
@@ -172,8 +160,6 @@ export const deleteStudentRecord = (req, res) => {
 
 export const deleteManyStudentRecords = (req, res) => {
     try {
-        console.log("am in deleteManyStudentRecords");
-
         const { selectedIds } = req.body.obj;
         console.log("selectedIds: ", selectedIds);
         if (selectedIds.length === 0) {
@@ -194,6 +180,20 @@ export const deleteManyStudentRecords = (req, res) => {
         res.json({ message: "Rows deleted successfully", success: true });
     } catch (error) {
         console.error("Error deleting student records:", error);
+        res.status(500).json({ message: "An unexpected error occurred", success: false });
+    }
+}
+
+export const getDataById = (req,res) => {
+    try {
+        const {studentId} = req.query;
+        const studentData = myCache.get("studentData");
+        if(!studentData){
+            return res.status(400).json({message: "Data Not Found",success: false})
+        }
+        const data = studentData.filter(d => d.studentId === studentId)
+        res.json({studentData: data,success: true});
+    } catch (error) {
         res.status(500).json({ message: "An unexpected error occurred", success: false });
     }
 }

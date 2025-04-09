@@ -8,6 +8,11 @@ h3 {
     text-align: center;
 }
 
+#forMargin {
+    margin: 5px;
+    margin-bottom: 0 !important;
+}
+
 fieldset.scheduler-border {
     border: 1px groove #a09e9e !important;
     padding: 0 1.4em 1.4em 1.4em !important;
@@ -131,6 +136,11 @@ input[type="checkbox"] {
     cursor: pointer;
     width: 14px;
     height: 14px;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
 }
 
 

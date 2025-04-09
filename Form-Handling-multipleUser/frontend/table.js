@@ -87,15 +87,29 @@ async function getStudentData() {
             <td>${!obj.country ? "-" : countryName}</td>
             <td>${!obj.state ? "-" : stateName}</td>
             <td>${!obj.city ? "-" : cityName}</td>
-            <td><img src= "./assets/edit.svg" class="editIcon" alt="edit-icon" /></td>
-            <td><img src= "./assets/delete.svg" class="deleteIcon" alt="delete-icon" /></td>
             `;
+
+            const editTd = document.createElement('td');
+            const editImg = document.createElement('img');
+            editImg.src = '/assets/edit.svg';
+            editImg.classList.add("editIcon");
+            editImg.alt = 'edit-icon';
+            editTd.appendChild(editImg);
+            newRow.appendChild(editTd);
             rowContainer.appendChild(newRow);
 
-            const deleteImg = document.getElementsByClassName('deleteIcon')[0];
-            const editImg = document.getElementsByClassName('editIcon')[0];
+            const deleteTd = document.createElement('td');
+            const deleteImg = document.createElement('img');
+            deleteImg.src = '/assets/delete.svg';
+            deleteImg.classList.add("deleteIcon");
+            deleteImg.alt = 'delete-icon';
+            deleteTd.appendChild(deleteImg);
+            newRow.appendChild(deleteTd);
+
+            rowContainer.appendChild(newRow);
 
             deleteImg.addEventListener("click", function () {
+                console.log("🚀 ~ obj.studentId:", obj.studentId)
                 const popup = document.getElementById("confirmPopup");
                 popup.style.display = "flex";
 
@@ -110,6 +124,7 @@ async function getStudentData() {
             });
 
             editImg.addEventListener("click", function () {
+                console.log("🚀 ~ obj.studentId:", obj.studentId)
                 editStudentData(obj.studentId);
             });
         });
@@ -201,9 +216,6 @@ async function handleBulkDelete() {
 }
 
 function editStudentData(studentId) {
-    // console.log(studentId);
-    const data = studentData.filter((obj) => obj.studentId == studentId);
-    localStorage.setItem("studentData", JSON.stringify(data));
     window.location.href = `/form.html?studentId=${studentId}`;
 }
 
