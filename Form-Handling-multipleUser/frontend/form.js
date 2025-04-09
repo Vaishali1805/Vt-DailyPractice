@@ -34,6 +34,7 @@ const submitBtn = document.getElementById("submitBtn");
 const terms_Condn_check = document.getElementById("terms_Condn_check");
 let countryId;
 let selectedGender;
+let lastValidFile = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
@@ -52,32 +53,34 @@ radios.forEach((radio) => {
   });
 });
 
-if (!terms_Condn_check.checked) {
-  submitBtn.disabled = true;
-} else {
-  submitBtn.disabled = false;
-}
+// if (!terms_Condn_check.checked) {
+//   submitBtn.disabled = true;
+// } else {
+//   submitBtn.disabled = false;
+// }
+submitBtn.disabled = !terms_Condn_check.checked;
 
 terms_Condn_check.addEventListener("change", function () {
-  if (this.checked) {
-    submitBtn.disabled = false;
-  } else submitBtn.disabled = true;
+  submitBtn.disabled = !terms_Condn_check.checked;
+  // if (this.checked) {
+  //   submitBtn.disabled = false;
+  // } else submitBtn.disabled = true;
 });
 
 email.addEventListener('keypress', validateEmail);
 contactNo.addEventListener('keypress', validateContactNo);
 
 function validateEmail() {
-  const EmailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!EmailPattern.test(email.value))
+  const EMAIL_REGEX =/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!EMAIL_REGEX.test(email.value))
     emailError_msg.textContent = "*Invalid Email Address";
   else
     emailError_msg.textContent = "";
 }
 
 function validateContactNo() {
-  const ph_Pattern = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
-  if (!ph_Pattern.test(contactNo.value))
+  const PHONE_REGEX = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
+  if (!PHONE_REGEX.test(contactNo.value))
     contactNoError_msg.textContent = "*Invalid contact number";
   else
     contactNoError_msg.textContent = "";
@@ -251,14 +254,22 @@ inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
   const file = event.target.files[0];
+  console.log("file: ",file);
+
+  if (!file) {
+    // User canceled the dialog, keep showing last preview
+    return;
+  }
 
   // Validate selected file before displaying preview
   if (!validateFile(file)) {
     inputProfile.value = ""; // clear the input if file is invalid
     preview.innerHTML = "";
+    lastValidFile = null;
     return;
   }
-
+  
+  lastValidFile = file;
   preview.innerHTML = ""; //to remove the old preview
 
   const fileContainer = document.createElement("div");
