@@ -38,57 +38,35 @@ let selectedGender;
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
 
-if (id) {
-  getData(id);
-} else {
-  document.addEventListener("DOMContentLoaded", getAllCountries);
-}
+id ? getData(id) : document.addEventListener("DOMContentLoaded", getAllCountries);
 
 radios.forEach((radio) => {
   radio.addEventListener("change", () => {
-    if (radio.checked) {
-      selectedGender = radio.value;
-    }
+    radio.checked ? selectedGender = radio.value : "";
   });
 });
 
-if (!terms_Condn_check.checked) {
-  submitBtn.disabled = true;
-} else {
-  submitBtn.disabled = false;
-}
-
+!terms_Condn_check.checked ? submitBtn.disabled = true : submitBtn.disabled = false;
 terms_Condn_check.addEventListener("change", function () {
-  if (this.checked) {
-    submitBtn.disabled = false;
-  } else submitBtn.disabled = true;
+  submitBtn.disabled = this.checked ? false : true;
 });
 
 email.addEventListener('keypress', validateEmail);
 contactNo.addEventListener('keypress', validateContactNo);
 
 function validateEmail() {
-  const EmailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!EmailPattern.test(email.value))
-    emailError_msg.textContent = "*Invalid Email Address";
-  else
-    emailError_msg.textContent = "";
+  const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  emailError_msg.textContent = !EmailRegex.test(email.value) ? "*Invalid Email Address" : "";
 }
 
 function validateContactNo() {
-  const ph_Pattern = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
-  if (!ph_Pattern.test(contactNo.value))
-    contactNoError_msg.textContent = "*Invalid contact number";
-  else
-    contactNoError_msg.textContent = "";
+  const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
+  contactNoError_msg.textContent = !PhoneRegex.test(contactNo.value) ? "*Invalid contact number" : "";
 }
 
 // Handle form submission
 submitBtn.addEventListener("click", (e) => {
-  if (id) {
-    handleEditForm(e);
-  } else
-    handleSubmit(e);
+  id ? handleEditForm(e) : handleSubmit(e);
 });
 
 //Function to submit the form
@@ -99,28 +77,23 @@ async function handleSubmit(event) {
     if (!validate_form()) {
       return;
     }
-
     const formDataObj = create_FormDataObj();
+
     // Handle Profile Picture
     const formData = new FormData();
     const file = inputProfile.files[0];
-    const defaultImage = "defaultImage.webp";
     const fileToUpload = file ? file : null; // Set to null if no file
-
     if (fileToUpload) {
-      const originalname = fileToUpload.name;
-      const safeName = originalname.replace(/\s+/g, '_');
+      const safeName = fileToUpload.name.replace(/\s+/g, '_');
       formData.append("profile", fileToUpload, `${Date.now()}_${safeName}`);
     } else
-      formData.append("profile", defaultImage); // Send the image path as a string
+      formData.append("profile", "defaultImage.webp"); // Send the image path as a string
     formData.append("formData", JSON.stringify(formDataObj));
 
     // submit the student data
     const url = "http://localhost:5000/user/submit/formData";
-    const result = await postFetchReq(url,formData)
-    if(result){
-      window.location.href = "/table.html";
-    }
+    const result = await fetchReq(url,"POST",formData);
+    result && (window.location.href = "/table.html");
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -134,24 +107,21 @@ async function handleEditForm(event) {
     if (!validate_form()) {
       return;
     }
-
     const formDataObj = create_FormDataObj();
+
+    // Handle Profile Picture
     const formData = new FormData();
     const file = inputProfile.files[0];
-
     if (file) {
-      const originalname = file.name;
-      const safeName = originalname.replace(/\s+/g, '_');
-      formData.append("profile",file,`${Date.now()}_${safeName}`);
+      const safeName = file.name.replace(/\s+/g, '_');
+      formData.append("profile", file, `${Date.now()}_${safeName}`);
     }
     formData.append("formData", JSON.stringify(formDataObj));
 
     //submit the edited data
     const url = "http://localhost:5000/user/edit/formData";
-    const result = await postFetchReq(url,formData)
-    if(result){
-      window.location.href = "/table.html";
-    }
+    const result = await fetchReq(url,"POST",formData)
+    result && (window.location.href = "/table.html");                                                     
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -175,13 +145,14 @@ function create_FormDataObj() {
 }
 
 function validate_form() {
+  const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
   let flag = true;
 
   function setError(element, message) {
     element.textContent = message;
     flag = false;
   }
-
   // Validate first name
   if (firstName.value.trim() == "") {
     setError(nameError_msg, "*First name is required");
@@ -190,35 +161,40 @@ function validate_form() {
   } else {
     nameError_msg.textContent = ""; // Clear error if valid
   }
-
   // Validate email format
   if (email.value.trim() == "") {
     setError(emailError_msg, "*Email is required");
+  } else if (!EmailRegex.test(email.value)) {
+    setError(emailError_msg, '*Invalid email address');
   } else {
     emailError_msg.textContent = "";
   }
-
   // Validate phone number
   if (!contactNo.value.trim()) {
     setError(contactNoError_msg, "*Contact number is required");
+  } else if (!PhoneRegex.test(contactNo.value)) {
+    setError(contactNoError_msg, '*Invalid contact number');
   } else {
     contactNoError_msg.textContent = "";
   }
-
   //Validate Date of Birth
   if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
     setError(dobError_msg, "*Invalid date of birth");
   } else {
-    dobError_msg.textContent = "";
+    const dobDate = new Date(dateOfBirth.value);
+    const today = new Date();
+    if(dobDate > today) {
+      setError(dobError_msg,"Date of birth cannot be in the future");
+    } else {
+      dobError_msg.textContent = "";
+    }
   }
-
   //Validate StudentId
   if (!studentId.value.trim()) {
     setError(studentIdError_msg, "*Student ID is required");
   } else {
     studentIdError_msg.textContent = "";
   }
-
   //Validate gender
   const selectedRadio = document.querySelector('input[name="gender"]:checked');
   if (!selectedRadio) {
@@ -226,7 +202,6 @@ function validate_form() {
   } else {
     genderError_msg.textContent = "";
   }
-
   // Validate country
   if (!selectCountry.value) {
     setError(countryError_msg, "*Country is required");
@@ -236,9 +211,7 @@ function validate_form() {
 }
 
 // Profile picture upload event
-inputProfileBtn.addEventListener(
-  "click",
-  (e) => {
+inputProfileBtn.addEventListener("click",(e) => {
     if (inputProfile) {
       inputProfile.click();
     }
@@ -251,6 +224,7 @@ inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
   const file = event.target.files[0];
+  console.log("file: ", file);
 
   // Validate selected file before displaying preview
   if (!validateFile(file)) {
@@ -258,21 +232,11 @@ function handleFileSelection(event) {
     preview.innerHTML = "";
     return;
   }
-
-  preview.innerHTML = ""; //to remove the old preview
-
-  const fileContainer = document.createElement("div");
-  fileContainer.classList.add("fileContainer");
-  const img = document.createElement("img");
-  img.classList.add("setImg");
-  img.src = URL.createObjectURL(file);
-  fileContainer.appendChild(img);
-  preview.appendChild(fileContainer);
+  preview.innerHTML = `<div class="fileContainer"><img src=${URL.createObjectURL(file)} class="setImg"></img></div>`;
 }
 
 function validateFile(file) {
   if (!file) {
-    // profileError_msg.textContent = "Please select a file";
     return false;
   }
 
@@ -294,7 +258,6 @@ function validateFile(file) {
   } else {
     profileError_msg.textContent = "";
   }
-
   return true;
 }
 
@@ -314,10 +277,10 @@ selectState.addEventListener("change", function () {
 async function getAllCountries() {
   try {
     const url = "http://localhost:5000/user/get/countries";
-    let { countries } = await getFetchReq(url);
-    const result = await createOptions(countries, selectCountry, 'countries');
-    if(result) return true;
-    else return;
+    let { countries } = await fetchReq(url,"GET");
+    console.log("🚀 ~ getAllCountries ~ countries:", countries)
+    await createOptions(countries, selectCountry, 'countries');
+    return true;
 
   } catch (error) {
     console.log("Error: ", error);
@@ -327,10 +290,9 @@ async function getAllCountries() {
 async function getAllStates(countryId) {
   try {
     const url = `http://localhost:5000/user/get/states?countryId=${countryId}`;
-    const { states } = await getFetchReq(url);
-    const result = await createOptions(states, selectState, 'states');
-    if(result) return true;
-    else return;
+    const { states } = await fetchReq(url,"GET");
+    await createOptions(states, selectState, 'states');
+    return true;
 
   } catch (error) {
     console.log("Error: ", error);
@@ -340,45 +302,34 @@ async function getAllStates(countryId) {
 async function getAllCities(countryId, stateId) {
   try {
     const url = `http://localhost:5000/user/get/cities?countryId=${countryId}&stateId=${stateId}`;
-    const { cities } = await getFetchReq(url);
-    const result = await createOptions(cities,selectCity,'cities');
-    if(result) return true;
-    else return;
+    const { cities } = await fetchReq(url,"GET");
+    await createOptions(cities, selectCity, 'cities');
+    return true;
 
   } catch (error) {
     console.log("Error: ", error);
   }
 }
 
-async function getFetchReq(url) {
+async function fetchReq(url, reqMethod, formData=null) {
   try {
-    const response = await fetch(url, {
-      method: "GET",
-    })
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+    const options = {
+      method: reqMethod,
+    };
+    // Only add body if method is not GET
+    if (reqMethod.toUpperCase() !== "GET" && formData) {
+      options.body = formData;
     }
-    let data = await response.json();
-    if (data.success) {
-      return data;
-    }
-  } catch (error) {
-    console.log("Error: ", error);
-  }
-}
-
-async function postFetchReq(url,formData) {
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(url,options);
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
     const data = await response.json();
     if (data.success) {
-      return true;
+      if(reqMethod.toUpperCase() !== "GET")
+        return true;
+      else
+        return data;
     }
   } catch (error) {
     console.log("Error: ", error);
@@ -386,22 +337,10 @@ async function postFetchReq(url,formData) {
 }
 
 async function createOptions(data, element, name) {
-  if (!data.length) {
-    console.error(`No ${name} available.`);
-    element.innerHTML =
-      `<option value="">No ${name} available</option>`;
-    element.disabled = true;
-    return false;
-  }
-  element.innerHTML = `<option value="">Select ${name}</option>`; //Default option
+  element.innerHTML = !data.length ? `<option value="">No ${name} available</option>` : `<option value="">Select ${name}</option>`; //Default option
   data.map((elem) => {
-    let option = document.createElement("option");
-    option.value = elem.id;
-    option.textContent = elem.name; // name as text
-    element.appendChild(option);
+    element.innerHTML += `<option value=${elem.id}> ${elem.name} </option>`
   });
-  element.disabled = false;
-  return true;
 }
 
 function appendData(data) {
@@ -441,33 +380,34 @@ function appendData(data) {
     const selectedStateID = data[0]?.state || "";
     const selectedCityId = data[0]?.city || "";
 
-    selectOption(selectCountry,selectedCountryId);
-    selectOption(selectState,selectedStateID);
-    selectOption(selectCity,selectedCityId);
-  } catch (error) {
+    selectOption(selectCountry, selectedCountryId);
+    selectOption(selectState, selectedStateID);
+    selectOption(selectCity, selectedCityId);
+  } catch (error) { 
     console.error("Error: ", error);
   }
 }
 
-async function selectOption(element,selectedId) {
+async function selectOption(element, selectedId) {
   const optionArr = Array.from(element.options);
-    for (let i = 1; i < optionArr.length; i++) {
-      if (optionArr[i].value === selectedId) {
-        optionArr[i].selected = true;
-        break;
-      }
+  for (let i = 1; i < optionArr.length; i++) {
+    if (optionArr[i].value === selectedId) {
+      optionArr[i].selected = true;
+      break;
     }
+  }
 }
 
 async function getData(id) {
   const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
-  const response = await fetch(url, {
-    method: "GET",
-  });
-  if (!response.ok) {
-    throw new Error(`Response status: ${response.status}`);
-  }
-  const data = await response.json();
+  // const response = await fetch(url, {
+  //   method: "GET",
+  // });
+  // if (!response.ok) {
+  //   throw new Error(`Response status: ${response.status}`);
+  // }
+  // const data = await response.json();
+  const data = await fetchReq(url,"GET");
   if (data.success) {
     const { studentData } = data;
     console.log("studentData: ", studentData);

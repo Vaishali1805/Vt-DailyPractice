@@ -31,7 +31,7 @@ router.get('/get/countries',getCountries);
 router.get('/get/states',getStates);
 router.get('/get/cities',getCities);
 router.post('/edit/formData', uploadEditProfile.single('profile'), handleEditProfile, editFormData);
-router.post('/delete/studentRecord',deleteStudentRecord);
-router.post('/delete/bulkDelete',deleteManyStudentRecords);
+router.post('/delete/studentRecord',deleteManyStudentRecords);
+// router.post('/delete/bulkDelete',deleteManyStudentRecords);
 
 export default router;

@@ -1,3 +1,33 @@
+npx live-server --port=5500 --no-browser
+
+Before optimization: 
+async function createOptions(data, element, name) {
+  if (!data.length) {
+    console.error(`No ${name} available.`);
+    element.innerHTML =
+      `<option value="">No ${name} available</option>`;
+    element.disabled = true;
+    return false;
+  }
+  element.innerHTML = !data.length ? `<option value="">No ${name} available</option>` : `<option value="">Select ${name}</option>`; //Default option
+  data.map((elem) => {
+    let option = document.createElement("option");
+    option.value = elem.id;
+    option.textContent = elem.name; // name as text
+    element.appendChild(option);
+  });
+  element.disabled = false;
+  return true;
+}
+
+after optimization: 
+async function createOptions(data, element, name) {
+  element.innerHTML = !data.length ? `<option value="">No ${name} available</option>` : `<option value="">Select ${name}</option>`; //Default option
+  data.map((elem) => {
+    element.innerHTML += `<option value=${elem.id}> ${elem.name} </option>`
+  });
+}
+
 3rd party API for country,state and cities
 //for countries
 const url = "https://api.countrystatecity.in/v1/countries";
@@ -86,7 +116,7 @@ const uploadProfile = multer({
                         </div>
                     </fieldset> -->
 
- // // Validate Parent/Guardian Name
+ // Validate Parent/Guardian Name
   // if (!parentName.value.trim()) {
   //     setError(parentNameError_msg, '*Parent/Guardian name is required');
   // } else if (parentName.value.length < 2 || parentName.value.length > 30) {
