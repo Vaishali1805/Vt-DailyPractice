@@ -1,10 +1,16 @@
 import express from 'express'
 const router = express.Router();
 import multer from 'multer'
+import fs from 'fs';
 import { submitFormData,getStudentData,getCountries,getDataById,getStates,getCities,editFormData,deleteStudentRecord,deleteManyStudentRecords } from '../controllers/userController.js';
 import {handleProfileUpload,handleEditProfile} from '../middlewares/userProfile.js'
 
-// make directory
+// Create 'uploads' directory if it doesn't exist
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
     destination: (req,file,cb) => {
         cb(null,'uploads')

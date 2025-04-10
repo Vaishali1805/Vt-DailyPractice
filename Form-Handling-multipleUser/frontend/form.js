@@ -34,6 +34,7 @@ const submitBtn = document.getElementById("submitBtn");
 const terms_Condn_check = document.getElementById("terms_Condn_check");
 let countryId;
 let selectedGender;
+let lastValidFile = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
@@ -230,6 +231,7 @@ function handleFileSelection(event) {
   if (!validateFile(file)) {
     inputProfile.value = ""; // clear the input if file is invalid
     preview.innerHTML = "";
+    lastValidFile = null;
     return;
   }
   preview.innerHTML = `<div class="fileContainer"><img src=${URL.createObjectURL(file)} class="setImg"></img></div>`;

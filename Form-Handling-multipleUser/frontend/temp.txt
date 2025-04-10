@@ -47,6 +47,68 @@ const response = await fetch(url, {
     headers: { "X-CSCAPI-KEY": api_key },
 });
 
+if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
+    setError(dobError_msg, "*Invalid date of birth");
+  } else {
+    const dobDate = new Date(dateOfBirth.value);
+    const today = new Date();
+    if (dobDate > today) {
+      setError(dobError_msg, "*Date of birth cannot be in the future");
+    } else {
+      dobError_msg.textContent = "";
+    }
+  }
+
+  let lastValidFile = null;
+
+inputProfile.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+
+  if (!file) {
+    // Cancelled dialog, don't touch anything
+    return;
+  }
+
+  if (!validateFile(file)) {
+    inputProfile.value = "";
+    preview.innerHTML = "";
+    lastValidFile = null;
+    return;
+  }
+
+  lastValidFile = file;
+  preview.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(file);
+  img.classList.add("setImg");
+  preview.appendChild(img);
+});
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(form);
+
+  if (!formData.get("profile") && lastValidFile) {
+    // Manually append last selected file
+    formData.append("profile", lastValidFile);
+  }
+
+  // Submit with fetch
+  fetch("/submit/formData", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
+});
+
 
 // to access the radio button
 const radios = document.querySelectorAll('input[name="gender"]');
@@ -133,6 +195,94 @@ const uploadProfile = multer({
   // } else {
   //     parentContactNoError_msg.textContent = "";
   // }
+
+
+  let lastValidFile = null; // To store the last successfully selected valid file
+
+// Trigger file selection dialog when user clicks "Click Here"
+inputProfileBtn.addEventListener("click", (e) => {
+  e.preventDefault(); // Prevent page navigation or form submission
+  inputProfile.click(); // Programmatically open file dialog
+});
+
+// Handle file selection
+inputProfile.addEventListener("change", handleFileSelection);
+
+function handleFileSelection(event) {
+  const file = event.target.files[0];
+
+  // If user cancels the dialog, do nothing
+  if (!file) return;
+
+  // Validate the file (type and size)
+  if (!validateFile(file)) {
+    inputProfile.value = ""; // Clear input if invalid
+    preview.innerHTML = "";  // Clear any preview
+    lastValidFile = null;    // Clear stored file
+    return;
+  }
+
+  lastValidFile = file;        // Store the valid file
+  preview.innerHTML = "";      // Clear old preview
+
+  // Create and display image preview
+  const img = document.createElement("img");
+  img.classList.add("setImg");
+  img.src = URL.createObjectURL(file);
+
+  const fileContainer = document.createElement("div");
+  fileContainer.classList.add("fileContainer");
+  fileContainer.appendChild(img);
+
+  preview.appendChild(fileContainer);
+}
+
+// Validate file type and size
+function validateFile(file) {
+  const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+  const maxSize = 5 * 1024 * 1024; // 5MB
+
+  // Check file type
+  if (!validTypes.includes(file.type)) {
+    profileError_msg.textContent = "Invalid file type. Please select JPG, JPEG, or PNG.";
+    return false;
+  }
+
+  // Check file size
+  if (file.size > maxSize) {
+    profileError_msg.textContent = "File size exceeds 5MB. Please choose a smaller image.";
+    return false;
+  }
+
+  profileError_msg.textContent = ""; // Clear previous error
+  return true;
+}
+
+// Optional: If you're submitting via JavaScript (not native form), handle form submission like this
+form.addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+
+  const formData = new FormData(form);
+
+  // If no file is selected but a previous one exists, append it manually
+  if (!formData.get("profile") && lastValidFile) {
+    formData.append("profile", lastValidFile);
+  }
+
+  // Send data to backend using fetch
+  fetch("/submit/formData", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
+});
+
 
 
 
