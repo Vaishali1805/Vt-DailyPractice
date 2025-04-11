@@ -1,5 +1,58 @@
 npx live-server --port=5500 --no-browser
 
+🚀 ~ deleteManyStudentRecords ~ req.body.obj: { studentIds: [ 86 ] }
+🚀 ~ deleteManyStudentRecords ~ req.body.obj: { studentIds: [ '23', '86' ] }
+
+{
+    "firstName": "ewfhjsbv",
+    "lastName": "kkjdbfj",
+    "email": "dfsvgnbn@hsdbf.cib",
+    "contactNo": "23867286312",
+    "dateOfBirth": "2025-04-11",
+    "studentId": "23",
+    "gender": "Male",
+    "address": "hrvgfewhjev",
+    "country": "2",
+    "state": "866",
+    "city": "16157",
+    "profile": {
+        "fieldname": "profile",
+        "originalname": "1744347471140_gabriel-lebel-bernier-singles2.jpg",
+        "encoding": "7bit",
+        "mimetype": "image/jpeg",
+        "destination": "uploads",
+        "filename": "1744347471140_gabriel-lebel-bernier-singles2.jpg",
+        "path": "uploads\\1744347471140_gabriel-lebel-bernier-singles2.jpg",
+        "size": 404933
+    }
+}
+
+studentData: [
+  {
+    firstName: 'erdfskbj',
+    lastName: 'lksndvm',
+    email: 'reeeb@jsbdf.com',
+    contactNo: '234872467',
+    dateOfBirth: '2004-04-04',
+    studentId: 324,
+    gender: 'Male',
+    address: 'relmgjl',
+    country: 2,
+    state: 867,
+    city: 16160,
+    profile: {
+      fieldname: 'profile',
+      originalname: '1744351955144_gabriel-lebel-bernier-singles2.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      destination: 'uploads',
+      filename: '1744351955144_gabriel-lebel-bernier-singles2.jpg',
+      path: 'uploads\\1744351955144_gabriel-lebel-bernier-singles2.jpg',
+      size: 404933
+    }
+  }
+]
+
 Before optimization: 
 async function createOptions(data, element, name) {
   if (!data.length) {
@@ -46,6 +99,66 @@ const url = `https://api.countrystatecity.in/v1/countries/${countryCode}/states/
 const response = await fetch(url, {
     headers: { "X-CSCAPI-KEY": api_key },
 });
+
+// id ? getData(id) : document.addEventListener("DOMContentLoaded", getAllCountries);
+
+// Fetch and populate country, state, and city dropdowns
+selectCountry.addEventListener("change", function () {
+  countryId = this.value;
+  selectState.innerHTML = '<option value="">Select State</option>';
+  selectCity.innerHTML = '<option value="">Select City</option>';
+  getAllStates(countryId);
+});
+selectState.addEventListener("change", function () {
+  const stateId = this.value;
+  selectCity.innerHTML = '<option value="">Select City</option>';
+  getAllCities(countryId, stateId);
+});
+
+async function getAllCountries() {
+  try {
+    const url = "http://localhost:5000/user/get/countries";
+    let { countries } = await fetchReq(url, "GET");
+    console.log("~ getAllCountries ~ countries:", countries)
+    await createOptions(countries, selectCountry, 'countries');
+    return true;
+
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function getAllStates(countryId) {
+  try {
+    const url = `http://localhost:5000/user/get/states?countryId=${countryId}`;
+    const { states } = await fetchReq(url, "GET");
+    await createOptions(states, selectState, 'states');
+    return true;
+
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function getAllCities(countryId, stateId) {
+  try {
+    const url = `http://localhost:5000/user/get/cities?countryId=${countryId}&stateId=${stateId}`;
+    const { cities } = await fetchReq(url, "GET");
+    await createOptions(cities, selectCity, 'cities');
+    return true;
+
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function createOptions(data, element, name) {
+  element.innerHTML = !data.length ? `<option value="">No ${name} available</option>` : `<option value="">Select ${name}</option>`; //Default option
+  data.map((elem) => {
+    element.innerHTML += `<option value=${elem.id}> ${elem.name} </option>`
+  });
+}
+
 
 if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
     setError(dobError_msg, "*Invalid date of birth");
@@ -607,3 +720,76 @@ NewZealand states:
         "code": "HKB",
         "countryId": 4
     }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  id ? getData(id) : fetchAndPopulate('countries');
+
+  selectCountry.addEventListener("change", function () {
+    countryId = this.value;
+    resetDropdown(selectState, 'State');
+    resetDropdown(selectCity, 'City');
+    fetchAndPopulate('states', { countryId });
+  });
+
+  selectState.addEventListener("change", function () {
+    const stateId = this.value;
+    resetDropdown(selectCity, 'City');
+    fetchAndPopulate('cities', { countryId, stateId });
+  });
+});
+
+// Reusable dropdown fetcher
+async function fetchAndPopulate(type, params = {}) {
+  try {
+    let query = new URLSearchParams(params).toString();
+    const url = `http://localhost:5000/user/get/${type}${query ? `?${query}` : ''}`;
+    const data = await fetchReq(url, "GET");
+
+    const elementMap = {
+      countries: selectCountry,
+      states: selectState,
+      cities: selectCity,
+    };
+
+    if (data && data[type]) {
+      await createOptions(data[type], elementMap[type], type);
+    }
+  } catch (error) {
+    console.log(`Error loading ${type}:`, error);
+  }
+}
+
+// Reset dropdown helper
+function resetDropdown(dropdown, label) {
+  dropdown.innerHTML = `<option value="">Select ${label}</option>`;
+}
+
+// Generic fetch
+async function fetchReq(url, reqMethod, formData = null) {
+  try {
+    const options = { method: reqMethod };
+    if (reqMethod.toUpperCase() !== "GET" && formData) {
+      options.body = formData;
+    }
+
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
+    const data = await response.json();
+    return data.success ? data : null;
+  } catch (error) {
+    console.log("Error:", error);
+  }
+}
+
+// Generic dropdown option creator
+async function createOptions(data, element, name) {
+  element.innerHTML = !data.length
+    ? `<option value="">No ${name} available</option>`
+    : `<option value="">Select ${name}</option>`;
+
+  data.forEach(({ id, name }) => {
+    element.innerHTML += `<option value="${id}">${name}</option>`;
+  });
+}

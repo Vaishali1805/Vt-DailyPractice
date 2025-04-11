@@ -105,11 +105,22 @@ legend.scheduler-border-2 {
     object-fit: cover;
 }
 
+.crossImg {
+    width: 0.8rem;
+    height: auto;
+    margin-bottom: 3px;
+    /* max-height: 20px; */
+    margin-left: auto;
+    object-fit: cover;
+    cursor: pointer;
+}
+
 .fileContainer {
     position: relative;
     margin: 10px;
     width: 15vw;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #fff;
@@ -117,7 +128,7 @@ legend.scheduler-border-2 {
     border-radius: 8px;
     overflow: hidden;
     box-sizing: border-box;     /*Allow to include the padding and border in element's total width and height*/
-    padding: 10px;
+    padding: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
 }

@@ -47,11 +47,18 @@
                     <div id="preview"></div>
 
                     <!-- Email address -->
-                    <label for="InputEmail">Email address :</label>
+                    <div class="input-group">
+                        <label for="InputEmail" class="input-group-text">Email address :</label>
+                        <input type="email" name="lastName" id="inputEmail" class="form-control"
+                        name="userEmail" placeholder="abc@gmail.com" autocomplete="off" required>
+                    </div>
+                    <span id="emailError" class="error_msg"></span> <br>
+
+                    <!-- <label for="InputEmail">Email address :</label>
                     <input type="email" class="form-control" id="inputEmail" name="userEmail"
                         placeholder="abc@gmail.com" autocomplete="off" required>
-                    <!-- <small class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                    <span id="emailError" class="error_msg"></span> <br>
+                     <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    <span id="emailError" class="error_msg"></span> <br> -->
 
                     <!-- Contact Number and DOB -->
                     <div class="contactNo-n-dob">

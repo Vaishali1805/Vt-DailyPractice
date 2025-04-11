@@ -34,12 +34,10 @@ const submitBtn = document.getElementById("submitBtn");
 const terms_Condn_check = document.getElementById("terms_Condn_check");
 let countryId;
 let selectedGender;
-let lastValidFile = null;
+let lastSelectedFile = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
-
-id ? getData(id) : document.addEventListener("DOMContentLoaded", getAllCountries);
 
 radios.forEach((radio) => {
   radio.addEventListener("change", () => {
@@ -73,6 +71,7 @@ submitBtn.addEventListener("click", (e) => {
 //Function to submit the form
 async function handleSubmit(event) {
   try {
+    console.log("in handleSubmit")
     event.preventDefault();
     // Validate form before proceeding
     if (!validate_form()) {
@@ -93,7 +92,7 @@ async function handleSubmit(event) {
 
     // submit the student data
     const url = "http://localhost:5000/user/submit/formData";
-    const result = await fetchReq(url,"POST",formData);
+    const result = await fetchReq(url, "POST", formData);
     result && (window.location.href = "/table.html");
   } catch (error) {
     console.log("Error: ", error);
@@ -121,8 +120,8 @@ async function handleEditForm(event) {
 
     //submit the edited data
     const url = "http://localhost:5000/user/edit/formData";
-    const result = await fetchReq(url,"POST",formData)
-    result && (window.location.href = "/table.html");                                                     
+    const result = await fetchReq(url, "POST", formData)
+    result && (window.location.href = "/table.html");
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -135,12 +134,12 @@ function create_FormDataObj() {
     email: email.value || null,
     contactNo: contactNo.value || null,
     dateOfBirth: dateOfBirth.value || null,
-    studentId: studentId.value || null,
+    studentId: Number(studentId.value) || null,
     gender: selectedGender || null,
     address: address.value || null,
-    country: selectCountry && selectCountry.value ? selectCountry.value : null,
-    state: selectState && selectState.value ? selectState.value : null,
-    city: selectCity && selectCity.value ? selectCity.value : null,
+    country: selectCountry && selectCountry.value ? Number(selectCountry.value) : null,
+    state: selectState && selectState.value ? Number(selectState.value) : null,
+    city: selectCity && selectCity.value ? Number(selectCity.value) : null,
   };
   return formDataObj;
 }
@@ -184,8 +183,8 @@ function validate_form() {
   } else {
     const dobDate = new Date(dateOfBirth.value);
     const today = new Date();
-    if(dobDate > today) {
-      setError(dobError_msg,"Date of birth cannot be in the future");
+    if (dobDate > today) {
+      setError(dobError_msg, "Date of birth cannot be in the future");
     } else {
       dobError_msg.textContent = "";
     }
@@ -212,29 +211,41 @@ function validate_form() {
 }
 
 // Profile picture upload event
-inputProfileBtn.addEventListener("click",(e) => {
-    if (inputProfile) {
-      inputProfile.click();
-    }
-    e.preventDefault();
-  },
+inputProfileBtn.addEventListener("click", (e) => {
+  if (inputProfile) {
+    inputProfile.click();
+  }
+  e.preventDefault();
+},
   false //prevent navigation to "#"
 );
 
 inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
-  const file = event.target.files[0];
+  let file = event.target.files[0];
+  lastSelectedFile = file ? file : lastSelectedFile;
+  file = file ? file : lastSelectedFile;
   console.log("file: ", file);
+  console.log("lastSelectedFile: ",lastSelectedFile);
 
-  // Validate selected file before displaying preview
+    // Validate selected file before displaying preview
   if (!validateFile(file)) {
+    console.log("in validate")
     inputProfile.value = ""; // clear the input if file is invalid
     preview.innerHTML = "";
-    lastValidFile = null;
     return;
   }
-  preview.innerHTML = `<div class="fileContainer"><img src=${URL.createObjectURL(file)} class="setImg"></img></div>`;
+
+  preview.innerHTML = `<div class="fileContainer">
+    <img src='/assets/cross2.svg' class="crossImg" alt="delete" onclick="deleteImg()"></img>
+    <img src=${URL.createObjectURL(file)} class="setImg" alt="image preview"></img>
+  </div>`;
+}
+
+function deleteImg() {
+  inputProfile.value = "";
+  preview.innerHTML = "";
 }
 
 function validateFile(file) {
@@ -264,56 +275,61 @@ function validateFile(file) {
 }
 
 // Fetch and populate country, state, and city dropdowns
-selectCountry.addEventListener("change", function () {
-  countryId = this.value;
-  selectState.innerHTML = '<option value="">Select State</option>';
-  selectCity.innerHTML = '<option value="">Select City</option>';
-  getAllStates(countryId);
+document.addEventListener("DOMContentLoaded", () => {
+  id ? getData(id) : fetchAndPopulate('countries');
+
+  selectCountry.addEventListener("change", function () {
+    countryId = this.value;
+    resetDropdown(selectState, 'State');
+    resetDropdown(selectCity, 'City');
+    fetchAndPopulate('states', { countryId });
+  });
+
+  selectState.addEventListener("change", function () {
+    const stateId = this.value;
+    resetDropdown(selectCity, 'City');
+    fetchAndPopulate('cities', { countryId, stateId });
+  });
 });
-selectState.addEventListener("change", function () {
-  const stateId = this.value;
-  selectCity.innerHTML = '<option value="">Select City</option>';
-  getAllCities(countryId, stateId);
-});
 
-async function getAllCountries() {
+// Reset dropdown helper
+function resetDropdown(dropdown, label) {
+  dropdown.innerHTML = `<option value="">Select ${label}</option>`;
+}
+
+async function fetchAndPopulate(type, params = {}) {
   try {
-    const url = "http://localhost:5000/user/get/countries";
-    let { countries } = await fetchReq(url,"GET");
-    console.log("🚀 ~ getAllCountries ~ countries:", countries)
-    await createOptions(countries, selectCountry, 'countries');
-    return true;
+    let query = new URLSearchParams(params).toString();
+    const url = `http://localhost:5000/user/get/${type}${query ? `?${query}` : ''}`;
+    const data = await fetchReq(url, "GET");
 
+    const elementMap = {
+      countries: selectCountry,
+      states: selectState,
+      cities: selectCity,
+    };
+
+    if (data && data[type]) {
+      await createOptions(data[type], elementMap[type], type);
+      return true;
+    }
   } catch (error) {
-    console.log("Error: ", error);
+    console.log(`Error loading ${type}:`, error);
   }
 }
 
-async function getAllStates(countryId) {
-  try {
-    const url = `http://localhost:5000/user/get/states?countryId=${countryId}`;
-    const { states } = await fetchReq(url,"GET");
-    await createOptions(states, selectState, 'states');
-    return true;
+//Dropdown option creator
+async function createOptions(data, element, name) {
+  element.innerHTML = !data.length
+    ? `<option value="">No ${name} available</option>`
+    : `<option value="">Select ${name}</option>`;
 
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+  data.map(({ id, name }) => {
+    element.innerHTML += `<option value="${id}">${name}</option>`;
+  });
 }
 
-async function getAllCities(countryId, stateId) {
-  try {
-    const url = `http://localhost:5000/user/get/cities?countryId=${countryId}&stateId=${stateId}`;
-    const { cities } = await fetchReq(url,"GET");
-    await createOptions(cities, selectCity, 'cities');
-    return true;
-
-  } catch (error) {
-    console.log("Error: ", error);
-  }
-}
-
-async function fetchReq(url, reqMethod, formData=null) {
+async function fetchReq(url, reqMethod, formData = null) {
   try {
     const options = {
       method: reqMethod,
@@ -322,13 +338,13 @@ async function fetchReq(url, reqMethod, formData=null) {
     if (reqMethod.toUpperCase() !== "GET" && formData) {
       options.body = formData;
     }
-    const response = await fetch(url,options);
+    const response = await fetch(url, options);
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
     const data = await response.json();
     if (data.success) {
-      if(reqMethod.toUpperCase() !== "GET")
+      if (reqMethod.toUpperCase() !== "GET")
         return true;
       else
         return data;
@@ -336,13 +352,6 @@ async function fetchReq(url, reqMethod, formData=null) {
   } catch (error) {
     console.log("Error: ", error);
   }
-}
-
-async function createOptions(data, element, name) {
-  element.innerHTML = !data.length ? `<option value="">No ${name} available</option>` : `<option value="">Select ${name}</option>`; //Default option
-  data.map((elem) => {
-    element.innerHTML += `<option value=${elem.id}> ${elem.name} </option>`
-  });
 }
 
 function appendData(data) {
@@ -355,7 +364,6 @@ function appendData(data) {
     studentId.value = data[0]?.studentId || "";
     address.value = data[0]?.address || "";
 
-    // const genderRadios = document.querySelectorAll('input[name="gender"]');
     radios.forEach((radio) => {
       if (radio.value === data[0]?.gender) {
         selectedGender = radio.value;
@@ -365,57 +373,38 @@ function appendData(data) {
 
     // Handle Profile Image Preview
     preview.innerHTML = ""; //to remove the old preview
-    const fileContainer = document.createElement("div");
-    fileContainer.classList.add("fileContainer");
-    const profileImg = document.createElement('img');
-    if (data[0]?.profile) {
-      const fileUrl = data[0].profile && data[0].profile.path
+    const fileUrl = data[0].profile && data[0].profile.path
         ? `http://localhost:5000/${data[0]?.profile.path}`
         : `http://localhost:5000/uploads/${data[0]?.profile}`;
-      profileImg.src = fileUrl;
-      profileImg.classList.add('setImg');
-    }
-    fileContainer.appendChild(profileImg);
-    preview.appendChild(fileContainer);
 
-    const selectedCountryId = data[0]?.country || "";
-    const selectedStateID = data[0]?.state || "";
-    const selectedCityId = data[0]?.city || "";
+    preview.innerHTML = `<div class="fileContainer">
+      <img src=${fileUrl} class="setImg" alt="image preview"></img>
+      <img src='/assets/cross.svg' class="crossImg" alt="delete" onclick="deleteImg()"></img>
+    </div>`;
 
-    selectOption(selectCountry, selectedCountryId);
-    selectOption(selectState, selectedStateID);
-    selectOption(selectCity, selectedCityId);
-  } catch (error) { 
+    selectOption(selectCountry, data[0]?.country || "");
+    selectOption(selectState, data[0]?.state || "");
+    selectOption(selectCity, data[0]?.city || "");
+  } catch (error) {
     console.error("Error: ", error);
   }
 }
 
 async function selectOption(element, selectedId) {
   const optionArr = Array.from(element.options);
-  for (let i = 1; i < optionArr.length; i++) {
-    if (optionArr[i].value === selectedId) {
-      optionArr[i].selected = true;
-      break;
-    }
-  }
+  optionArr.map(option => option.value === selectedId ? option.selected = true : null);
 }
 
 async function getData(id) {
   const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
-  // const response = await fetch(url, {
-  //   method: "GET",
-  // });
-  // if (!response.ok) {
-  //   throw new Error(`Response status: ${response.status}`);
-  // }
-  // const data = await response.json();
-  const data = await fetchReq(url,"GET");
+  const data = await fetchReq(url, "GET");
   if (data.success) {
     const { studentData } = data;
     console.log("studentData: ", studentData);
     const selectedCountryId = studentData[0].country;
     const selectedStateID = studentData[0].state;
-    Promise.all([getAllCountries(), getAllStates(selectedCountryId), getAllCities(selectedCountryId, selectedStateID)]).then(() => {
+    Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { selectedCountryId }), fetchAndPopulate('cities', { selectedCountryId, selectedStateID })])
+    .then(() => {
       appendData(studentData);
     }).catch((err) => {
       console.log("Error: ", err);
