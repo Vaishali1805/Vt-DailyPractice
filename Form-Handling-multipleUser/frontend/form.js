@@ -237,9 +237,14 @@ function handleFileSelection(event) {
     return;
   }
 
+  const fileUrl = URL.createObjectURL(file);
+  previewImg(fileUrl);
+}
+
+function previewImg(url) {
   preview.innerHTML = `<div class="fileContainer">
     <img src='/assets/cross2.svg' class="crossImg" alt="delete" onclick="deleteImg()"></img>
-    <img src=${URL.createObjectURL(file)} class="setImg" alt="image preview"></img>
+    <img src=${url} class="setImg" alt="image preview"></img>
   </div>`;
 }
 
@@ -376,11 +381,7 @@ function appendData(data) {
     const fileUrl = data[0].profile && data[0].profile.path
         ? `http://localhost:5000/${data[0]?.profile.path}`
         : `http://localhost:5000/uploads/${data[0]?.profile}`;
-
-    preview.innerHTML = `<div class="fileContainer">
-      <img src=${fileUrl} class="setImg" alt="image preview"></img>
-      <img src='/assets/cross.svg' class="crossImg" alt="delete" onclick="deleteImg()"></img>
-    </div>`;
+    previewImg(fileUrl);
 
     selectOption(selectCountry, data[0]?.country || "");
     selectOption(selectState, data[0]?.state || "");
@@ -392,7 +393,7 @@ function appendData(data) {
 
 async function selectOption(element, selectedId) {
   const optionArr = Array.from(element.options);
-  optionArr.map(option => option.value === selectedId ? option.selected = true : null);
+  optionArr.map(option => option.value === String(selectedId) ? option.selected = true : null);   //option.value always be string
 }
 
 async function getData(id) {
@@ -401,9 +402,9 @@ async function getData(id) {
   if (data.success) {
     const { studentData } = data;
     console.log("studentData: ", studentData);
-    const selectedCountryId = studentData[0].country;
-    const selectedStateID = studentData[0].state;
-    Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { selectedCountryId }), fetchAndPopulate('cities', { selectedCountryId, selectedStateID })])
+    const countryId = studentData[0].country;
+    const stateId = studentData[0].state;
+    Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { countryId }), fetchAndPopulate('cities', { countryId, stateId })])
     .then(() => {
       appendData(studentData);
     }).catch((err) => {
