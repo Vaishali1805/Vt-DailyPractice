@@ -81,6 +81,8 @@ async function createOptions(data, element, name) {
   });
 }
 
+${query ? `?${query}` : ''}
+
 3rd party API for country,state and cities
 //for countries
 const url = "https://api.countrystatecity.in/v1/countries";
@@ -793,3 +795,62 @@ async function createOptions(data, element, name) {
     element.innerHTML += `<option value="${id}">${name}</option>`;
   });
 }
+
+form.html old code: 
+<!-- <div id="forMargin" class="input-group mb-3">
+                            <span class="input-group-text">+91</span>
+                            <div class="form-floating">
+                                <input type="tel" patter="[0-9]{10}" class="form-control" id="contactNo"
+                                    placeholder="contact Number" autocomplete="off">
+                                <label for="contactNo">Contact Number</label>
+                            </div>
+                        </div>
+                        <div id="forMargin" class="input-group mb-3 dateOfBirth">
+                            <label for="dateOfBirth" class="dob">Date of Birth :</label>
+                            <input type="date" id="dateOfBirth" class="form-control" name="birthday" autocomplete="off">
+                        </div> -->
+
+<!-- <div class="col-md">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="studentId" placeholder="Ex-2345678"
+                                    autocomplete="off">
+                                <label for="StudentId">Student Id :</label>
+                            </div>
+                        </div> -->
+<!-- <div class="col-md">
+                            <div>
+                                <p class="form-control">Please Select your gender</p>
+                                <input type="radio" id="male" name="gender" value="Male" class="radio">
+                                <label for="male">Male</label>
+                                <input type="radio" id="female" name="gender" value="Female" class="radio">
+                                <label for="female">Female</label>
+                                <input type="radio" id="other" name="gender" value="other" class="radio">
+                                <label for="other">Other</label>
+                            </div>
+                        </div> -->
+<!-- <label for="address">Street Address :</label>
+                        <input type="text" class="form-control parentName" placeholder="Street Address...." id="address"
+                            autocomplete="off"> -->
+
+<!-- <div class="country">
+                                <label for="inputCountry">Country :</label>
+                                <select type="text" id="inputCountry" class="form-control" required>
+                                    <option value="">Select Country</option>
+                                </select>
+                                <span id="countryError" class="error_msg"></span>
+                            </div>
+                            <div class="state">
+                                <label for="inputState">State :</label>
+                                <select id="inputState" class="form-control" required>
+                                    <option value="">Select State</option>
+                                </select>
+                                <span id="state_error" class="error_msg"></span>
+                            </div>
+                            <div class="city">
+                                <label for="inputCity">City :</label>
+                                <select id="inputCity" class="form-control" required>
+                                    <option value="">Select City</option>
+                                </select>
+                                <span id="city_error" class="error_msg"></span>
+                            </div>
+                        </div> -->

@@ -54,7 +54,7 @@ function renderStudentRows(data) {
         const fileUrl =
             obj.profile && obj.profile.path
                 ? `http://localhost:5000/${obj.profile.path}`
-                : `http://localhost:5000/uploads/${obj.profile}`; // Use default image if not available
+                : 'defaultImage.webp' // Use default image if not available
 
         // Extract names of country,state and city
         const countryName = countries.find((c) => c.id == obj.country)?.name || "-";

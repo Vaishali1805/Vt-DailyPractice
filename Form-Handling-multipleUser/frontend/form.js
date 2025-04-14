@@ -35,12 +35,15 @@ const terms_Condn_check = document.getElementById("terms_Condn_check");
 let countryId;
 let selectedGender;
 let lastSelectedFile = null;
+const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("studentId");
 
 radios.forEach((radio) => {
   radio.addEventListener("change", () => {
+    validate_gender();
     radio.checked ? selectedGender = radio.value : "";
   });
 });
@@ -50,18 +53,12 @@ terms_Condn_check.addEventListener("change", function () {
   submitBtn.disabled = this.checked ? false : true;
 });
 
-email.addEventListener('keypress', validateEmail);
-contactNo.addEventListener('keypress', validateContactNo);
-
-function validateEmail() {
-  const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  emailError_msg.textContent = !EmailRegex.test(email.value) ? "*Invalid Email Address" : "";
-}
-
-function validateContactNo() {
-  const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
-  contactNoError_msg.textContent = !PhoneRegex.test(contactNo.value) ? "*Invalid contact number" : "";
-}
+firstName.addEventListener('blur', validate_FirstName);
+email.addEventListener('input', validate_Email);
+contactNo.addEventListener('input', validate_contactNo);
+dateOfBirth.addEventListener('input', validate_dateOfBirth);
+studentId.addEventListener('blur', validate_studentId);
+selectCountry.addEventListener('blur', validate_country);
 
 // Handle form submission
 submitBtn.addEventListener("click", (e) => {
@@ -71,25 +68,12 @@ submitBtn.addEventListener("click", (e) => {
 //Function to submit the form
 async function handleSubmit(event) {
   try {
-    console.log("in handleSubmit")
     event.preventDefault();
     // Validate form before proceeding
-    if (!validate_form()) {
+    if (!validate_form())  {
       return;
     }
-    const formDataObj = create_FormDataObj();
-
-    // Handle Profile Picture
-    const formData = new FormData();
-    const file = inputProfile.files[0];
-    const fileToUpload = file ? file : null; // Set to null if no file
-    if (fileToUpload) {
-      const safeName = fileToUpload.name.replace(/\s+/g, '_');
-      formData.append("profile", fileToUpload, `${Date.now()}_${safeName}`);
-    } else
-      formData.append("profile", "defaultImage.webp"); // Send the image path as a string
-    formData.append("formData", JSON.stringify(formDataObj));
-
+    const formData = handleProfile();
     // submit the student data
     const url = "http://localhost:5000/user/submit/formData";
     const result = await fetchReq(url, "POST", formData);
@@ -107,7 +91,18 @@ async function handleEditForm(event) {
     if (!validate_form()) {
       return;
     }
-    const formDataObj = create_FormDataObj();
+    const formData = handleProfile();
+    //submit the edited data
+    const url = "http://localhost:5000/user/edit/formData";
+    const result = await fetchReq(url, "POST", formData)
+    result && (window.location.href = "/table.html");
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+function handleProfile() {
+  const formDataObj = create_FormDataObj();
 
     // Handle Profile Picture
     const formData = new FormData();
@@ -117,14 +112,7 @@ async function handleEditForm(event) {
       formData.append("profile", file, `${Date.now()}_${safeName}`);
     }
     formData.append("formData", JSON.stringify(formDataObj));
-
-    //submit the edited data
-    const url = "http://localhost:5000/user/edit/formData";
-    const result = await fetchReq(url, "POST", formData)
-    result && (window.location.href = "/table.html");
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+    return formData;
 }
 
 function create_FormDataObj() {
@@ -144,68 +132,74 @@ function create_FormDataObj() {
   return formDataObj;
 }
 
+function setError(element, message) {
+  element.textContent = message;
+}
+
+function validate_FirstName() {
+  const name = firstName.value.trim();
+  const error = name === "" ? "*First name is required" : (name.length < 2 || name.length > 30) ? "*First name must be between 2 and 30 characters" : "";
+  error ? setError(nameError_msg, error) : nameError_msg.textContent = "";
+}
+
+function validate_Email() {
+  const Email = email.value.trim(); 
+  const error = Email === "" ? "*Email is required" : !EmailRegex.test(Email) ? '*Invalid email address' : "";
+  error ? setError(emailError_msg, error) : emailError_msg.textContent = "";
+}
+
+function validate_contactNo() {
+  const ContactNo = contactNo.value.trim();
+  const error = ContactNo === "" ? "*Contact number is required" : !PhoneRegex.test(ContactNo) ? '*Invalid contact number' : "";
+  error ? setError(contactNoError_msg, error) : contactNoError_msg.textContent = "";
+}
+
+function validate_dateOfBirth() {
+  const dobDate = new Date(dateOfBirth.value);
+  const today = new Date();
+  const dob = dateOfBirth.value;
+  const error = !dob || isNaN(Date.parse(dob)) ? "*Invalid date of birth" : (dobDate > today) ? "*Date of birth cannot be in the future" : "";
+  error ? setError(dobError_msg,error) : dobError_msg.textContent = "";
+}
+
+function validate_studentId() {
+  const StudentId = studentId.value.trim();
+  StudentId === "" ? setError(studentIdError_msg, "*Student ID is required") : studentIdError_msg.textContent = "";
+}
+
+function validate_gender() {
+  const selectedRadio = document.querySelector('input[name="gender"]:checked');
+  !selectedRadio ? setError(genderError_msg, "*Gender is required") : genderError_msg.textContent = "";
+}
+
+function validate_country() {
+  !selectCountry.value ? setError(countryError_msg, "*Country is required") : countryError_msg.textContent = "";
+}
+
 function validate_form() {
-  const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
   let flag = true;
 
-  function setError(element, message) {
-    element.textContent = message;
-    flag = false;
-  }
-  // Validate first name
-  if (firstName.value.trim() == "") {
-    setError(nameError_msg, "*First name is required");
-  } else if (firstName.value.length < 2 || firstName.value.length > 30) {
-    setError(nameError_msg, "*First name must be between 2 and 30 characters");
-  } else {
-    nameError_msg.textContent = ""; // Clear error if valid
-  }
-  // Validate email format
-  if (email.value.trim() == "") {
-    setError(emailError_msg, "*Email is required");
-  } else if (!EmailRegex.test(email.value)) {
-    setError(emailError_msg, '*Invalid email address');
-  } else {
-    emailError_msg.textContent = "";
-  }
-  // Validate phone number
-  if (!contactNo.value.trim()) {
-    setError(contactNoError_msg, "*Contact number is required");
-  } else if (!PhoneRegex.test(contactNo.value)) {
-    setError(contactNoError_msg, '*Invalid contact number');
-  } else {
-    contactNoError_msg.textContent = "";
-  }
-  //Validate Date of Birth
-  if (!dateOfBirth.value || isNaN(Date.parse(dateOfBirth.value))) {
-    setError(dobError_msg, "*Invalid date of birth");
-  } else {
-    const dobDate = new Date(dateOfBirth.value);
-    const today = new Date();
-    if (dobDate > today) {
-      setError(dobError_msg, "Date of birth cannot be in the future");
-    } else {
-      dobError_msg.textContent = "";
-    }
-  }
-  //Validate StudentId
-  if (!studentId.value.trim()) {
-    setError(studentIdError_msg, "*Student ID is required");
-  } else {
-    studentIdError_msg.textContent = "";
-  }
-  //Validate gender
-  const selectedRadio = document.querySelector('input[name="gender"]:checked');
-  if (!selectedRadio) {
-    setError(genderError_msg, "*Gender is required");
-  } else {
-    genderError_msg.textContent = "";
-  }
-  // Validate country
-  if (!selectCountry.value) {
-    setError(countryError_msg, "*Country is required");
-  } else countryError_msg.textContent = "";
+  validate_FirstName();
+  validate_Email();
+  validate_contactNo();
+  validate_dateOfBirth();
+  validate_studentId();
+  validate_gender();
+  validate_country();
+
+  const errorFields = [
+    nameError_msg,
+    emailError_msg,
+    contactNoError_msg,
+    dobError_msg,
+    studentIdError_msg,
+    genderError_msg,
+    countryError_msg
+  ];
+
+  errorFields.forEach(error => {
+    if (error.textContent !== "") flag = false;
+  });
 
   return flag;
 }
@@ -223,22 +217,33 @@ inputProfileBtn.addEventListener("click", (e) => {
 inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
+  // let file = event.target.files[0];
+  // lastSelectedFile = file ? file : lastSelectedFile;
+  // file = file ? file : lastSelectedFile;
+
+  // // Validate selected file before displaying preview
+  // if (!validateFile(file)) {
+  //   console.log("in validate")
+  //   inputProfile.value = ""; // clear the input if file is invalid
+  //   preview.innerHTML = "";
+  //   return;
+  // }
+
+  // const fileUrl = URL.createObjectURL(file);
+  // previewImg(fileUrl);
   let file = event.target.files[0];
-  lastSelectedFile = file ? file : lastSelectedFile;
-  file = file ? file : lastSelectedFile;
   console.log("file: ", file);
-  console.log("lastSelectedFile: ",lastSelectedFile);
-
-    // Validate selected file before displaying preview
-  if (!validateFile(file)) {
-    console.log("in validate")
-    inputProfile.value = ""; // clear the input if file is invalid
-    preview.innerHTML = "";
-    return;
+  console.log("lastSelectedFile: ", lastSelectedFile);
+  if(file && validateFile(file)){
+    lastSelectedFile = file;
+    const fileUrl = URL.createObjectURL(file);
+    previewImg(fileUrl);
   }
-
-  const fileUrl = URL.createObjectURL(file);
-  previewImg(fileUrl);
+  file = file ? file : lastSelectedFile;
+  console.log("inputProfile.value: ",inputProfile.value);   //after press close from explorer it gets empty
+  // inputProfile.value = file;
+  console.log("file2: ", file);
+  console.log("lastSelectedFile2: ", lastSelectedFile);
 }
 
 function previewImg(url) {
@@ -304,8 +309,9 @@ function resetDropdown(dropdown, label) {
 
 async function fetchAndPopulate(type, params = {}) {
   try {
+    params.type = type;
     let query = new URLSearchParams(params).toString();
-    const url = `http://localhost:5000/user/get/${type}${query ? `?${query}` : ''}`;
+    const url = `http://localhost:5000/user/get/locationData?${query}`;
     const data = await fetchReq(url, "GET");
 
     const elementMap = {
@@ -379,8 +385,8 @@ function appendData(data) {
     // Handle Profile Image Preview
     preview.innerHTML = ""; //to remove the old preview
     const fileUrl = data[0].profile && data[0].profile.path
-        ? `http://localhost:5000/${data[0]?.profile.path}`
-        : `http://localhost:5000/uploads/${data[0]?.profile}`;
+      ? `http://localhost:5000/${data[0]?.profile.path}`
+      : 'defaultImage.webp'
     previewImg(fileUrl);
 
     selectOption(selectCountry, data[0]?.country || "");
@@ -397,18 +403,22 @@ async function selectOption(element, selectedId) {
 }
 
 async function getData(id) {
-  const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
-  const data = await fetchReq(url, "GET");
-  if (data.success) {
-    const { studentData } = data;
-    console.log("studentData: ", studentData);
-    const countryId = studentData[0].country;
-    const stateId = studentData[0].state;
-    Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { countryId }), fetchAndPopulate('cities', { countryId, stateId })])
-    .then(() => {
-      appendData(studentData);
-    }).catch((err) => {
-      console.log("Error: ", err);
-    });
+  try {
+    const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
+    const data = await fetchReq(url, "GET");
+    if (data.success) {
+      const { studentData } = data;
+      console.log("studentData: ", studentData);
+      const countryId = studentData[0].country;
+      const stateId = studentData[0].state;
+      Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { countryId }), fetchAndPopulate('cities', { countryId, stateId })])
+        .then(() => {
+          appendData(studentData);
+        }).catch((err) => {
+          console.log("Error: ", err);
+        });
+    }
+  } catch (error) {
+    console.log("Error: ",error);
   }
 }

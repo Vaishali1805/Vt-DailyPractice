@@ -5,28 +5,39 @@ const __dirname = path.resolve();
 
 export const submitFormData = (req, res) => {
     try {
+        console.log("submitFormData");
         const { formData } = req.body;
-        console.log("🚀 ~ submitFormData ~ formData:", formData)
         const data = JSON.parse(formData);
-        
         if(!data){
             return res.status(400).json({message: "Data not Found",success: false});
         }
-
-        let file;
-        if (req.file) {
-            file = req.file;
-        } else {
-            file = req.profilePath;
-        }
-        data.profile = file;
-
+        data.profile = req.file ? req.file : null;
         const studentData = myCache.get("studentData") || [];
         studentData.push(data);
         myCache.set("studentData", studentData);
         res.json({message: "Data submitted Successfully",success: true});
     } catch (error) {
         console.log("Error: ", error);
+    }
+}
+
+export const editFormData = (req, res) => {
+    try {
+        const editedData = JSON.parse(req.body.formData);
+        if(!editedData) {
+            return res.status(400).json({message: "Data Not Found",success: false});
+        }
+        const studentsData = myCache.get("studentData") || [];
+        let prevFile = studentsData.find(data => data.studentId === editedData.studentId)?.profile;
+        editedData.profile = req.file ? req.file : prevFile;
+
+        const updatedArr = studentsData.filter((data) => data.studentId != editedData.studentId);
+        updatedArr.push(editedData);
+        myCache.set("studentData",updatedArr);
+        res.json({ message: "Data edited Successfully", success: true });
+    } catch (error) {
+        console.error("Error editing student records:", error);
+        res.status(500).json({ message: "An unexpected error occurred", success: false });
     }
 }
 
@@ -58,102 +69,50 @@ const readJsonFile = async (filename) => {
     }
 };
 
-export const getCountries = async (req,res) => {
+export const getLocationData = async (req,res) => {
     try {
-        const filePath = path.join(__dirname,'countries.json');
-        fs.readFile(filePath, 'utf8',(err,data) => {
-            if(err){
-                return res.status(500).json({error: 'Failed to read data',success: false});
-            }
-            res.json({countries: JSON.parse(data),success: true});
-        })
-    } catch (error) {
-        console.log("Error: ",error);
-    }
-}
+        const { type, countryId, stateId } = req.query;
+        let data = [];
+        let filtered = [];
 
-export const getStates = async (req,res) => {
-    try {
-        const countryId = req.query.countryId;
-        const filePath = path.join(__dirname,'states.json');
-        fs.readFile(filePath,'utf-8',(err,data) => {
-            if(err){
-                return read.status(500).json({error:'Failes to read data',success: false});
-            }
-            const statesData = JSON.parse(data);
-            const states = statesData.filter(state => state.countryId == countryId)
-            res.json({states,success: true});
-        })
-    } catch (error) {
-        console.log("Error: ",error);
-    }
-}
+        switch (type) {
+            case 'countries':
+                data = await readJsonFile('countries.json');
+                return res.json({ countries: data, success: true });
 
-export const getCities = async (req,res) => {
-    try {
-        const countryId = req.query.countryId;
-        const stateId = req.query.stateId;
-        const filePath = path.join(__dirname,'cities.json');
-        fs.readFile(filePath,'utf-8',(err,data) => {
-            if(err){
-                return read.status(500).json({error:'Failes to read data',success: false});
-            }
-            const citiesData = JSON.parse(data);
-            const cities = citiesData.filter(city => city.stateId == stateId && city.countryId == countryId)
-            res.json({cities,success: true});
-        })
-    } catch (error) {
-        console.log("Error: ",error);
-    }
-}
-
-export const editFormData = (req, res) => {
-    try {
-        const editedData = JSON.parse(req.body.formData);
-        if(!editedData) {
-            return res.status(400).json({message: "Data Not Found",success: false});
-        }
-        const profile = req.file ? req.file : null;
-
-        const studentsData = myCache.get("studentData") || [];
-        console.log("studentsData: ", studentsData);
-
-        if (profile) {
-            editedData.profile = profile;
-        } else {
-            studentsData.map((data) => {
-                if (data.studentId === editedData.studentId) {
-                    editedData.profile = data.profile;
+            case 'states':
+                if (!countryId) {
+                    return res.status(400).json({ error: 'countryId is required', success: false });
                 }
-            })
-        }
+                data = await readJsonFile('states.json');
+                filtered = data.filter(state => state.countryId == countryId);
+                return res.json({ states: filtered, success: true });
 
-        const updatedArr = studentsData.filter((data) => data.studentId != editedData.studentId);
-        updatedArr.push(editedData);
-        myCache.set("studentData",updatedArr);
-        res.json({ message: "Data edited Successfully", success: true });
+            case 'cities':
+                if (!countryId || !stateId) {
+                    return res.status(400).json({ error: 'countryId and stateId are required', success: false });
+                }
+                data = await readJsonFile('cities.json');
+                filtered = data.filter(city => city.countryId == countryId && city.stateId == stateId);
+                return res.json({ cities: filtered, success: true });
+
+            default:
+                return res.status(400).json({ error: 'Invalid type parameter', success: false });
+        }
     } catch (error) {
-        console.error("Error editing student records:", error);
-        res.status(500).json({ message: "An unexpected error occurred", success: false });
+        res.status(500).json({ error: error.message, success: false });
     }
 }
 
 export const deleteStudentRecords = (req, res) => {
     try {
-        console.log("🚀 ~ deleteStudentRecords ~ req.body:", req.body)
-
         const { studentIds } = req.body;
-        console.log("studentIds: ", studentIds);
         if (studentIds.length === 0) {
             return res.status(400).json({ message: "No IDs provided for deletion", success: false });
         }
 
         const studentData = myCache.get('studentData') || [];
-        console.log("studentData: ", studentData);
-
         const filteredStudentData = studentData.filter(student => !studentIds.includes(student.studentId));
-        console.log("🚀 ~ deleteManyStudentRecords ~ filteredStudentData:", filteredStudentData)
-
         if (studentData.length === filteredStudentData.length) {
             return res.status(404).json({ message: "No matching student records found to delete", success: false });
         }

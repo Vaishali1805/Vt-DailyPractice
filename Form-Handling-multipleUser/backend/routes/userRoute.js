@@ -2,8 +2,7 @@ import express from 'express'
 const router = express.Router();
 import multer from 'multer'
 import fs from 'fs';
-import { submitFormData,getStudentData,getCountries,getDataById,getStates,getCities,editFormData,deleteStudentRecords } from '../controllers/userController.js';
-import {handleProfileUpload,handleEditProfile} from '../middlewares/userProfile.js'
+import { submitFormData,getStudentData,getDataById,getLocationData,editFormData,deleteStudentRecords } from '../controllers/userController.js';
 
 // Create 'uploads' directory if it doesn't exist
 const uploadDir = 'uploads';
@@ -19,24 +18,13 @@ const storage = multer.diskStorage({
         cb(null,file.originalname)
     }
 })
-const editStorage = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null,'uploads')
-    },
-    filename: (req,file,cb) => {
-        cb(null,file.originalname)
-    }
-})
 
 const uploadProfile = multer({ storage: storage });
-const uploadEditProfile = multer({ storage: editStorage });
-router.post('/submit/formData',uploadProfile.single('profile'),handleProfileUpload,submitFormData);
+router.post('/submit/formData',uploadProfile.single('profile'),submitFormData);
+router.post('/edit/formData', uploadProfile.single('profile'),editFormData);
 router.get('/get/studentData',getStudentData);
 router.get('/get/dataById',getDataById);
-router.get('/get/countries',getCountries);
-router.get('/get/states',getStates);
-router.get('/get/cities',getCities);
-router.post('/edit/formData', uploadEditProfile.single('profile'), handleEditProfile, editFormData);
+router.get('/get/locationData',getLocationData);
 router.post('/delete/studentRecord',deleteStudentRecords);
 
 export default router;
