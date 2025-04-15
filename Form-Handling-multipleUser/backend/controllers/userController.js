@@ -12,6 +12,7 @@ export const submitFormData = (req, res) => {
             return res.status(400).json({message: "Data not Found",success: false});
         }
         data.profile = req.file ? req.file : null;
+        data.id = Math.floor(Math.random() * Date.now())
         const studentData = myCache.get("studentData") || [];
         studentData.push(data);
         myCache.set("studentData", studentData);
@@ -23,17 +24,27 @@ export const submitFormData = (req, res) => {
 
 export const editFormData = (req, res) => {
     try {
-        const editedData = JSON.parse(req.body.formData);
+        const {id} = req.query;
+        // const regularObj = Object.fromEntries(Object.entries(req.body));
+        const file = req.file;
+        const editedData = req.body;
         if(!editedData) {
             return res.status(400).json({message: "Data Not Found",success: false});
         }
         const studentsData = myCache.get("studentData") || [];
-        let prevFile = studentsData.find(data => data.studentId === editedData.studentId)?.profile;
-        editedData.profile = req.file ? req.file : prevFile;
-
-        const updatedArr = studentsData.filter((data) => data.studentId != editedData.studentId);
-        updatedArr.push(editedData);
-        myCache.set("studentData",updatedArr);
+        let studentIndex = studentsData.findIndex(data => data.id == id);
+        if (studentIndex === -1) {
+            return res.status(404).json({ message: "Student not found", success: false });
+        }
+        
+        // Update the student fields with the editedData - spread operator is used to merge both the arrays
+        studentsData[studentIndex] = {
+            ...studentsData[studentIndex],
+            ...editedData
+        };
+        studentsData[studentIndex].profile = file ? file : studentsData[studentIndex].profile;
+        console.log("🚀 ~ editFormData ~ studentsData[studentIndex]:", studentsData[studentIndex])
+        myCache.set("studentData", studentsData);
         res.json({ message: "Data edited Successfully", success: true });
     } catch (error) {
         console.error("Error editing student records:", error);
@@ -112,11 +123,11 @@ export const deleteStudentRecords = (req, res) => {
         }
 
         const studentData = myCache.get('studentData') || [];
-        const filteredStudentData = studentData.filter(student => !studentIds.includes(student.studentId));
+        const filteredStudentData = studentData.filter(student => !studentIds.includes(student.id));
         if (studentData.length === filteredStudentData.length) {
             return res.status(404).json({ message: "No matching student records found to delete", success: false });
         }
-
+        //also deleted the profile from the uploads folder
         myCache.set("studentData", filteredStudentData);
         res.json({ message: "Rows deleted successfully", success: true });
     } catch (error) {
@@ -127,12 +138,12 @@ export const deleteStudentRecords = (req, res) => {
 
 export const getDataById = (req,res) => {
     try {
-        const {studentId} = req.query;
-        const studentData = myCache.get("studentData");
+        const {id} = req.query;
+        const studentData = myCache.get("studentData") || [];
         if(!studentData){
             return res.status(400).json({message: "Data Not Found",success: false})
         }
-        const data = studentData.filter(d => d.studentId == studentId)
+        const data = studentData.filter(d => d.id == id)
         res.json({studentData: data,success: true});
     } catch (error) {
         res.status(500).json({ message: "An unexpected error occurred", success: false });

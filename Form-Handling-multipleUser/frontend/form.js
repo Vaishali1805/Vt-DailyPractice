@@ -2,6 +2,7 @@
 const firstName = document.getElementById("firstName");
 const lastName = document.getElementById("lastName");
 const nameError_msg = document.getElementById("nameError");
+const lastNameError_msg = document.getElementById("lastNameError");
 
 // Profile picture upload elements
 const inputProfile = document.getElementById("inputProfile");
@@ -35,11 +36,13 @@ const terms_Condn_check = document.getElementById("terms_Condn_check");
 let countryId;
 let selectedGender;
 let lastSelectedFile = null;
+let studentData = [];
+let profileDeleted = false;
 const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PhoneRegex = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
 
 const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get("studentId");
+const id = urlParams.get("id");
 
 radios.forEach((radio) => {
   radio.addEventListener("change", () => {
@@ -54,6 +57,7 @@ terms_Condn_check.addEventListener("change", function () {
 });
 
 firstName.addEventListener('blur', validate_FirstName);
+lastName.addEventListener('input', validate_LastName);
 email.addEventListener('input', validate_Email);
 contactNo.addEventListener('input', validate_contactNo);
 dateOfBirth.addEventListener('input', validate_dateOfBirth);
@@ -91,10 +95,28 @@ async function handleEditForm(event) {
     if (!validate_form()) {
       return;
     }
-    const formData = handleProfile();
-    //submit the edited data
-    const url = "http://localhost:5000/user/edit/formData";
-    const result = await fetchReq(url, "POST", formData)
+    const updatedData = new FormData();
+    const currentData = create_FormDataObj();
+    const oldData = studentData[0];
+    console.log("🚀 ~ handleEditForm ~ currentData:", currentData)
+    console.log("🚀 ~ handleEditForm ~ oldData:", oldData)  
+    for (let key in currentData) {
+      if (currentData[key] !== oldData[key]) {
+        updatedData.append(key, currentData[key]);
+      }
+    }
+    //if user selected the new File
+    if (lastSelectedFile) {
+      const safeName = lastSelectedFile.name.replace(/\s+/g, '_');
+      updatedData.append("profile", lastSelectedFile, `${Date.now()}_${safeName}`);
+    } 
+    if (profileDeleted) {
+      updatedData.append("profile", "null");
+    }
+    
+    // submit the edited data
+    const url = `http://localhost:5000/user/edit/formData?id=${id}`;
+    const result = await fetchReq(url, "POST", updatedData)
     result && (window.location.href = "/table.html");
   } catch (error) {
     console.log("Error: ", error);
@@ -106,10 +128,9 @@ function handleProfile() {
 
     // Handle Profile Picture
     const formData = new FormData();
-    const file = inputProfile.files[0];
-    if (file) {
-      const safeName = file.name.replace(/\s+/g, '_');
-      formData.append("profile", file, `${Date.now()}_${safeName}`);
+    if (lastSelectedFile) {
+      const safeName = lastSelectedFile.name.replace(/\s+/g, '_');
+      formData.append("profile", lastSelectedFile, `${Date.now()}_${safeName}`);
     }
     formData.append("formData", JSON.stringify(formDataObj));
     return formData;
@@ -140,6 +161,12 @@ function validate_FirstName() {
   const name = firstName.value.trim();
   const error = name === "" ? "*First name is required" : (name.length < 2 || name.length > 30) ? "*First name must be between 2 and 30 characters" : "";
   error ? setError(nameError_msg, error) : nameError_msg.textContent = "";
+}
+
+function validate_LastName() {
+  const name = lastName.value.trim();
+  const error = (name && (name.length < 2 || name.length > 30)) ? "*Last name must be between 2 and 30 characters" : "";
+  error ? setError(lastNameError_msg,error) : lastNameError_msg.textContent = "";
 }
 
 function validate_Email() {
@@ -180,6 +207,7 @@ function validate_form() {
   let flag = true;
 
   validate_FirstName();
+  validate_LastName();
   validate_Email();
   validate_contactNo();
   validate_dateOfBirth();
@@ -189,6 +217,7 @@ function validate_form() {
 
   const errorFields = [
     nameError_msg,
+    lastNameError_msg,
     emailError_msg,
     contactNoError_msg,
     dobError_msg,
@@ -217,33 +246,18 @@ inputProfileBtn.addEventListener("click", (e) => {
 inputProfile.addEventListener("change", handleFileSelection);
 
 function handleFileSelection(event) {
-  // let file = event.target.files[0];
-  // lastSelectedFile = file ? file : lastSelectedFile;
-  // file = file ? file : lastSelectedFile;
-
-  // // Validate selected file before displaying preview
-  // if (!validateFile(file)) {
-  //   console.log("in validate")
-  //   inputProfile.value = ""; // clear the input if file is invalid
-  //   preview.innerHTML = "";
-  //   return;
-  // }
-
-  // const fileUrl = URL.createObjectURL(file);
-  // previewImg(fileUrl);
   let file = event.target.files[0];
-  console.log("file: ", file);
-  console.log("lastSelectedFile: ", lastSelectedFile);
-  if(file && validateFile(file)){
-    lastSelectedFile = file;
-    const fileUrl = URL.createObjectURL(file);
-    previewImg(fileUrl);
+  if (file) {
+    if (validateFile(file)) {
+      lastSelectedFile = file;
+      const fileUrl = URL.createObjectURL(file);
+      previewImg(fileUrl);
+    } else {
+      preview.innerHTML = '';
+      lastSelectedFile = null;
+      inputProfile.value = "";
+    }
   }
-  file = file ? file : lastSelectedFile;
-  console.log("inputProfile.value: ",inputProfile.value);   //after press close from explorer it gets empty
-  // inputProfile.value = file;
-  console.log("file2: ", file);
-  console.log("lastSelectedFile2: ", lastSelectedFile);
 }
 
 function previewImg(url) {
@@ -256,6 +270,8 @@ function previewImg(url) {
 function deleteImg() {
   inputProfile.value = "";
   preview.innerHTML = "";
+  lastSelectedFile = null;
+  profileDeleted = true;
 }
 
 function validateFile(file) {
@@ -384,6 +400,8 @@ function appendData(data) {
 
     // Handle Profile Image Preview
     preview.innerHTML = ""; //to remove the old preview
+    
+    profileDeleted = false;
     const fileUrl = data[0].profile && data[0].profile.path
       ? `http://localhost:5000/${data[0]?.profile.path}`
       : 'defaultImage.webp'
@@ -392,7 +410,7 @@ function appendData(data) {
     selectOption(selectCountry, data[0]?.country || "");
     selectOption(selectState, data[0]?.state || "");
     selectOption(selectCity, data[0]?.city || "");
-  } catch (error) {
+  } catch (error) {     
     console.error("Error: ", error);
   }
 }
@@ -404,10 +422,11 @@ async function selectOption(element, selectedId) {
 
 async function getData(id) {
   try {
-    const url = `http://localhost:5000/user/get/dataById?studentId=${id}`;
+    const url = `http://localhost:5000/user/get/dataById?id=${id}`;
     const data = await fetchReq(url, "GET");
     if (data.success) {
-      const { studentData } = data;
+      // const { studentData } = data;
+      studentData = data.studentData;
       console.log("studentData: ", studentData);
       const countryId = studentData[0].country;
       const stateId = studentData[0].state;

@@ -34,13 +34,14 @@
                         <label for="lastName" class="input-group-text">Last name :</label>
                         <input type="text" name="lastName" id="lastName" class="form-control"
                             placeholder="Type here...." autocomplete="off" required>
-                    </div> <br>
+                    </div>
+                    <span id="lastNameError" class="error_msg"></span><br>
 
                     <!-- profile picture -->
                     <div id="selectFile">
                         <label for="profilePic">Select your Profile Picture:</label>
                         <input type="file" id="inputProfile" name="profilePic" accept=".png, .jpg, .jpeg"
-                            style="display:none" />
+                            style="display:none" value="" />
                         <button type="button" id="inputProfileBtn">Click Here</button>
                     </div>
                     <span id="profileError" class="error_msg"></span><br>

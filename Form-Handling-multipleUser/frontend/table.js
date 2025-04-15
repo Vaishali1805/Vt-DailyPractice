@@ -20,7 +20,7 @@ mainCheckBox.addEventListener("change", check_uncheck_all);
 rowContainer.addEventListener("change", (event) => {
     if (event.target && event.target.classList.contains("check")) {
         const checkbox = event.target;
-        const studentId = Number(checkbox.closest("tr").dataset.studentId);
+        const studentId = Number(checkbox.closest("tr").dataset.id);
         checkbox.checked ? selectedIds.add(studentId) : selectedIds.delete(studentId);
         console.log("🚀 ~ rowContainer.addEventListener ~ selectedIds:", selectedIds)
         updateMainCheckbox_State();
@@ -50,7 +50,7 @@ function renderStudentRows(data) {
 
     studentData.map((obj, index) => {
         const newRow = document.createElement("tr");
-        newRow.dataset.studentId = obj.studentId; // Add data attribute for easy access
+        newRow.dataset.id = obj.id; // Add data attribute for easy access
         const fileUrl =
             obj.profile && obj.profile.path
                 ? `http://localhost:5000/${obj.profile.path}`
@@ -77,7 +77,7 @@ function renderStudentRows(data) {
             <td>${obj.country ? countryName : "-"}</td>
             <td>${obj.state ? stateName : "-"}</td>
             <td>${obj.city ? cityName : "-"}</td>
-            <td><img src='/assets/edit.svg' class="editIcon" alt="edit-icon" onclick="editStudentData(${obj.studentId})" /><img src='/assets/delete.svg' class="deleteIcon" alt="delete-icon" onclick="handleDelete(${obj.studentId})" /></td>
+            <td><img src='/assets/edit.svg' class="editIcon" alt="edit-icon" onclick="editStudentData(${obj.id})" /><img src='/assets/delete.svg' class="deleteIcon" alt="delete-icon" onclick="handleDelete(${obj.id})" /></td>
         `;
 
         // Add row to DOM
@@ -96,7 +96,7 @@ function check_uncheck_all() {
     const checkAll = mainCheckBox.checked;
     checkBoxes.forEach((checkbox) => {
         checkbox.checked = checkAll;
-        const studentId = Number(checkbox.closest("tr").dataset.studentId);
+        const studentId = Number(checkbox.closest("tr").dataset.id);
         checkAll ? selectedIds.add(studentId) : selectedIds.delete(studentId);
     });
 }
@@ -142,8 +142,8 @@ async function deleteStudent(studentId) {
 }
 
 // Navigate to edit form
-function editStudentData(studentId) {
-    window.location.href = `/form.html?studentId=${studentId}`;
+function editStudentData(id) {
+    window.location.href = `/form.html?id=${id}`;
 }
 
 // Initial load
