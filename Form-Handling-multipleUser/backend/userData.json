@@ -11,16 +11,7 @@
     "country": 2,
     "state": 867,
     "city": 16160,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744800514831_gabriel-lebel-bernier-singles2.jpg",
-      "encoding": "7bit",
-      "mimetype": "image/jpeg",
-      "destination": "uploads",
-      "filename": "1744800514831_gabriel-lebel-bernier-singles2.jpg",
-      "path": "uploads\\1744800514831_gabriel-lebel-bernier-singles2.jpg",
-      "size": 404933
-    },
+    "profile": "null",
     "id": 1687573519568
   },
   {
@@ -67,13 +58,13 @@
     "city": 3909,
     "profile": {
       "fieldname": "profile",
-      "originalname": "1744805175931_pexels-matthew-montrone-230847-1324803.jpg",
+      "originalname": "1744815832968_Screenshot_2024-03-25_095901.png",
       "encoding": "7bit",
-      "mimetype": "image/jpeg",
+      "mimetype": "image/png",
       "destination": "uploads",
-      "filename": "1744805175931_pexels-matthew-montrone-230847-1324803.jpg",
-      "path": "uploads\\1744805175931_pexels-matthew-montrone-230847-1324803.jpg",
-      "size": 4471354
+      "filename": "1744815832968_Screenshot_2024-03-25_095901.png",
+      "path": "uploads\\1744815832968_Screenshot_2024-03-25_095901.png",
+      "size": 1329808
     },
     "id": 531161376899
   },
@@ -115,5 +106,20 @@
     "city": null,
     "profile": null,
     "id": 1744809057692
+  },
+  {
+    "firstName": "Vaishali",
+    "lastName": "sharma",
+    "email": "rknfjks@sknsf.com",
+    "contactNo": "324454534",
+    "dateOfBirth": "2024-12-18",
+    "studentId": 30,
+    "gender": "Female",
+    "address": "#915dwarikapuri jagadhri",
+    "country": 1,
+    "state": 3903,
+    "city": 3926,
+    "profile": null,
+    "id": 1744813846850
   }
 ]

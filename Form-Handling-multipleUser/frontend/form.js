@@ -74,9 +74,7 @@ async function handleSubmit(event) {
   try {
     event.preventDefault();
     // Validate form before proceeding
-    if (!validate_form())  {
-      return;
-    }
+    if (!validate_form()) return;
     const formData = handleProfile();
     // submit the student data
     const url = "http://localhost:5000/user/submit/formData";
@@ -92,29 +90,27 @@ async function handleEditForm(event) {
   try {
     event.preventDefault();
     // Validate form before proceeding
-    if (!validate_form()) {
-      return;
-    }
+    if (!validate_form()) return;
     const updatedData = new FormData();
     const currentData = create_FormDataObj();
     const oldData = studentData[0];
-    console.log("🚀 ~ handleEditForm ~ currentData:", currentData)
-    console.log("🚀 ~ handleEditForm ~ oldData:", oldData)  
-    for (let key in currentData) {
-      if (currentData[key] !== oldData[key]) {
-        updatedData.append(key, currentData[key]);
-      }
-    }
-    //if user selected the new File
+
+    // for (let key in currentData) {
+    //   if (currentData[key] !== oldData[key]) {
+    //     updatedData.append(key, currentData[key]);
+    //   }
+    // }  //or    object.entries convert the obj in array
+    Object.entries(currentData).forEach(([key, value]) => {
+      if (value !== oldData[key]) updatedData.append(key, value);
+    });
+
     if (lastSelectedFile) {
       const safeName = lastSelectedFile.name.replace(/\s+/g, '_');
       updatedData.append("profile", lastSelectedFile, `${Date.now()}_${safeName}`);
-    } 
-    if (profileDeleted) {
+    } else if (profileDeleted) {
       updatedData.append("profile", "null");
     }
     
-    // submit the edited data
     const url = `http://localhost:5000/user/edit/formData?id=${id}`;
     const result = await fetchReq(url, "POST", updatedData)
     result && (window.location.href = "/table.html");

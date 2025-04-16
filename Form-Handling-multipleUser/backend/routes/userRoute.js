@@ -24,9 +24,9 @@ const uploadProfile = multer({
     limits: { fileSize: 5 * 1024 * 1024 } // 5MB
   });
 router.post('/submit/formData',uploadProfile.single('profile'),submitFormData);
-router.post('/edit/formData', uploadProfile.single('profile'),editFormData);
 router.get('/get/studentData',getStudentData);
 router.get('/get/dataById',getDataById);
+router.post('/edit/formData', uploadProfile.single('profile'),editFormData);
 router.get('/get/locationData',getLocationData);
 router.post('/delete/studentRecord',deleteStudentRecords);
 

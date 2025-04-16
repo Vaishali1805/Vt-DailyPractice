@@ -12,12 +12,11 @@ export const submitFormData = async (req, res) => {
         }
         data.profile = req.file ? req.file : null;
         data.id = Date.now() + Math.floor(Math.random() * 1000);
-        console.log("🚀 ~ submitFormData ~ data:", data)
+        
         // const studentData = getDataFromCache();
         const studentData = await readJsonFile('userData.json');
         studentData.push(data);
-        writeData('userData.json',studentData);
-        // await fs.writeFile('userData.json',JSON.stringify(studentData,null,2),(err) => console.log("Failed to write data in a file: ",err));
+        await writeData('userData.json',studentData);
         // setDataInCache(studentData);
         res.json({ message: "Data submitted Successfully", success: true });
     } catch (error) {
@@ -48,7 +47,6 @@ export const editFormData = async (req, res) => {
         studentsData[studentIndex].profile = file ? file : studentsData[studentIndex].profile;
         console.log("🚀 ~ editFormData ~ studentsData[studentIndex]:", studentsData[studentIndex])
         await writeData('userData.json',studentsData);
-        // await fs.writeFile('userData.json',JSON.stringify(studentsData,null,2),(err) => console.log("Failed to write data in a file: ",err));
         // setDataInCache(studentsData);
         res.json({ message: "Data edited Successfully", success: true });
     } catch (error) {
@@ -124,7 +122,6 @@ export const deleteStudentRecords = async (req, res) => {
         }
         //also deleted the profile from the uploads folder ---- pending
         await writeData('userData.json',filteredStudentData);
-        // await fs.writeFile('userData.json',JSON.stringify(filteredStudentData,null,2),(err) => console.log("Failed to write data in a file: ",err));
         // setDataInCache(filteredStudentData);
         res.json({ message: "Rows deleted successfully", success: true });
     } catch (error) {
@@ -151,26 +148,20 @@ export const getDataById = async (req, res) => {
 const readJsonFile = async (filename) => {
     const filePath = path.join(__dirname, filename);
     try {
-        if (fs.existsSync(filePath)) {
-            const data = await fs.promises.readFile(filePath, 'utf8');
-            if(data.trim() === '') return [];
-            return JSON.parse(data);
-        }
-    } catch (err) {
-        throw new Error(`Failed to read ${filename}: ${err.message}`);
+        const data = await fs.promises.readFile(filePath, 'utf8');
+        if(data.trim() === '') return [];
+        return JSON.parse(data);
+    } catch (error) {
+        throw new Error(`Failed to read ${filename}: ${error.message}`);
     }
 };
 
 const writeData = async (filename,data) => {
     const filePath = path.join(__dirname, filename);
     try {
-        if (fs.existsSync(filePath)) {
-            fs.writeFile(filename,JSON.stringify(data,null,2),(err) => {
-                console.log("Error: ",err);
-            })
-        }
+        await fs.writeFile(filename,JSON.stringify(data,null,2),'utf-8');
     } catch (error) {
-        throw new Error(`Failed to write ${filename}: ${err.message}`);
+        throw new Error(`Failed to write ${filename}: ${error.message}`);
     }
 }
 
