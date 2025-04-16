@@ -1,4 +1,47 @@
 npx live-server --port=5500 --no-browser
+storing data in fileStorage instead of cache
+   
+import fs from 'fs/promises';
+import path from 'path';
+import { readJsonFile } from '../utils/readJsonFile.js'; // assuming this is your custom function
+
+export const editFormData = async (req, res) => {
+    try {
+        const { id } = req.query;
+        const editedFields = req.body;
+        const profileFile = req.file;
+
+        if (!id || !editedFields) {
+            return res.status(400).json({ message: "Missing ID or data", success: false });
+        }
+
+        const filePath = path.resolve('userData.json');
+        let studentsData = await readJsonFile(filePath);
+
+        const studentIndex = studentsData.findIndex(student => String(student.id) === String(id));
+        if (studentIndex === -1) {
+            return res.status(404).json({ message: "Student not found", success: false });
+        }
+
+        const currentStudent = studentsData[studentIndex];
+
+        const updatedStudent = {
+            ...currentStudent,
+            ...editedFields,
+            profile: profileFile || currentStudent.profile
+        };
+
+        studentsData[studentIndex] = updatedStudent;
+
+        await fs.writeFile(filePath, JSON.stringify(studentsData, null, 2));
+
+        res.status(200).json({ message: "Data edited successfully", success: true });
+    } catch (error) {
+        console.error("Error editing student records:", error);
+        res.status(500).json({ message: "An error occurred while editing data", success: false });
+    }
+};
+
 
 🚀 ~ deleteManyStudentRecords ~ req.body.obj: { studentIds: [ 86 ] }
 🚀 ~ deleteManyStudentRecords ~ req.body.obj: { studentIds: [ '23', '86' ] }

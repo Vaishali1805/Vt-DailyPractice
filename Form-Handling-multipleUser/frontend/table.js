@@ -22,7 +22,6 @@ rowContainer.addEventListener("change", (event) => {
         const checkbox = event.target;
         const studentId = Number(checkbox.closest("tr").dataset.id);
         checkbox.checked ? selectedIds.add(studentId) : selectedIds.delete(studentId);
-        console.log("🚀 ~ rowContainer.addEventListener ~ selectedIds:", selectedIds)
         updateMainCheckbox_State();
     }
 });

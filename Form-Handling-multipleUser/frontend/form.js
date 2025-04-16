@@ -431,11 +431,8 @@ async function getData(id) {
       const countryId = studentData[0].country;
       const stateId = studentData[0].state;
       Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { countryId }), fetchAndPopulate('cities', { countryId, stateId })])
-        .then(() => {
-          appendData(studentData);
-        }).catch((err) => {
-          console.log("Error: ", err);
-        });
+        .then(() => appendData(studentData))
+        .catch((err) => console.log("Error: ", err))
     }
   } catch (error) {
     console.log("Error: ",error);
