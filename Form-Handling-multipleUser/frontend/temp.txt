@@ -1,6 +1,16 @@
 npx live-server --port=5500 --no-browser
-storing data in fileStorage instead of cache
-   
+
+advance and beginner
+// for (let key in currentData) {
+    //   if (currentData[key] !== oldData[key]) {
+    //     updatedData.append(key, currentData[key]);
+    //   }
+    // }  //or    object.entries convert the obj in array
+    Object.entries(currentData).forEach(([key, value]) => {
+      if (value !== oldData[key]) updatedData.append(key, value);
+    });
+
+
 import fs from 'fs/promises';
 import path from 'path';
 import { readJsonFile } from '../utils/readJsonFile.js'; // assuming this is your custom function

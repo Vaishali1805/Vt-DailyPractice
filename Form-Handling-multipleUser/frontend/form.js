@@ -93,13 +93,11 @@ async function handleEditForm(event) {
     if (!validate_form()) return;
     const updatedData = new FormData();
     const currentData = create_FormDataObj();
-    const oldData = studentData[0];
+    const oldData = studentData;
+    console.log("🚀 ~ handleEditForm ~ currentData:", currentData)
+    console.log("🚀 ~ handleEditForm ~ oldData:", oldData)
 
-    // for (let key in currentData) {
-    //   if (currentData[key] !== oldData[key]) {
-    //     updatedData.append(key, currentData[key]);
-    //   }
-    // }  //or    object.entries convert the obj in array
+    //object.entries convert the obj in array
     Object.entries(currentData).forEach(([key, value]) => {
       if (value !== oldData[key]) updatedData.append(key, value);
     });
@@ -246,7 +244,7 @@ function handleFileSelection(event) {
   if (file) {
     if (validateFile(file)) {
       lastSelectedFile = file;
-      const fileUrl = URL.createObjectURL(file);
+      const fileUrl = URL.createObjectURL(file);+
       previewImg(fileUrl);
     } else {
       preview.innerHTML = '';
@@ -379,16 +377,16 @@ async function fetchReq(url, reqMethod, formData = null) {
 
 function appendData(data) {
   try {
-    firstName.value = data[0]?.firstName || "";
-    lastName.value = data[0]?.lastName || "";
-    email.value = data[0]?.email || "";
-    contactNo.value = data[0]?.contactNo || "";
-    dateOfBirth.value = data[0]?.dateOfBirth || "";
-    studentId.value = data[0]?.studentId || "";
-    address.value = data[0]?.address || "";
+    firstName.value = data?.firstName || "";
+    lastName.value = data?.lastName || "";
+    email.value = data?.email || "";
+    contactNo.value = data?.contactNo || "";
+    dateOfBirth.value = data?.dateOfBirth || "";
+    studentId.value = data?.studentId || "";
+    address.value = data?.address || "";
 
     radios.forEach((radio) => {
-      if (radio.value === data[0]?.gender) {
+      if (radio.value === data?.gender) {
         selectedGender = radio.value;
         radio.checked = true;
       }
@@ -398,14 +396,14 @@ function appendData(data) {
     preview.innerHTML = ""; //to remove the old preview
     
     profileDeleted = false;
-    const fileUrl = data[0].profile && data[0].profile.path
-      ? `http://localhost:5000/${data[0]?.profile.path}`
+    const fileUrl = data.profile && data.profile.path
+      ? `http://localhost:5000/${data?.profile.path}`
       : 'defaultImage.webp'
     previewImg(fileUrl);
 
-    selectOption(selectCountry, data[0]?.country || "");
-    selectOption(selectState, data[0]?.state || "");
-    selectOption(selectCity, data[0]?.city || "");
+    selectOption(selectCountry, data?.country || "");
+    selectOption(selectState, data?.state || "");
+    selectOption(selectCity, data?.city || "");
   } catch (error) {     
     console.error("Error: ", error);
   }
@@ -424,8 +422,8 @@ async function getData(id) {
       // const { studentData } = data;
       studentData = data.studentData;
       console.log("studentData: ", studentData);
-      const countryId = studentData[0].country;
-      const stateId = studentData[0].state;
+      const countryId = studentData.country;
+      const stateId = studentData.state;
       Promise.all([fetchAndPopulate('countries'), fetchAndPopulate('states', { countryId }), fetchAndPopulate('cities', { countryId, stateId })])
         .then(() => appendData(studentData))
         .catch((err) => console.log("Error: ", err))

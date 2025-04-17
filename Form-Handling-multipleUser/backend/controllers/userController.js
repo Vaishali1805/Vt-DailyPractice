@@ -1,8 +1,9 @@
-import myCache from "../myCache.js";
 import fs from 'fs';
 import path from 'path';
+import { readJsonFile,writeData,getDataFromCache,setDataInCache } from 'utils/fileHelpers.js'
 const __dirname = path.resolve();
 
+// Handles submission of new student form data
 export const submitFormData = async (req, res) => {
     try {
         const { formData } = req.body;
@@ -12,11 +13,11 @@ export const submitFormData = async (req, res) => {
         }
         data.profile = req.file ? req.file : null;
         data.id = Date.now() + Math.floor(Math.random() * 1000);
-        
+
         // const studentData = getDataFromCache();
         const studentData = await readJsonFile('userData.json');
-        studentData.push(data);
-        await writeData('userData.json',studentData);
+        studentData[data.id] = data;
+        await writeData('userData.json', studentData);
         // setDataInCache(studentData);
         res.json({ message: "Data submitted Successfully", success: true });
     } catch (error) {
@@ -24,6 +25,7 @@ export const submitFormData = async (req, res) => {
     }
 }
 
+// Handles editing of existing student data
 export const editFormData = async (req, res) => {
     try {
         const { id } = req.query;
@@ -34,19 +36,12 @@ export const editFormData = async (req, res) => {
         }
         // const studentData = getDataFromCache();
         const studentsData = await readJsonFile('userData.json');
-        let studentIndex = studentsData.findIndex(data => data.id == id);
-        if (studentIndex === -1) {
-            return res.status(404).json({ message: "Student not found", success: false });
-        }
-
-        // Update the student fields with the editedData - spread operator is used to merge both the arrays
-        studentsData[studentIndex] = {
-            ...studentsData[studentIndex],
+        studentsData[id] = {
+            ...studentsData[id],
             ...editedData
         };
-        studentsData[studentIndex].profile = file ? file : studentsData[studentIndex].profile;
-        console.log("🚀 ~ editFormData ~ studentsData[studentIndex]:", studentsData[studentIndex])
-        await writeData('userData.json',studentsData);
+        studentsData[id].profile = file ? file : studentsData[id].profile;
+        await writeData('userData.json', studentsData);
         // setDataInCache(studentsData);
         res.json({ message: "Data edited Successfully", success: true });
     } catch (error) {
@@ -55,11 +50,12 @@ export const editFormData = async (req, res) => {
     }
 }
 
+// Fetches all student records and location data
 export const getStudentData = async (req, res) => {
     try {
         // const studentData = getDataFromCache();
-        const studentData = await readJsonFile('userData.json');
-        console.log("studentData:", studentData);
+        const data = await readJsonFile('userData.json');
+        const studentData = Object.values(data);
 
         const [countries, states, cities] = await Promise.all([
             readJsonFile('countries.json'),
@@ -72,6 +68,7 @@ export const getStudentData = async (req, res) => {
     }
 }
 
+// Dynamically fetches location data based on query parameters
 export const getLocationData = async (req, res) => {
     try {
         const { type, countryId, stateId } = req.query;
@@ -107,6 +104,7 @@ export const getLocationData = async (req, res) => {
     }
 }
 
+// Deletes multiple student records
 export const deleteStudentRecords = async (req, res) => {
     try {
         const { studentIds } = req.body;
@@ -116,12 +114,14 @@ export const deleteStudentRecords = async (req, res) => {
 
         // const studentData = getDataFromCache();
         const studentData = await readJsonFile('userData.json');
-        const filteredStudentData = studentData.filter(student => !studentIds.includes(student.id));
-        if (studentData.length === filteredStudentData.length) {
-            return res.status(404).json({ message: "No matching student records found to delete", success: false });
-        }
-        //also deleted the profile from the uploads folder ---- pending
-        await writeData('userData.json',filteredStudentData);
+
+        studentIds.map((id) => {
+            // Deletes a student's profile image file from the uploads folder
+            let filePath = path.join(__dirname, studentData[id].profile.path);
+            fs.unlink(filePath, (error) => { if (error) console.log("Error deleting Profile", error) });
+            delete studentData[id]      //delete student from the object
+        })
+        await writeData('userData.json', studentData);
         // setDataInCache(filteredStudentData);
         res.json({ message: "Rows deleted successfully", success: true });
     } catch (error) {
@@ -130,6 +130,7 @@ export const deleteStudentRecords = async (req, res) => {
     }
 }
 
+// Fetches a single student's data by ID
 export const getDataById = async (req, res) => {
     try {
         const { id } = req.query;
@@ -138,38 +139,8 @@ export const getDataById = async (req, res) => {
         if (!studentData) {
             return res.status(400).json({ message: "Data Not Found", success: false })
         }
-        const data = studentData.filter(d => d.id == id)
-        res.json({ studentData: data, success: true });
+        res.json({ studentData: studentData[id], success: true });
     } catch (error) {
         res.status(500).json({ message: "An unexpected error occurred", success: false });
     }
-}
-
-const readJsonFile = async (filename) => {
-    const filePath = path.join(__dirname, filename);
-    try {
-        const data = await fs.promises.readFile(filePath, 'utf8');
-        if(data.trim() === '') return [];
-        return JSON.parse(data);
-    } catch (error) {
-        throw new Error(`Failed to read ${filename}: ${error.message}`);
-    }
-};
-
-const writeData = async (filename,data) => {
-    const filePath = path.join(__dirname, filename);
-    try {
-        await fs.writeFile(filename,JSON.stringify(data,null,2),'utf-8');
-    } catch (error) {
-        throw new Error(`Failed to write ${filename}: ${error.message}`);
-    }
-}
-
-const getDataFromCache = () => {
-    const studentData = myCache.get("studentData") || [];
-    return studentData;
-}
-
-const setDataInCache = (data) => {
-    myCache.set("studentData", data);
 }
