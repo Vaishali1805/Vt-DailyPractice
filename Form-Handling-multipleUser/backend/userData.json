@@ -11,16 +11,7 @@
     "country": 2,
     "state": 867,
     "city": 16160,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744893974609_Color_Hunt_Palette_ff8080ffcf96f6fdc3cdfad5.png",
-      "encoding": "7bit",
-      "mimetype": "image/png",
-      "destination": "uploads",
-      "filename": "1744893974609_Color_Hunt_Palette_ff8080ffcf96f6fdc3cdfad5.png",
-      "path": "uploads\\1744893974609_Color_Hunt_Palette_ff8080ffcf96f6fdc3cdfad5.png",
-      "size": 479
-    },
+    "profilePath": "uploads\\1744893974609_Color_Hunt_Palette_ff8080ffcf96f6fdc3cdfad5.png",
     "id": 1687573519568
   },
   "658314127543": {
@@ -35,7 +26,7 @@
     "country": 2,
     "state": 866,
     "city": 16152,
-    "profile": null,
+    "profilePath": null,
     "id": 658314127543
   },
   "531161376899": {
@@ -50,16 +41,7 @@
     "country": 1,
     "state": 3903,
     "city": 3909,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744894113465_abstract-vector-background-bg-purple-blue-pink-gradient-dots-pattern-curve-lines-photo.jpg",
-      "encoding": "7bit",
-      "mimetype": "image/jpeg",
-      "destination": "uploads",
-      "filename": "1744894113465_abstract-vector-background-bg-purple-blue-pink-gradient-dots-pattern-curve-lines-photo.jpg",
-      "path": "uploads\\1744894113465_abstract-vector-background-bg-purple-blue-pink-gradient-dots-pattern-curve-lines-photo.jpg",
-      "size": 38765
-    },
+    "profilePath": "uploads\\1744894113465_abstract-vector-background-bg-purple-blue-pink-gradient-dots-pattern-curve-lines-photo.jpg",
     "id": 531161376899
   },
   "1744813846850": {
@@ -74,16 +56,7 @@
     "country": 1,
     "state": 3903,
     "city": 3926,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744893984521_gabriel-lebel-bernier-singles2.jpg",
-      "encoding": "7bit",
-      "mimetype": "image/jpeg",
-      "destination": "uploads",
-      "filename": "1744893984521_gabriel-lebel-bernier-singles2.jpg",
-      "path": "uploads\\1744893984521_gabriel-lebel-bernier-singles2.jpg",
-      "size": 404933
-    },
+    "profilePath": "uploads\\1744893984521_gabriel-lebel-bernier-singles2.jpg",
     "id": 1744813846850
   },
   "1636641304835": {
@@ -98,7 +71,7 @@
     "country": 4,
     "state": 3911,
     "city": 107047,
-    "profile": null,
+    "profilePath": null,
     "id": 1636641304835
   },
   "1744892329278": {
@@ -113,16 +86,7 @@
     "country": 2,
     "state": 867,
     "city": 16160,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744894126432_pexels-matthew-montrone-230847-1324803.jpg",
-      "encoding": "7bit",
-      "mimetype": "image/jpeg",
-      "destination": "uploads",
-      "filename": "1744894126432_pexels-matthew-montrone-230847-1324803.jpg",
-      "path": "uploads\\1744894126432_pexels-matthew-montrone-230847-1324803.jpg",
-      "size": 4471354
-    },
+    "profilePath": "uploads\\1744957006476_gabriel-lebel-bernier-singles2.jpg",
     "id": 1744892329278
   },
   "1744894058068": {
@@ -137,16 +101,22 @@
     "country": 2,
     "state": 870,
     "city": 16217,
-    "profile": {
-      "fieldname": "profile",
-      "originalname": "1744894057440_Manu_Herrador_student_interview_featured.jpg",
-      "encoding": "7bit",
-      "mimetype": "image/jpeg",
-      "destination": "uploads",
-      "filename": "1744894057440_Manu_Herrador_student_interview_featured.jpg",
-      "path": "uploads\\1744894057440_Manu_Herrador_student_interview_featured.jpg",
-      "size": 64909
-    },
+    "profilePath": "uploads\\1744894057440_Manu_Herrador_student_interview_featured.jpg",
     "id": 1744894058068
+  },
+  "1744955992603": {
+    "firstName": "rtygf",
+    "lastName": "tryg",
+    "email": "tgf@fyh.fygh",
+    "contactNo": "45674564",
+    "dateOfBirth": "2025-04-04",
+    "studentId": 45,
+    "gender": "Female",
+    "address": "fghf",
+    "country": 1,
+    "state": 3910,
+    "city": 5027,
+    "profilePath": "uploads\\1744955992121_Manu_Herrador_student_interview_featured.jpg",
+    "id": 1744955992603
   }
 }

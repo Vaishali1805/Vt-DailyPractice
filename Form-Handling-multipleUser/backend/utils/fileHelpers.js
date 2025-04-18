@@ -5,7 +5,7 @@ const __dirname = path.resolve();
 
 // Utility to read and parse a JSON file asynchronously
 export const readJsonFile = async (filename) => {
-    const filePath = path.join(__dirname, filename);
+    const filePath = path.join(__dirname, "JSONfiles" ,filename);
     try {
         const data = await fs.promises.readFile(filePath, 'utf8');
         if (data.trim() === '') return {};

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { readJsonFile,writeData,getDataFromCache,setDataInCache } from 'utils/fileHelpers.js'
+import { readJsonFile,writeData,getDataFromCache,setDataInCache } from '../utils/fileHelpers.js'
 const __dirname = path.resolve();
 
 // Handles submission of new student form data
@@ -11,7 +11,7 @@ export const submitFormData = async (req, res) => {
         if (!data) {
             return res.status(400).json({ message: "Data not Found", success: false });
         }
-        data.profile = req.file ? req.file : null;
+        data.profilePath = req.file?.path ? req.file?.path : null;
         data.id = Date.now() + Math.floor(Math.random() * 1000);
 
         // const studentData = getDataFromCache();
@@ -29,7 +29,7 @@ export const submitFormData = async (req, res) => {
 export const editFormData = async (req, res) => {
     try {
         const { id } = req.query;
-        const file = req.file;
+        const filePath = req.file?.path;
         const editedData = req.body;
         if (!id || !editedData) {
             return res.status(400).json({ message: "Data Not Found", success: false });
@@ -40,7 +40,7 @@ export const editFormData = async (req, res) => {
             ...studentsData[id],
             ...editedData
         };
-        studentsData[id].profile = file ? file : studentsData[id].profile;
+        studentsData[id].profilePath = filePath ? filePath : studentsData[id].profilePath;
         await writeData('userData.json', studentsData);
         // setDataInCache(studentsData);
         res.json({ message: "Data edited Successfully", success: true });
@@ -68,7 +68,8 @@ export const getStudentData = async (req, res) => {
     }
 }
 
-// Dynamically fetches location data based on query parameters
+// Dynamically fetches location data based on query parameters 
+//remove switch case ----pending
 export const getLocationData = async (req, res) => {
     try {
         const { type, countryId, stateId } = req.query;
@@ -117,7 +118,7 @@ export const deleteStudentRecords = async (req, res) => {
 
         studentIds.map((id) => {
             // Deletes a student's profile image file from the uploads folder
-            let filePath = path.join(__dirname, studentData[id].profile.path);
+            let filePath = path.join(__dirname, studentData[id]?.profilePath);
             fs.unlink(filePath, (error) => { if (error) console.log("Error deleting Profile", error) });
             delete studentData[id]      //delete student from the object
         })
