@@ -1,3 +1,32 @@
+<!-- Password -->
+<div class="form-outline border d-flex" id="passwordDiv">
+  <input type="password" id="password" class="form-control form-control-lg" />
+  <label class="form-label" for="password">Password</label>
+  <img src="../assets/icons/eyeHide.svg" id="eye1" class="eye toggle-password" data-input="password" alt="Toggle Password">
+</div>
+
+<!-- Confirm Password -->
+<div class="form-outline border d-flex">
+  <input type="password" id="confrimPassword" class="form-control form-control-lg" />
+  <label class="form-label" for="confrimPassword">Confirm Password</label>
+  <img src="../assets/icons/eyeHide.svg" id="eye2" class="eye toggle-password" data-input="confrimPassword" alt="Toggle Password">
+</div>
+
+document.querySelectorAll('.toggle-password').forEach(eyeIcon => {
+  eyeIcon.addEventListener('click', () => {
+    const inputId = eyeIcon.getAttribute('data-input');
+    const input = document.getElementById(inputId);
+    const isVisible = input.type === 'text';
+
+    input.type = isVisible ? 'password' : 'text';
+    eyeIcon.src = isVisible 
+      ? '../assets/icons/eyeHide.svg' 
+      : '../assets/icons/eyeShow.svg';
+  });
+});
+
+
+
 import fs from 'fs';
 import readline from 'readline';
 import path from 'path';

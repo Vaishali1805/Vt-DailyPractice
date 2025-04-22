@@ -28,15 +28,16 @@
             alt="Phone image">
         </div>
         <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+          <!-- <span>User Registered successfully</span> -->
           <h2 class="heading">Sign up now</h2>
           <form enctype="multipart/form-data" method="POST">
             <!-- Name input -->
             <div data-mdb-input-init class="form-outline border">
-              <input type="name" id="name" class="form-control form-control-lg" autocomplete="off" />
-              <label class="form-label" for="name">Name</label>
+              <input type="name" id="studentName" class="form-control form-control-lg" autocomplete="off" />
+              <label class="form-label" for="studentName">Name</label>
             </div>
-            <div class="mb-4" >
-              <span class="error" id="nameErr_msg"></span>
+            <div class="mb-4">
+              <span class="error" id="studentNameErr_msg"></span>
             </div>
 
             <!-- Email input -->
@@ -44,7 +45,7 @@
               <input type="email" id="email" class="form-control form-control-lg" autocomplete="off" />
               <label class="form-label" for="email">Email address</label>
             </div>
-            <div class="mb-4" >
+            <div class="mb-4">
               <span class="error" id="emailErr_msg"></span>
             </div>
 
@@ -52,20 +53,22 @@
             <div data-mdb-input-init class="form-outline border d-flex" id="passwordDiv">
               <input type="password" id="password" class="form-control form-control-lg" />
               <label class="form-label" for="password">Password</label>
-              <img src="../assets/icons/eyeHide.svg" id="eye1" class="eye" onClick="handleEye1()" alt="Hide Password">
+              <img src="../assets/icons/eyeHide.svg" id="eye1" class="eye show-hide-password" data-input="password"
+                alt="Hide Password">
             </div>
-            <div class="mb-4" >
+            <div class="mb-4">
               <span class="error" id="passwordErr_msg"></span>
             </div>
 
             <!--Confirm Password input -->
             <div data-mdb-input-init class="form-outline border d-flex">
-              <input type="password" id="confrimPassword" class="form-control form-control-lg" />
-              <label class="form-label" for="confrimPassword">Confirm Password</label>
-              <img src="../assets/icons/eyeHide.svg" id="eye2" class="eye" onClick="handleEye2()" alt="Hide Password">
+              <input type="password" id="confirmPassword" class="form-control form-control-lg" />
+              <label class="form-label" for="confirmPassword">Confirm Password</label>
+              <img src="../assets/icons/eyeHide.svg" id="eye2" data-input="confirmPassword"
+                class="eye show-hide-password" alt="Hide Password">
             </div>
-            <div class="mb-4" >
-              <span class="error" id="confrimPasswordErr_msg"></span>
+            <div class="mb-4">
+              <span class="error" id="confirmPasswordErr_msg"></span>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -77,11 +80,14 @@
               <a href="#!">Forgot password?</a>
             </div>
 
+            <div class="mb-2" id="error">
+              <span class="error" id="registerErr_msg"></span>
+            </div>
             <!-- Submit button  -->
             <button type="submit" onclick="handleSubmit(event)" data-mdb-button-init data-mdb-ripple-init
               class="btn btn-primary btn-lg btn-block">Sign up</button>
             <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="./login.html"
-                  class="link-danger">Login</a></p>
+                class="link-danger">Login</a></p>
 
             <!-- <div class="text-center text-lg-start mt-4 pt-2">
               <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"

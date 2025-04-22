@@ -17,9 +17,9 @@ export const readJsonFile = async (filename) => {
 
 // Utility to write data to a JSON file asynchronously
 export const writeData = async (filename, data) => {
-    const filePath = path.join(__dirname, filename);
+    const filePath = path.join(__dirname, "JSONfiles", filename);
     try {
-        await fs.promises.writeFile(filename, JSON.stringify(data, null, 2), 'utf-8');
+        await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
     } catch (error) {
         throw new Error(`Failed to write ${filename}: ${error.message}`);
     }
