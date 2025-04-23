@@ -3,15 +3,15 @@ import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers
 
 export const handleRegister = async (req, res) => {
     try {
-        let userExists = false;
         const newUser = req.body;
         const data = await readJsonFile('registeredUsers.json');
-        const dataArr = Object.values(data);
-        dataArr.map(user => {
-            if (user.email === newUser.email) {
-                userExists = true;
-            }
-        })
+        // const dataArr = Object.values(data);
+        // dataArr.map(user => {
+        //     if (user.email === newUser.email) {
+        //         userExists = true;
+        //     }
+        // })       --before and after
+        const userExists = Object.values(data).some(user => user.email === newUser.email);
         if (userExists) {
             return res.status(400).json({ message: 'User Already Exists', success: false });
         }
@@ -19,36 +19,34 @@ export const handleRegister = async (req, res) => {
         newUser.password = await getHashedPassword(newUser.password);
         data[newUser.id] = newUser;
         await writeData('registeredUsers.json', data);
-        return res.json({ message: 'User Registered Successfully', success: true });
+        res.json({ message: 'User Registered Successfully', success: true });
     } catch (error) {
         console.log("error: ", error)
+        res.status(500).json({ message: 'Server Error', success: false });
     }
 }
 
 export const handleLogin = async (req, res) => {
     try {
-        let userExists = false;
         let { email, password } = req.body;
-        let userId;
         const data = await readJsonFile('registeredUsers.json');
         if (!data) return res.status({ message: 'Data not found', success: false });
-        const dataArr = Object.values(data);
-        dataArr.map(user => {
-            if (user.email === email) {
-                userId = user.id;
-                userExists = true;
-            }
-        })
-        if (!userExists) {
+
+        // const dataArr = Object.values(data);
+        // dataArr.map(user => {
+        //     if (user.email === email) {
+        //         userId = user.id;
+        //         userExists = true;
+        //     }
+        // })       --before and after
+        const user = Object.values(data).find(user => user.email === email);
+        if (!user) {
             return res.status(400).json({ message: 'User not Exist Signup first', success: false });
         }
-        bcrypt.compare(password, data[userId].password, function (err, result) {
-            if (err) throw err;
-            if (result === true) {
-                return res.json({ message: 'Login Successfull', success: true });
-            } else {
-                return res.json({ message: 'Incorrect Password', success: false });
-            }
+        const match = await bcrypt.compare(password, user.password);
+        res.json({
+            message: match ? 'Login Successfull' : 'Incorrect Password',
+            success: match
         });
     } catch (error) {
         console.log("error: ", error)

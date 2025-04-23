@@ -16,14 +16,14 @@ async function handlelogin(event) {
         })
         const data = await response.json();
         if(data.success) {
-            createToast(data.message,'fa-circle-check');
+            createToast(data.message,'fa-circle-check','green');
             setTimeout(() => {
                 removeToast();
                 window.location.href = '../components/welcome/welcome.html';
             }, 5000);
         }
         else{
-            createToast(data.message,'fa-circle-xmark');
+            createToast(data.message,'fa-circle-xmark','red');
             setTimeout(() => removeToast(),5000);
         }
     } catch (error) {

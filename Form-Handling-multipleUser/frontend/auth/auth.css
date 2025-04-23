@@ -55,18 +55,6 @@
     animation: progress 5s linear forwards;
 }
 
-/* .green-color{
-    .toastDiv::before{
-        background-color: green;
-    }
-}
-
-.red-color{
-    .toastDiv::before{
-        background-color: red;
-    }
-} */
-
 @keyframes progress {
     100% {
         width: 0%;
@@ -81,9 +69,11 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.8rem;
+    border: 2px black;
     border-radius: 4px;
     padding: 16px 17px;
     animation: show_toast 0.3s ease forwards;
+    /* background-color: #f1f1f1; */
 }
 
 @keyframes show_toast {
@@ -137,7 +127,7 @@
     align-items: center;
     i {
         font-size: 1.75rem;
-        color: rgb(39, 39, 39);
+        color: var(--iconColor, green);
     }
 
     span {

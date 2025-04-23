@@ -14,10 +14,10 @@ document.querySelectorAll('.form-outline .form-control').forEach((input) => {
     });
 });
 
-function createToast(message,className1) {
+function createToast(message,className1,color) {
     document.querySelector('.myToast').innerHTML =
         `<div class="toastDiv" style="--barColor: ${color}">
-      <i class="fa-solid ${className1}"></i>
+      <i class="fa-solid ${className1}" style="--iconColor: ${color}"></i>
       <span>${message}</span>
     </div>
     <i class="fa-solid fa-xmark" id="crossIcon"></i>`
@@ -33,3 +33,4 @@ function createToast(message,className1) {
 function removeToast() {
     document.querySelector('.toastDiv').classList.add('hide');
 }
+
