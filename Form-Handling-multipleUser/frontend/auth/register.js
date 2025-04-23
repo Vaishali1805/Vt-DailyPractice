@@ -1,5 +1,4 @@
-const registerErr_msg = document.getElementById('registerErr_msg');
-const fields = ['studentName', 'email', 'password','confirmPassword'];
+const fields = ['studentName', 'email', 'password', 'confirmPassword'];
 const elements = {};
 const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{6,15}$/;
@@ -16,11 +15,11 @@ function validate_form() {
     const passwordVal = elements.password.value.trim();
     const confirmPasswordVal = elements.confirmPassword.value.trim();
 
-    errors.name = !nameVal ? "*Name is required" : (nameVal.length < 2 || nameVal.length > 30) ? "*Name must be between 2 and 30 characters" : "";
+    errors.studentName = !nameVal ? "*Name is required" : (nameVal.length < 2 || nameVal.length > 30) ? "*Name must be between 2 and 30 characters" : "";
     errors.email = !emailVal ? "*Email is required" : !EmailRegex.test(emailVal) ? '*Invalid email address' : "";
     errors.password = passwordVal.length < 6 ? 'Password must be at least 6 characters'
         : !PasswordRegex.test(passwordVal) ? 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@ . # $ ! % * ? &)' : '';
-    errors.confirmPassword = !(confirmPasswordVal === passwordVal) ? "*Confirm password must match the password." : ""; 
+    errors.confirmPassword = !(confirmPasswordVal === passwordVal) ? "*Confirm password must match the password." : "";
     return errors;
 }
 
@@ -31,7 +30,6 @@ fields.forEach(field => {
 
 function handleFieldValidation(field) {
     const errors = validate_form();
-    console.log("errors: ",errors);
     display_error(elements[`${field}Err_msg`], errors[field]);
 }
 
@@ -46,12 +44,12 @@ async function handleSubmit(e) {
     const isValid = Object.values(errors).every(msg => msg === "");
     if (isValid) {
         let signUpData = {
-            name : studentName.value,
-            email : email.value,
-            password : password.value
+            name: studentName.value,
+            email: email.value,
+            password: password.value
         }
         const url = 'http://localhost:5000/auth/register/user';
-        const response = await fetch(url,{
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -59,13 +57,15 @@ async function handleSubmit(e) {
             body: JSON.stringify(signUpData)
         });
         const data = await response.json();
-        if(data.success){
-            // register_msg.textContent = data.message;     -- toast message pending
+        if (data.success) {
+            createToast(data.message,'fa-circle-check','green');
             setTimeout(() => {
+                removeToast();
                 window.location.href = './login.html';
-            },2000);
+            }, 5000);
         } else {
-            registerErr_msg.textContent = data.message;
+            createToast(data.message,'fa-circle-xmark','red');
+            setTimeout(() => removeToast(),5000);
         }
     } else {
         console.log("Form has errors:", errors);

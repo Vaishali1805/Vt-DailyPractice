@@ -1,6 +1,7 @@
 import myCache from "../myCache.js";
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcrypt';
 const __dirname = path.resolve();
 
 // Utility to read and parse a JSON file asynchronously
@@ -34,4 +35,10 @@ export const getDataFromCache = () => {
 // Utility to store student data in memory cache
 export const setDataInCache = (data) => {
     myCache.set("studentData", data);
+}
+
+export const getHashedPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password,salt);
+    return hashedPassword;
 }
