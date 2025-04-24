@@ -1,5 +1,11 @@
 npx live-server --port=5500 --no-browser
 
+//call from HTML
+// fields.forEach(field => {
+//     const eventType = field === 'studentName' || field === 'confirmPassword' ? 'blur' : 'input';
+//     elements[field].addEventListener(eventType, () => handleFieldValidation(field));
+// });
+
 advance and beginner
 // for (let key in currentData) {
     //   if (currentData[key] !== oldData[key]) {
@@ -10,6 +16,16 @@ advance and beginner
       if (value !== oldData[key]) updatedData.append(key, value);
     });
 
+--before and after
+// const dataArr = Object.values(data);
+        // dataArr.map(user => {
+        //     if (user.email === email) {
+        //         userId = user.id;
+        //         userExists = true;
+        //     }
+        // })       
+        const user = Object.values(data).find(user => user.email === email);
+        const userExists = Object.values(data).some(user => user.email === newUser.email);
 
 import fs from 'fs/promises';
 import path from 'path';

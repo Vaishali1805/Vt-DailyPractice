@@ -14,7 +14,7 @@ document.querySelectorAll('.form-outline .form-control').forEach((input) => {
     });
 });
 
-function createToast(message,className1,color) {
+function createToast(message, className1, color) {
     document.querySelector('.myToast').innerHTML =
         `<div class="toastDiv" style="--barColor: ${color}">
       <i class="fa-solid ${className1}" style="--iconColor: ${color}"></i>
@@ -24,13 +24,52 @@ function createToast(message,className1,color) {
 
     document.getElementById('crossIcon').addEventListener('click', () => {
         removeToast();
-        setTimeout(() => {
-            window.location.href = './login.html';
-        }, 500);
     })
 }
 
 function removeToast() {
-    document.querySelector('.toastDiv').classList.add('hide');
+    const toast = document.querySelector('.myToast');
+    toast.classList.add('hide');
+    toast.addEventListener('animationend', () => {
+        toast.classList.remove('hide');
+        toast.innerHTML = '';
+    });
 }
 
+function showHide_Password(event) {
+    const inputId = event.target.dataset.input;
+    const input = document.getElementById(inputId);
+    const isVisible = input.type === 'text';
+
+    input.type = isVisible ? 'password' : 'text';
+    event.target.src = isVisible ? '../assets/icons/eyeHide.svg' : '../assets/icons/eyeShow.svg';
+}
+
+async function fetchReq(url, reqMethod, formData = null) {
+    try {
+        const options = {
+            method: reqMethod,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+        // Only add body if method is not GET
+        if (reqMethod.toUpperCase() !== "GET" && formData) {
+            options.body = formData;
+        }
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+        // if (data.success) {
+        //     if (reqMethod.toUpperCase() !== "GET")
+        //         return true;
+        //     else
+        //         return data;
+        // }
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}

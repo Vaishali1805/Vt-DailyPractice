@@ -40,7 +40,8 @@
           <form enctype="multipart/form-data" method="POST">
             <!-- Name input -->
             <div data-mdb-input-init class="form-outline border">
-              <input type="name" id="studentName" class="form-control form-control-lg" autocomplete="off" />
+              <input type="name" id="studentName" onblur="handleFieldValidation(event)"
+                class="form-control form-control-lg" autocomplete="off" />
               <label class="form-label" for="studentName">Name</label>
             </div>
             <div class="mb-4">
@@ -49,7 +50,8 @@
 
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline border">
-              <input type="email" id="email" class="form-control form-control-lg" autocomplete="off" />
+              <input type="email" id="email" oninput="handleFieldValidation(event)" class="form-control form-control-lg"
+                autocomplete="off" />
               <label class="form-label" for="email">Email address</label>
             </div>
             <div class="mb-4">
@@ -58,10 +60,11 @@
 
             <!-- Password input -->
             <div data-mdb-input-init class="form-outline border d-flex" id="passwordDiv">
-              <input type="password" id="password" class="form-control form-control-lg" />
+              <input type="password" id="password" oninput="handleFieldValidation(event)"
+                class="form-control form-control-lg" />
               <label class="form-label" for="password">Password</label>
-              <img src="../assets/icons/eyeHide.svg" id="eye1" class="eye show-hide-password" data-input="password"
-                alt="Hide Password">
+              <img src="../assets/icons/eyeHide.svg" id="eye1" class="eye" data-input="password"
+                alt="Hide Password" onclick="showHide_Password(event)">
             </div>
             <div class="mb-4">
               <span class="error" id="passwordErr_msg"></span>
@@ -69,10 +72,11 @@
 
             <!--Confirm Password input -->
             <div data-mdb-input-init class="form-outline border d-flex">
-              <input type="password" id="confirmPassword" class="form-control form-control-lg" />
+              <input type="password" id="confirmPassword" onblur="handleFieldValidation(event)"
+                class="form-control form-control-lg" />
               <label class="form-label" for="confirmPassword">Confirm Password</label>
               <img src="../assets/icons/eyeHide.svg" id="eye2" data-input="confirmPassword"
-                class="eye show-hide-password" alt="Hide Password">
+                class="eye show-hide-password" onclick="showHide_Password(event)" alt="Hide Password">
             </div>
             <div class="mb-4">
               <span class="error" id="confirmPasswordErr_msg"></span>

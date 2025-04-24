@@ -27,6 +27,7 @@
 
 .error {
     color: red;
+    font-size: 12px;
 }
 
 .eye {
@@ -91,7 +92,7 @@
     }
 }
 
-.myToast .toastDiv.hide {
+.myToast.hide {
     animation: hide_toast 0.3s ease forwards;
 }
 
