@@ -5,28 +5,10 @@
     "password": "$2b$10$EWVuh/CTsabXM.jiuyRVyeyHAZ201JtxVEj1M3dT2flSmR2AwT17C",
     "id": 1745476237864
   },
-  "1745476356713": {
-    "name": "New user",
-    "email": "new@gmail.com",
-    "password": "$2b$10$dZYOMCSDTAFhYWIgM/hIbOc8EJ/PWeXmwQ64GtXmfnwaKhUM4iAfy",
-    "id": 1745476356713
-  },
-  "1745480949656": {
-    "name": "Shreya",
-    "email": "shreya@gmail.com",
-    "password": "$2b$10$63BV9OzW6PywGL.vIrTBMecgJ/3fTanxUOQqoUSwUcDBhWb/BdAwe",
-    "id": 1745480949656
-  },
-  "1745481341798": {
-    "name": "me",
-    "email": "me123@gmail.com",
-    "password": "$2b$10$VSx9XYc08ADgFR2GKYS8..U6gqtTWIHdOmlaYbrCZX.BiMB.02POG",
-    "id": 1745481341798
-  },
-  "1745485774763": {
-    "name": "sfdgdf",
-    "email": "sfgd@gmail.com",
-    "password": "$2b$10$FLJm989ARd.5NE2qkjHLU.IqVP2kuNgQvpwD2zDwaMOr1.erCAyee",
-    "id": 1745485774763
+  "1745574226218": {
+    "name": "new",
+    "email": "newuser@gmail.com",
+    "password": "$2b$10$kIQnfPTC6U36w1vC4Y.VWuxj/qbwoZKUj887nFUvWIp.AVJgUYRKO",
+    "id": 1745574226218
   }
 }

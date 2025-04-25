@@ -5,7 +5,22 @@ npx live-server --port=5500 --no-browser
 //     const eventType = field === 'studentName' || field === 'confirmPassword' ? 'blur' : 'input';
 //     elements[field].addEventListener(eventType, () => handleFieldValidation(field));
 // });
+--before and after
+export const getUserData = async (req,res) => {
+    const data = await readJsonFile('registeredUsers.json');
+    let arr = [];
+    for (let key in data){
+        const {id,password,...rest} = data[key];
+        arr.push(rest);
+    }
+    res.json(arr);
+}
 
+export const getUserData = async (req, res) => {
+    const data = await readJsonFile('registeredUsers.json');
+    const arr = Object.values(data).map(({ name, email }) => ({ name, email }));
+    res.json(arr);
+};
 advance and beginner
 // for (let key in currentData) {
     //   if (currentData[key] !== oldData[key]) {

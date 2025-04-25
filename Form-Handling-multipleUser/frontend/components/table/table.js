@@ -1,4 +1,3 @@
-const studentTable = document.getElementById("studentTable");
 const rowContainer = document.getElementById("rowContainer");
 const registerBtn = document.getElementById("registerBtn");
 const deleteBtn = document.getElementById("deleteBtn");

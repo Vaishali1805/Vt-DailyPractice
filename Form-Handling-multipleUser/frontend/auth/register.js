@@ -26,6 +26,7 @@ function validate_form() {
 
 function handleFieldValidation(event) {
     const errors = validate_form();
+    console.log("event.target.id: ", event.target.id);
     display_error(elements[`${event.target.id}Err_msg`], errors[event.target.id]);
 }
 
@@ -37,7 +38,10 @@ async function handleSubmit(e) {
     e.preventDefault();
     try {
         const errors = validate_form();
-        fields.forEach(field => handleFieldValidation(field));
+        fields.forEach(field => {
+            const fakeEvent = { target: { id: field } };
+            handleFieldValidation(fakeEvent)
+        });
         const isValid = Object.values(errors).every(msg => msg === "");
         if (isValid) {
             let signUpData = {
@@ -46,7 +50,7 @@ async function handleSubmit(e) {
                 password: password.value
             }
             const url = 'http://localhost:5000/auth/register/user';
-            const data = await fetchReq(url,'POST',JSON.stringify(signUpData));
+            const data = await fetchReq(url, 'POST', JSON.stringify(signUpData));
             if (data.success) {
                 createToast(data.message, 'fa-circle-check', 'green');
                 setTimeout(() => {

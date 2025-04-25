@@ -4,7 +4,7 @@ import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers
 export const handleRegister = async (req, res) => {
     try {
         const newUser = req.body;
-        console.log("newUser: ",newUser);
+        console.log("newUser: ", newUser);
         const data = await readJsonFile('registeredUsers.json');
         const userExists = Object.values(data).some(user => user.email === newUser.email);
         if (userExists) {
@@ -24,7 +24,7 @@ export const handleRegister = async (req, res) => {
 export const handleLogin = async (req, res) => {
     try {
         let { email, password } = req.body;
-        console.log("🚀 ~ handleLogin ~ email:", email, "password: ",password);
+        console.log("🚀 ~ handleLogin ~ email:", email, "password: ", password);
         const data = await readJsonFile('registeredUsers.json');
         if (!data) return res.json({ message: 'Data not found', success: false });
 
@@ -35,7 +35,7 @@ export const handleLogin = async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match,name: user.name 
+            success: match, name: user.name
         });
     } catch (error) {
         console.log("error: ", error)
@@ -43,6 +43,24 @@ export const handleLogin = async (req, res) => {
     }
 }
 
-export const handleWelcome = async (req,res) => {
+export const getUserData = async (req, res) => {
+    const data = await readJsonFile('registeredUsers.json');
+    const userData = Object.values(data).map(({ name, email, id }) => ({ name, email, id }));
+    res.json(userData);
+};
+
+export const handleDelete = async (req, res) => {
+    const { userIds } = req.body;
+    console.log("🚀 ~ handleDelete ~ userIds:", userIds)
+    if (userIds.length === 0) {
+        return res.status(400).json({ message: "No IDs provided for deletion", success: false });
+    }
+    const userData = await readJsonFile('registeredUsers.json');
+    userIds.map((id) => delete userData[id])
+    await writeData('registeredUsers.json', userData);
+    res.json({ message: "Rows deleted successfully", success: true });
+}
+
+export const handleWelcome = async (req, res) => {
     console.log("Am in handleWelcome");
 }
