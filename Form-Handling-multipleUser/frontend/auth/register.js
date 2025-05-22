@@ -1,4 +1,4 @@
-const fields = ['studentName', 'email', 'password', 'confirmPassword'];
+const fields = ['studentName', 'email', 'password', 'confirmPassword','user','admin'];
 const elements = {};
 const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{6,15}$/;
@@ -14,19 +14,21 @@ function validate_form() {
     const emailVal = elements.email.value.trim();
     const passwordVal = elements.password.value.trim();
     const confirmPasswordVal = elements.confirmPassword.value.trim();
+    const roleSelected = document.querySelector('input[name="role"]:checked');
 
     errors.studentName = !nameVal ? "*Name is required" : (nameVal.length < 2 || nameVal.length > 30) ? "*Name must be between 2 and 30 characters" : "";
     errors.email = !emailVal ? "*Email is required" : !EmailRegex.test(emailVal) ? '*Invalid email address' : "";
     errors.password = passwordVal.length < 6 ? 'Password must be at least 6 characters'
         : !PasswordRegex.test(passwordVal) ? 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@ . # $ ! % * ? &)' : '';
     errors.confirmPassword = !(confirmPasswordVal === passwordVal) ? "*Confirm password must match the password." : "";
+    errors.role = !roleSelected ? '*Role is required' : "";
 
     return errors;
 }
 
 function handleFieldValidation(event) {
     const errors = validate_form();
-    console.log("event.target.id: ", event.target.id);
+    // console.log("event.target.id: ", event.target.id);
     display_error(elements[`${event.target.id}Err_msg`], errors[event.target.id]);
 }
 
@@ -47,7 +49,8 @@ async function handleSubmit(e) {
             let signUpData = {
                 name: studentName.value,
                 email: (email.value).toLowerCase(),
-                password: password.value
+                password: password.value,
+                role: document.querySelector('input[name="role"]:checked').value,
             }
             const url = 'http://localhost:5000/auth/register/user';
             const data = await fetchReq(url, 'POST', JSON.stringify(signUpData));

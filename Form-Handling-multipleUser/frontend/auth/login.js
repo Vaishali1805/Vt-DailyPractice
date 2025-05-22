@@ -11,7 +11,7 @@ async function handlelogin(event) {
             createToast(data.message,'fa-circle-check','green');
             setTimeout(() => {
                 removeToast();
-                window.location.href = `../components/welcome/welcome.html?name=${data.name}`;
+                window.location.href = `../components/welcome/welcome.html?name=${data.name}&&id=${data.id}`;
             }, 5000);
         }
         else{

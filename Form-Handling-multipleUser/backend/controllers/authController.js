@@ -35,7 +35,7 @@ export const handleLogin = async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, name: user.name
+            success: match, name: user.name, id: user.id
         });
     } catch (error) {
         console.log("error: ", error)
@@ -45,7 +45,7 @@ export const handleLogin = async (req, res) => {
 
 export const getUserData = async (req, res) => {
     const data = await readJsonFile('registeredUsers.json');
-    const userData = Object.values(data).map(({ name, email, id }) => ({ name, email, id }));
+    const userData = Object.values(data).map(({ name, email, id, role }) => ({ name, email, id, role }));
     res.json(userData);
 };
 

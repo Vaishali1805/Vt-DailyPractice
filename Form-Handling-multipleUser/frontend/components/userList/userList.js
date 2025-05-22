@@ -1,5 +1,6 @@
 const rowContainer = document.getElementById("rowContainer");
 const selectedIds = new Set();
+const userId = localStorage.getItem('userId');
 
 document.getElementById("registerBtn").addEventListener("click", () => {
     window.location.href = "../../auth/register.html";
@@ -34,9 +35,10 @@ async function getUserData() {
 }
 
 function renderUserRows(data) {
-    console.log("data:", data);
     rowContainer.innerHTML = "";
-    data.map((user, index) => {
+    const filteredData = data.filter(user => user.id != userId);
+    console.log("filteredData:", filteredData);
+    filteredData.map((user, index) => {
         const newRow = document.createElement("tr");
         newRow.dataset.id = user.id;
         newRow.innerHTML += `
@@ -44,8 +46,10 @@ function renderUserRows(data) {
             <td>${index + 1}</td>
             <td>${user.name || "-"}</td>
             <td>${user.email || "-"}</td>
-            <td><img src='../../assets/icons/edit.svg' class="editIcon" alt="edit-icon" onclick="editStudentData(${user.id})" /><img src='../../assets/icons/delete.svg' class="deleteIcon" alt="delete-icon" onclick="handleDelete(${user.id})" /></td>
-        `;
+            <td>${user.role || "-"}</td>
+            <td><div class="actionImage">
+            <img src='../../assets/icons/edit.svg' class="editIcon" alt="edit-icon" onclick="editStudentData(${user.id})" /><img src='../../assets/icons/delete.svg' class="deleteIcon" alt="delete-icon" onclick="handleDelete(${user.id})" /></div></td>
+            `;
         rowContainer.appendChild(newRow);
     })
 }
@@ -81,7 +85,7 @@ async function deleteStudent(userId) {
 
 // Navigate to edit form
 function editStudentData(id) {
-    // window.location.href = `../form/form.html?id=${id}`;
+    window.location.href = `../userForm/userForm.html?id=${id}`;
 }
 
 getUserData();

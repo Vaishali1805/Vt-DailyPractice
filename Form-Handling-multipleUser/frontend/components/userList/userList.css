@@ -1,12 +1,10 @@
 #heading {
-    /* text-align: center; */
-    margin-left: 20%;
+    text-align: center;
 }
 
 #btnDiv {
     display: flex;
-    justify-content: space-between;
-    width: 50%;
+    justify-content:flex-start;
 }
 
 #deleteBtn,#registerBtn {
@@ -25,11 +23,15 @@
 
 #table_container {
     margin:15px;
-    width: 50%;
 }
 
 input[type="checkbox"] {
     cursor: pointer;
+}
+
+.actionImage {
+    display: flex;
+    gap: 1rem;
 }
 
 .userImg {
@@ -94,4 +96,10 @@ input[type="checkbox"] {
 #cancelDelete {
     background: gray;
     color: white;
+}
+
+.imgDiv {
+    position: fixed;
+    top: 2px;
+    right: 5px;
 }
