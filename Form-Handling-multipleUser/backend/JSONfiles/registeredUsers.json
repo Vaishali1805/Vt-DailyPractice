@@ -3,42 +3,49 @@
     "name": "Vaishali",
     "email": "vishu@gmail.com",
     "password": "$2b$10$EWVuh/CTsabXM.jiuyRVyeyHAZ201JtxVEj1M3dT2flSmR2AwT17C",
-    "role": "user",
+    "role": "User",
     "id": 1745476237864
   },
   "1745574226218": {
     "name": "new",
     "email": "newuser@gmail.com",
     "password": "$2b$10$kIQnfPTC6U36w1vC4Y.VWuxj/qbwoZKUj887nFUvWIp.AVJgUYRKO",
-    "role": "user",
+    "role": "User",
     "id": 1745574226218
   },
   "1747890871115": {
     "name": "abc",
     "email": "abc@gmail.com",
     "password": "$2b$10$.YlzjKqYAqn1qz5rIvsOSOo5lCY3F007kKLlMZPd20pEVJeIThh5y",
-    "role": "user",
+    "role": "User",
     "id": 1747890871115
   },
   "1747891283110": {
     "name": "Harish",
     "email": "harish@gmail.com",
     "password": "$2b$10$jTWscVu2CSeohi04/qPr/.avvUlSedRI2HMYOLlRsaPZp56MFci0G",
-    "role": "user",
+    "role": "User",
     "id": 1747891283110
   },
   "1747909412939": {
-    "name": "XYZ",
+    "name": "new",
     "email": "xyz@gmail.com",
     "password": "$2b$10$jDjlCn/5LvHBRtW7sUpJz.4wk1JMVg5NBa41fQi/fUBKLLRfPDPri",
-    "role": "admin",
+    "role": "Admin",
     "id": 1747909412939
   },
   "1747909609223": {
     "name": "Ram",
     "email": "ram@gmail.com",
     "password": "$2b$10$qdO9gcgcxS0daU2T9Z.GCOG5TwF/oLxu0Yl70VVg3WZ.aIyTFIqNq",
-    "role": "admin",
+    "role": "Admin",
     "id": 1747909609223
+  },
+  "1747982582540": {
+    "name": "girl",
+    "email": "girl@acb.com",
+    "password": "$2b$10$ZZE0xDIm7LH0tjAqN8dwe.7CCc/qtPXKlj.SPVzZnw9w.JMFJ2BI6",
+    "role": "User",
+    "id": 1747982582540
   }
 }

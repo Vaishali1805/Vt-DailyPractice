@@ -13,4 +13,4 @@ app.use('/auth',authRoute);
 
 app.listen(PORT,(req,res) => {
     console.log("server is running on PORT: ",PORT);
-})
+}) 
