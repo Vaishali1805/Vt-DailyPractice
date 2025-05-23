@@ -1,6 +1,7 @@
 const rowContainer = document.getElementById("rowContainer");
 const selectedIds = new Set();
-const userId = localStorage.getItem('userId');
+const userId = parseInt(localStorage.getItem('userId'));
+let allUserData;
 
 document.getElementById("registerBtn").addEventListener("click", () => {
     window.location.href = "../../auth/register.html";
@@ -27,8 +28,8 @@ document.getElementById("deleteBtn").addEventListener("click", () => handleDelet
 async function getUserData() {
     try {
         const url = 'http://localhost:5000/auth/get/userData';
-        const data = await fetchReq(url, "GET");
-        renderUserRows(data);
+        allUserData = await fetchReq(url, "GET");
+        renderUserRows(allUserData);
     } catch (error) {
         console.log("Error: ", error);
     }
@@ -85,7 +86,15 @@ async function deleteStudent(userId) {
 
 // Navigate to edit form
 function editStudentData(id) {
+    const userData = allUserData.find(user => user.id === id);
+    localStorage.setItem('userData',JSON.stringify(userData));
     window.location.href = `../userForm/userForm.html?id=${id}`;
+}
+
+function openUserProfile(){
+    const userData = allUserData.find(user => user.id === userId);
+    localStorage.setItem('userData',JSON.stringify(userData));
+    window.location.href = `../userForm/userForm.html?id=${userId}`;
 }
 
 getUserData();
