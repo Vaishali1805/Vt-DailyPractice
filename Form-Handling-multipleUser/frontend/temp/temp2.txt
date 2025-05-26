@@ -25,7 +25,11 @@ document.querySelectorAll('.toggle-password').forEach(eyeIcon => {
   });
 });
 
+// function getUserRole() {}
 
+// Promise.all([getUserData()])
+//   .then(() => getUserRole())
+//   .catch((err) => console.log("Error: ", err));
 
 import fs from 'fs';
 import readline from 'readline';

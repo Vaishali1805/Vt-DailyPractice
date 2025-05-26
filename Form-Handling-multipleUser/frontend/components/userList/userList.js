@@ -8,6 +8,26 @@ document.getElementById("registerBtn").addEventListener("click", () => {
   window.location.href = "../../auth/register.html";
 });
 
+function showPopup(message, onConfirm, onCancel) {
+  const popup = document.getElementById("confirmPopup");
+  const popupMessage = document.getElementById("popupMessage");
+  const confirmBtn = document.getElementById("confirmAction");
+  const cancelBtn = document.getElementById("cancelAction");
+
+  popupMessage.textContent = message;
+  popup.style.display = "flex";
+
+  confirmBtn.onclick = function () {
+    onConfirm();
+    popup.style.display = "none";
+  };
+
+  cancelBtn.onclick = function () {
+    if (onCancel) onCancel();
+    popup.style.display = "none";
+  };
+}
+
 // Event: Toggle individual checkbox
 rowContainer.addEventListener("change", (event) => {
   if (event.target && event.target.classList.contains("check")) {
@@ -21,23 +41,33 @@ rowContainer.addEventListener("change", (event) => {
 function updateMainCheckbox_State() {
   const checkBoxes = document.getElementsByClassName("check");
   document.getElementById("mainCheckBox").checked =
-    checkBoxes.length > 0 && selectedIds.size === checkBoxes.length;
-  console.log("selectedIds: ", selectedIds);
+    checkBoxes.length && selectedIds.size === checkBoxes.length;
+  // console.log("selectedIds: ", selectedIds);
+}
+
+function check_uncheck_all() {
+  const checkBoxes = document.querySelectorAll(".check");
+  const checkAll = document.getElementById("mainCheckBox").checked;
+  checkBoxes.forEach((checkbox) => {
+    checkbox.checked = checkAll;
+    const userId = Number(checkbox.closest("tr").dataset.id);
+    checkAll ? selectedIds.add(userId) : selectedIds.delete(userId);
+  });
 }
 
 document
   .getElementById("deleteBtn")
-  .addEventListener("click", () => handleDelete(null));
+  .addEventListener("click", () => handleDelete());
 
 async function getUserData() {
   try {
+    checkLoginStatus();
     const url = "http://localhost:5000/auth/get/userData";
     allUserData = await fetchReq(url, "GET");
     isAdmin = allUserData.find((user) => user.id === userId)?.role === "Admin";
     if (!isAdmin)
       document.getElementById("actionColumn").style.display = "none";
     renderUserRows(allUserData);
-    return true;
   } catch (error) {
     console.log("Error: ", error);
   }
@@ -50,17 +80,15 @@ function renderUserRows(data) {
   filteredData.map((user, index) => {
     const newRow = document.createElement("tr");
     newRow.dataset.id = user.id;
-    console.log("isAdmin: ", isAdmin);
     newRow.innerHTML += `
             <td><input type="checkbox" name="select" class="check"/></td>
             <td>${index + 1}</td>
             <td>${user.name || "-"}</td>
             <td>${user.email || "-"}</td>
             <td>${user.role || "-"}</td>
-            ${
-              isAdmin
-                ? ""
-                : `
+            ${!isAdmin
+        ? ""
+        : `
                 <td>
                     <div class="actionImage">
                         <img src='../../assets/icons/edit.svg' class="editIcon" alt="edit-icon" onclick="editStudentData(${user.id})" />
@@ -68,24 +96,18 @@ function renderUserRows(data) {
                     </div>
                 </td>
             `
-            }
+      }
             `;
     rowContainer.appendChild(newRow);
   });
 }
 
 function handleDelete(userId = null) {
-  const popup = document.getElementById("confirmPopup");
-  popup.style.display = "flex";
-
-  document.getElementById("confirmDelete").onclick = function () {
-    deleteStudent(userId);
-    popup.style.display = "none"; // Close popup after confirming
-  };
-
-  document.getElementById("cancelDelete").onclick = function () {
-    popup.style.display = "none"; // Close popup without deleting
-  };
+  showPopup(
+    "Are you sure you want to delete this student?",
+    () => deleteStudent(userId),
+    () => { } // No specific cancel action needed
+  );
 }
 
 async function deleteStudent(userId) {
@@ -120,11 +142,22 @@ function openUserProfile() {
   window.location.href = `../userForm/userForm.html?id=${userId}`;
 }
 
+function handleLogout() {
+  showPopup(
+    "Are you sure you want to log out?",
+    () => {
+      localStorage.clear();
+      window.location.href = "../../auth/login.html";
+    },
+    () => { } // No specific cancel action needed
+  );
+}
+
+function checkLoginStatus() {
+  const id = JSON.parse(localStorage.getItem('userId'));
+    if(!id){
+        window.location.href = '../../auth/login.html';
+    }
+}
+
 getUserData();
-
-
-// function getUserRole() {}
-
-// Promise.all([getUserData()])
-//   .then(() => getUserRole())
-//   .catch((err) => console.log("Error: ", err));

@@ -53,7 +53,7 @@ export const handleDelete = async (req, res) => {
     const { userIds } = req.body;
     console.log("🚀 ~ handleDelete ~ userIds:", userIds)
     if (userIds.length === 0) {
-        return res.status(400).json({ message: "No IDs provided for deletion", success: false });
+        return res.json({ message: "No IDs provided for deletion", success: false });
     }
     const userData = await readJsonFile('registeredUsers.json');
     userIds.map((id) => delete userData[id])
@@ -67,24 +67,23 @@ export const handleWelcome = async (req, res) => {
 
 export const handleEdit = async (req, res) => {
     try {
+        console.log("am in edit")
         const allUserData = await readJsonFile('registeredUsers.json');
         console.log("req.body: ",req.body);
         const { id,name,email,role } = req.body;
+
         //check email must be unique
         const isEmailTaken = Object.keys(allUserData)
             .filter(userId => userId !== id) // Exclude the current user
-            .some(userId => allUserData[userId].email === userData.email);
-
+            .some(userId => allUserData[userId].email === email);
         if (isEmailTaken)
-            return res.status(400).json({success: false,message: "Email is already in use by another user"});
-
+            return res.json({success: false,message: "Email is already in use by another user"});
         allUserData[id].name = name;
         allUserData[id].email = email;
         allUserData[id].role = role;
         await writeData('registeredUsers.json', allUserData);
-        console.log("user data: ",allUserData[id]);
-        return res.json({userData: allUserData[id],success: true,message: "Data updated successfully"});
+        return res.json({success: true,message: "Data updated successfully"});
     } catch (error) {
-        res.status(500).json({ message: 'Server Error', success: false });
+        res.json({ message: 'Server Error', success: false });
     }
 }

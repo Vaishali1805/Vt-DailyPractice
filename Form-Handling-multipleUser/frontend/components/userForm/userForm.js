@@ -15,7 +15,7 @@ function backToUserList() {
     window.location.href = '../userList/userList.html';
 }
 
-function submitData() {
+async function submitData() {
     const userId = urlParams.get('id');
     const userData = {
         id: userId,
@@ -24,15 +24,19 @@ function submitData() {
         role: role.value,
     }
     const url = 'http://localhost:5000/auth/edit/userData';
-    const data = fetchReq(url, "POST", JSON.stringify(userData));
+    const data = await fetchReq(url, "POST", JSON.stringify(userData));
+    console.log("data: ", data);
     if (data.success) {
-        console.log(data.message);
-        console.log("userData: ",data.userData);
+        createToast(data.message, 'fa-circle-check', 'green');
+        setTimeout(() => {
+            removeToast();
+            window.location.href = `../userList/userList.html`;
+        }, 5000);
     }
-    else{
-        document.querySelector('.emailErr_msg').textContent = data.message;
+    else {
+        createToast(data.message, 'fa-circle-xmark', 'red');
+        setTimeout(() => removeToast(), 5000);
     }
 }
-
 
 fillForm();

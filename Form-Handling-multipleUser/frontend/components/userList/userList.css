@@ -101,5 +101,18 @@ input[type="checkbox"] {
 .imgDiv {
     position: fixed;
     top: 2px;
-    right: 5px;
+    right: 5rem;
+    cursor: pointer;
+}
+
+.logoutBtn {
+    position: fixed;
+    top: 10px;
+    right: 0.5rem;
+    color:white;
+    padding: 0.5rem;
+    background-color: #2e2d2d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

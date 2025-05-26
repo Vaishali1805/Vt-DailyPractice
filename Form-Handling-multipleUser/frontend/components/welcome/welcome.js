@@ -1,7 +1,10 @@
-document.addEventListener('DOMContentLoaded',showName);
-const urlParams = new URLSearchParams(window.location.search);
+document.addEventListener('DOMContentLoaded',checkLoginStatus());
+// const urlParams = new URLSearchParams(window.location.search);
 
-function showName() {
-    localStorage.setItem('userId',urlParams.get("id"))
-    document.getElementById('name').textContent = `Welcome ${urlParams.get("name")}`;
+function checkLoginStatus() {
+    const id = JSON.parse(localStorage.getItem('userId'));
+    if(!id){
+        window.location.href = '../../auth/login.html';
+    }
+    document.getElementById('name').textContent = `Welcome ${JSON.parse(localStorage.getItem('name'))}`;
 }

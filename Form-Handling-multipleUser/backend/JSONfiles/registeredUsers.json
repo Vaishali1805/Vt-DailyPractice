@@ -6,32 +6,11 @@
     "role": "User",
     "id": 1745476237864
   },
-  "1745574226218": {
-    "name": "new",
-    "email": "newuser@gmail.com",
-    "password": "$2b$10$kIQnfPTC6U36w1vC4Y.VWuxj/qbwoZKUj887nFUvWIp.AVJgUYRKO",
-    "role": "User",
-    "id": 1745574226218
-  },
-  "1747890871115": {
-    "name": "abc",
-    "email": "abc@gmail.com",
-    "password": "$2b$10$.YlzjKqYAqn1qz5rIvsOSOo5lCY3F007kKLlMZPd20pEVJeIThh5y",
-    "role": "User",
-    "id": 1747890871115
-  },
-  "1747891283110": {
-    "name": "Harish",
-    "email": "harish@gmail.com",
-    "password": "$2b$10$jTWscVu2CSeohi04/qPr/.avvUlSedRI2HMYOLlRsaPZp56MFci0G",
-    "role": "User",
-    "id": 1747891283110
-  },
   "1747909412939": {
-    "name": "new",
+    "name": "xyz",
     "email": "xyz@gmail.com",
     "password": "$2b$10$jDjlCn/5LvHBRtW7sUpJz.4wk1JMVg5NBa41fQi/fUBKLLRfPDPri",
-    "role": "Admin",
+    "role": "User",
     "id": 1747909412939
   },
   "1747909609223": {
@@ -43,9 +22,9 @@
   },
   "1747982582540": {
     "name": "girl",
-    "email": "girl@acb.com",
+    "email": "girl@gmail.com",
     "password": "$2b$10$ZZE0xDIm7LH0tjAqN8dwe.7CCc/qtPXKlj.SPVzZnw9w.JMFJ2BI6",
-    "role": "User",
+    "role": "Admin",
     "id": 1747982582540
   }
 }

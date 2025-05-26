@@ -17,10 +17,10 @@ document.querySelectorAll('.form-outline .form-control').forEach((input) => {
 function createToast(message, className1, color) {
     document.querySelector('.myToast').innerHTML =
         `<div class="toastDiv" style="--barColor: ${color}">
-      <i class="fa-solid ${className1}" style="--iconColor: ${color}"></i>
-      <span>${message}</span>
-    </div>
-    <i class="fa-solid fa-xmark" id="crossIcon"></i>`
+            <i class="fa-solid ${className1}" style="--iconColor: ${color}"></i>
+            <span>${message}</span>
+        </div>
+        <i class="fa-solid fa-xmark" id="crossIcon"></i>`
 
     document.getElementById('crossIcon').addEventListener('click', () => {
         removeToast();
@@ -62,13 +62,8 @@ async function fetchReq(url, reqMethod, formData = null) {
             throw new Error(`Response status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("data: ", data);
         return data;
-        // if (data.success) {
-        //     if (reqMethod.toUpperCase() !== "GET")
-        //         return true;
-        //     else
-        //         return data;
-        // }
     } catch (error) {
         console.log("Error: ", error);
     }
