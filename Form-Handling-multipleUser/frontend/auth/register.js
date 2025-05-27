@@ -1,8 +1,3 @@
-const fields = ['studentName', 'email', 'password', 'confirmPassword','user','admin'];
-const elements = {};
-const EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{6,15}$/;
-
 fields.forEach(field => {
     elements[field] = document.getElementById(field);
     elements[`${field}Err_msg`] = document.getElementById(`${field}Err_msg`);
@@ -52,17 +47,17 @@ async function handleSubmit(e) {
                 password: password.value,
                 role: document.querySelector('input[name="role"]:checked').value,
             }
-            const url = 'http://localhost:5000/auth/register/user';
+            const url = BASE_URL + routes.register;
             const data = await fetchReq(url, 'POST', JSON.stringify(signUpData));
             if (data.success) {
                 createToast(data.message, 'fa-circle-check', 'green');
-                setTimeout(() => {
+                runAfterDelay(() => {
                     removeToast();
                     window.location.href = './login.html';
-                }, 5000);
+                }, 1500);
             } else {
                 createToast(data.message, 'fa-circle-xmark', 'red');
-                setTimeout(() => removeToast(), 5000);
+                runAfterDelay(removeToast, 1500);
             }
         } else {
             console.log("Form has errors:", errors);

@@ -1,11 +1,13 @@
 const rowContainer = document.getElementById("rowContainer");
 const selectedIds = new Set();
-const userId = parseInt(localStorage.getItem("userId"));
+// const userId = parseInt(localStorage.getItem("userId"));
+const userId = getLocalStorageData("userId");
 let allUserData;
 let isAdmin;
 
 document.getElementById("registerBtn").addEventListener("click", () => {
-  window.location.href = "../../auth/register.html";
+  redirectToPath("../../auth/register.html");
+  // window.location.href = "../../auth/register.html";
 });
 
 function showPopup(message, onConfirm, onCancel) {

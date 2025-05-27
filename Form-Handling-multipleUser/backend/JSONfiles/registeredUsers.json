@@ -26,5 +26,12 @@
     "password": "$2b$10$ZZE0xDIm7LH0tjAqN8dwe.7CCc/qtPXKlj.SPVzZnw9w.JMFJ2BI6",
     "role": "Admin",
     "id": 1747982582540
+  },
+  "1748318480617": {
+    "name": "abc",
+    "email": "abc@gmail.com",
+    "password": "$2b$10$lARpjP42ZsrrMnXOxd8mJ.SnltQlM0jOai.SvW4ymg3N/FagODzxy",
+    "role": "User",
+    "id": 1748318480617
   }
 }
