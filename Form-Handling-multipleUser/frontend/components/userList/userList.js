@@ -1,34 +1,12 @@
 const rowContainer = document.getElementById("rowContainer");
 const selectedIds = new Set();
-// const userId = parseInt(localStorage.getItem("userId"));
 const userId = getLocalStorageData("userId");
 let allUserData;
 let isAdmin;
 
 document.getElementById("registerBtn").addEventListener("click", () => {
   redirectToPath("../../auth/register.html");
-  // window.location.href = "../../auth/register.html";
 });
-
-function showPopup(message, onConfirm, onCancel) {
-  const popup = document.getElementById("confirmPopup");
-  const popupMessage = document.getElementById("popupMessage");
-  const confirmBtn = document.getElementById("confirmAction");
-  const cancelBtn = document.getElementById("cancelAction");
-
-  popupMessage.textContent = message;
-  popup.style.display = "flex";
-
-  confirmBtn.onclick = function () {
-    onConfirm();
-    popup.style.display = "none";
-  };
-
-  cancelBtn.onclick = function () {
-    if (onCancel) onCancel();
-    popup.style.display = "none";
-  };
-}
 
 // Event: Toggle individual checkbox
 rowContainer.addEventListener("change", (event) => {
@@ -57,14 +35,12 @@ function check_uncheck_all() {
   });
 }
 
-document
-  .getElementById("deleteBtn")
-  .addEventListener("click", () => handleDelete());
+document.getElementById("deleteBtn").addEventListener("click", () => handleDelete());
 
 async function getUserData() {
   try {
     checkLoginStatus();
-    const url = "http://localhost:5000/auth/get/userData";
+    const url = BASE_URL + routes.getData;
     allUserData = await fetchReq(url, "GET");
     isAdmin = allUserData.find((user) => user.id === userId)?.role === "Admin";
     if (!isAdmin)
@@ -116,12 +92,8 @@ async function deleteStudent(userId) {
   try {
     let idsToDelete = userId ? [userId] : Array.from(selectedIds);
 
-    const url = "http://localhost:5000/auth/delete/userData";
-    const data = await fetchReq(
-      url,
-      "POST",
-      JSON.stringify({ userIds: idsToDelete })
-    );
+    const url = BASE_URL + routes.deleteData;
+    const data = await fetchReq(url,"POST",JSON.stringify({ userIds: idsToDelete }));
     if (data.success) {
       getUserData();
       if (!userId) selectedIds.clear();
@@ -134,14 +106,14 @@ async function deleteStudent(userId) {
 // Navigate to edit form
 function editStudentData(id) {
   const userData = allUserData.find((user) => user.id === id);
-  localStorage.setItem("userData", JSON.stringify(userData));
-  window.location.href = `../userForm/userForm.html?id=${id}`;
+  setLocalStorageData("userData",userData);
+  redirectToPath(`../userForm/userForm.html?id=${id}`);
 }
 
 function openUserProfile() {
   const userData = allUserData.find((user) => user.id === userId);
   localStorage.setItem("userData", JSON.stringify(userData));
-  window.location.href = `../userForm/userForm.html?id=${userId}`;
+  redirectToPath(`../userForm/userForm.html?id=${userId}`);
 }
 
 function handleLogout() {
@@ -149,16 +121,16 @@ function handleLogout() {
     "Are you sure you want to log out?",
     () => {
       localStorage.clear();
-      window.location.href = "../../auth/login.html";
+      redirectToPath("../../auth/login.html");
     },
     () => { } // No specific cancel action needed
   );
 }
 
 function checkLoginStatus() {
-  const id = JSON.parse(localStorage.getItem('userId'));
+  const id = getLocalStorageData('userId');
     if(!id){
-        window.location.href = '../../auth/login.html';
+        redirectToPath('../../auth/login.html');
     }
 }
 

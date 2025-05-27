@@ -7,13 +7,15 @@ async function handlelogin(event) {
     try {
         const url = BASE_URL + routes.login;
         const data = await fetchReq(url,'POST', JSON.stringify(loginData));
+        console.log("data: ",data);
         if(data.success) {
             createToast(data.message,'fa-circle-check','green');
             runAfterDelay(() => {
                 removeToast();
                 setLocalStorageData("userId",data.id);
                 setLocalStorageData("name",data.name);
-                redirectToPath('../components/welcome/welcome.html')
+                setLocalStorageData("token",data.token);
+                redirectToPath('../components/welcome/welcome.html');
             }, 1500);
         }
         else{

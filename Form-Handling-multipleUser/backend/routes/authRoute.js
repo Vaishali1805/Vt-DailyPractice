@@ -1,13 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { handleRegister,handleLogin,getUserData,handleDelete,handleEdit,handleWelcome } from '../controllers/authController.js'
-import { verifyLogin } from '../middlewares/verifyLogin.js'
+import { handleRegister,handleLogin,getUserData,handleDelete,handleEdit } from '../controllers/authController.js'
+import { verifyToken } from '../middlewares/verifyToken.js';
 
-router.get('/get/userData',getUserData);
+router.get('/get/userData',verifyToken,getUserData);
 router.post('/register/user',handleRegister);
 router.post('/login/user',handleLogin);
-router.post('/delete/userData',handleDelete);
-router.post('/edit/userData',handleEdit);
-// router.post('/welcome/user',verifyLogin,handleWelcome);
+router.post('/delete/userData',verifyToken,handleDelete);
+router.post('/edit/userData',verifyToken,handleEdit);
 
 export default router;

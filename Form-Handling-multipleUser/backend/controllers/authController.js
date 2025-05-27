@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import Cookies from 'js-cookie';
+import { createToken } from "../utils/helper.js";
 import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers.js";
 
 export const handleRegister = async (req, res) => {
@@ -33,9 +35,24 @@ export const handleLogin = async (req, res) => {
             return res.json({ message: 'User not Exist Signup first', success: false });
         }
         const match = await bcrypt.compare(password, user.password);
+        console.log("🚀 ~ handleLogin ~ match:", match)
+        let token;
+        if (match) {
+            const payload = {
+                id: user.id
+            }
+            console.log("🚀 ~ handleLogin ~ payload:", payload)
+            token = await createToken(payload);
+            console.log("token: ",token)
+            // Cookies.set('token',token, {
+            //     secure: true,
+            //     httpOnly: true,
+            //     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+            // })
+        }
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, name: user.name, id: user.id
+            success: match, name: user.name, id: user.id,token: token
         });
     } catch (error) {
         console.log("error: ", error)
@@ -61,28 +78,23 @@ export const handleDelete = async (req, res) => {
     res.json({ message: "Rows deleted successfully", success: true });
 }
 
-export const handleWelcome = async (req, res) => {
-    console.log("Am in handleWelcome");
-}
-
 export const handleEdit = async (req, res) => {
     try {
-        console.log("am in edit")
         const allUserData = await readJsonFile('registeredUsers.json');
-        console.log("req.body: ",req.body);
-        const { id,name,email,role } = req.body;
+        console.log("req.body: ", req.body);
+        const { id, name, email, role } = req.body;
 
         //check email must be unique
         const isEmailTaken = Object.keys(allUserData)
             .filter(userId => userId !== id) // Exclude the current user
             .some(userId => allUserData[userId].email === email);
         if (isEmailTaken)
-            return res.json({success: false,message: "Email is already in use by another user"});
+            return res.json({ success: false, message: "Email is already in use by another user" });
         allUserData[id].name = name;
         allUserData[id].email = email;
         allUserData[id].role = role;
         await writeData('registeredUsers.json', allUserData);
-        return res.json({success: true,message: "Data updated successfully"});
+        return res.json({ success: true, message: "Data updated successfully" });
     } catch (error) {
         res.json({ message: 'Server Error', success: false });
     }

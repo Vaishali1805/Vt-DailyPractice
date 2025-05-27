@@ -1,41 +1,38 @@
-const fields = ['Name', 'email', 'role'];
-fields.forEach(field => {
+formFields.forEach(field => {
     field = document.getElementById(field);
 })
-const urlParams = new URLSearchParams(window.location.search);
 
 function fillForm() {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    Name.value = userData.name;
+    const userData = getLocalStorageData("userData");
+    firstName.value = userData.name;
     email.value = userData.email;
     role.value = userData.role;
 }
 
 function backToUserList() {
-    window.location.href = '../userList/userList.html';
+    redirectToPath('../userList/userList.html');
 }
 
 async function submitData() {
-    const userId = urlParams.get('id');
     const userData = {
-        id: userId,
-        name: Name.value,
+        id: getParamsData('id'),
+        name: firstName.value,
         email: (email.value).toLowerCase(),
         role: role.value,
     }
-    const url = 'http://localhost:5000/auth/edit/userData';
+    const url = BASE_URL + routes.editData;
     const data = await fetchReq(url, "POST", JSON.stringify(userData));
     console.log("data: ", data);
     if (data.success) {
         createToast(data.message, 'fa-circle-check', 'green');
-        setTimeout(() => {
+        runAfterDelay(() => {
             removeToast();
-            window.location.href = `../userList/userList.html`;
-        }, 5000);
+            redirectToPath(`../userList/userList.html`);
+        }, 1500);
     }
     else {
         createToast(data.message, 'fa-circle-xmark', 'red');
-        setTimeout(() => removeToast(), 5000);
+        runAfterDelay(removeToast, 1500);
     }
 }
 

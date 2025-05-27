@@ -10,7 +10,7 @@
     "name": "xyz",
     "email": "xyz@gmail.com",
     "password": "$2b$10$jDjlCn/5LvHBRtW7sUpJz.4wk1JMVg5NBa41fQi/fUBKLLRfPDPri",
-    "role": "User",
+    "role": "Admin",
     "id": 1747909412939
   },
   "1747909609223": {
@@ -21,17 +21,17 @@
     "id": 1747909609223
   },
   "1747982582540": {
-    "name": "girl",
+    "name": "myGirl",
     "email": "girl@gmail.com",
     "password": "$2b$10$ZZE0xDIm7LH0tjAqN8dwe.7CCc/qtPXKlj.SPVzZnw9w.JMFJ2BI6",
     "role": "Admin",
     "id": 1747982582540
   },
-  "1748318480617": {
+  "1748352028544": {
     "name": "abc",
     "email": "abc@gmail.com",
-    "password": "$2b$10$lARpjP42ZsrrMnXOxd8mJ.SnltQlM0jOai.SvW4ymg3N/FagODzxy",
+    "password": "$2b$10$zMo/WzTYP2aWAeU32DTqxuSLtTF6STpccnSRv5MgDlgw2fFmF7zUW",
     "role": "User",
-    "id": 1748318480617
+    "id": 1748352028544
   }
 }
