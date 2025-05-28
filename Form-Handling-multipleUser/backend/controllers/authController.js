@@ -35,13 +35,11 @@ export const handleLogin = async (req, res) => {
             return res.json({ message: 'User not Exist Signup first', success: false });
         }
         const match = await bcrypt.compare(password, user.password);
-        console.log("🚀 ~ handleLogin ~ match:", match)
         let token;
         if (match) {
             const payload = {
                 id: user.id
             }
-            console.log("🚀 ~ handleLogin ~ payload:", payload)
             token = await createToken(payload);
             console.log("token: ",token)
             // Cookies.set('token',token, {
@@ -95,6 +93,14 @@ export const handleEdit = async (req, res) => {
         allUserData[id].role = role;
         await writeData('registeredUsers.json', allUserData);
         return res.json({ success: true, message: "Data updated successfully" });
+    } catch (error) {
+        res.json({ message: 'Server Error', success: false });
+    }
+}
+
+export const verifyLogin = async (req,res) => {
+    try {
+        res.json({message: 'user Logged In',success: true});
     } catch (error) {
         res.json({ message: 'Server Error', success: false });
     }

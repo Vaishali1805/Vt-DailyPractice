@@ -104,7 +104,7 @@ async function fetchReq(url, reqMethod, formData = null) {
         const options = {
             method: reqMethod,
             headers,
-            credentials: 'include', // Ensures cookies are sent/received
+            //credentials: 'include', // Ensures cookies are sent/received
         };
         // Only add body if method is not GET
         if (reqMethod.toUpperCase() !== "GET" && formData) {
@@ -113,7 +113,6 @@ async function fetchReq(url, reqMethod, formData = null) {
         const response = await fetch(url, options);
         if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
-                console.log("am in res status")
                 redirectToPath('/auth/login.html');
             }
         }
@@ -123,4 +122,10 @@ async function fetchReq(url, reqMethod, formData = null) {
     } catch (error) {
         console.log("Error: ", error);
     }
+}
+
+async function checkLoginStatus() {
+    const url = BASE_URL + routes.loginStatus;
+    const data = await fetchReq(url,"POST");
+    return data;
 }

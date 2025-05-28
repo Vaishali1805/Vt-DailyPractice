@@ -1,10 +1,8 @@
-document.addEventListener('DOMContentLoaded',checkLoginStatus());
-// const urlParams = new URLSearchParams(window.location.search);
+document.addEventListener('DOMContentLoaded',renderName());
 
-function checkLoginStatus() {
-    const id = getLocalStorageData('userId');
-    if(!id){
-        redirectToPath('../../auth/login.html');
+async function renderName() {
+    const data = await checkLoginStatus();
+    if(data.success){
+        document.getElementById('name').textContent = `Welcome ${getLocalStorageData('name')}`;
     }
-    document.getElementById('name').textContent = `Welcome ${getLocalStorageData('name')}`;
 }

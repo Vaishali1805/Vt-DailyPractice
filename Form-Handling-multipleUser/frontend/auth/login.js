@@ -7,7 +7,7 @@ async function handlelogin(event) {
     try {
         const url = BASE_URL + routes.login;
         const data = await fetchReq(url,'POST', JSON.stringify(loginData));
-        console.log("data: ",data);
+        console.log("data login: ",data);
         if(data.success) {
             createToast(data.message,'fa-circle-check','green');
             runAfterDelay(() => {

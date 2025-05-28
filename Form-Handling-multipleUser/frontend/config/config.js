@@ -6,4 +6,5 @@ const routes = {
     getData: '/auth/get/userData',
     deleteData: '/auth/delete/userData',
     editData: '/auth/edit/userData',
+    loginStatus: '/auth/login/status',
 }
