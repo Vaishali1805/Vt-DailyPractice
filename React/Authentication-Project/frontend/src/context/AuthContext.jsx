@@ -1,5 +1,6 @@
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from "react";
+import { verifyAuth } from '../api/apiHandlers.js'
 
 //create context
 export const AuthContext = createContext();
@@ -7,19 +8,15 @@ export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-    //reques to check token
-    // useEffect(() => {
-    //     const verifyAuth = async () => {
-    //         try {
-    //             const response = await AxiosInstance.get("/auth/checkToken");
-    //             setIsAuthenticated(response.data.success);
-    //         } catch (error) {
-    //             console.error("Error checking authentication:", error);
-    //             setIsAuthenticated(false);
-    //         }
-    //     };
-    //     verifyAuth();
-    // }, []);
+    // request to check token
+    useEffect(() => {
+        const checkAuth = async () => {
+            const isValid = await verifyAuth(); // e.g. returns true/false
+            setIsAuthenticated(isValid); // or set data based on response
+        };
+        checkAuth();
+    }, []);
+
     return (
         <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
             {children}

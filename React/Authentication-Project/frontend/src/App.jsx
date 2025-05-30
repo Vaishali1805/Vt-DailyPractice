@@ -4,10 +4,12 @@ import Signup from './pages/Signup.jsx'
 import Forgotpass from './pages/Forgotpass.jsx'
 import UserList from './pages/userList.jsx'
 import {createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { useAuth, AuthProvider } from "./context/AuthContext";
+import AuthProvider,{ useAuth } from "./context/AuthContext.jsx";
 
 function AppContent() {
   const {isAuthenticated} = useAuth();
+  console.log("isAuthenticated: ",isAuthenticated);
+
   const router = createBrowserRouter([
     {
       path: "/",

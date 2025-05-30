@@ -4,6 +4,7 @@ import RightSection from "../components/RightSection";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import { useNavigate } from 'react-router-dom';
+import { handelSignup } from '../api/apiHandlers.js'
 
 const Signup = () => {
    const navigate = useNavigate();
@@ -64,7 +65,7 @@ const Signup = () => {
 
         {/* Login and Signup button */}
         <div className="flex space-x-4 mb-6">
-          <Button className={formStyles.buttonPrimary} value="Sign Up" />
+          <Button className={formStyles.buttonPrimary} value="Sign Up" onClick={handelSignup} />
           <Button className={formStyles.buttonSecondary} value="Login" onClick={() => navigate('/login')} />
         </div>
       </div>
