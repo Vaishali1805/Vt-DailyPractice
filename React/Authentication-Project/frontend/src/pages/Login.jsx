@@ -4,7 +4,10 @@ import Button from "../components/Button";
 import InputField from "../components/InputField";
 import CheckboxWithLabel from "../components/CheckboxWithLabel";
 import RightSection from "../components/RightSection";
+import { useNavigate } from 'react-router-dom';
+
 const Login = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen bg-gray-100">
 
@@ -33,7 +36,7 @@ const Login = () => {
         {/* Login and Signup button */}
         <div className="flex space-x-4 mb-6">
           <Button className={formStyles.buttonPrimary} value="Login" />
-          <Button className={formStyles.buttonSecondary} value="Sign Up" />
+          <Button className={formStyles.buttonSecondary} value="Sign Up" onClick={() => navigate('/signup')} />
         </div>
       </div>
 

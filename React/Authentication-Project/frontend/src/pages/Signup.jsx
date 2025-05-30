@@ -3,8 +3,10 @@ import formStyles from "../styles/formStyles";
 import RightSection from "../components/RightSection";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+   const navigate = useNavigate();
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Left Section: SignUp Form */}
@@ -53,7 +55,7 @@ const Signup = () => {
                 name="role"
                 value="User"
                 className="mr-2"
-                checked
+                defaultChecked
               />
               <label htmlFor="user">User</label>
             </div>
@@ -63,7 +65,7 @@ const Signup = () => {
         {/* Login and Signup button */}
         <div className="flex space-x-4 mb-6">
           <Button className={formStyles.buttonPrimary} value="Sign Up" />
-          <Button className={formStyles.buttonSecondary} value="Login" />
+          <Button className={formStyles.buttonSecondary} value="Login" onClick={() => navigate('/login')} />
         </div>
       </div>
 
