@@ -2,14 +2,11 @@ import axiosInstance from "./axiosInstance.js";
 import { routes } from "./routes.js";
 import { setLocalStorageData } from "../utils/utils.js";
 
-export async function handleLogin(setIsAuthenticated) {
-    let email = "ram@gmail.com";
-    let password = "Abc@123"
-
-    console.log("routes.login", routes.login);
+export async function handleLogin(email,password,setIsAuthenticated) {
     try {
+        console.log("email:",email,"password:",password);
         const { data } = await axiosInstance.post(routes.login, { email, password });
-        console.log("response: ", data);
+        console.log("data: ", data);
         setLocalStorageData("token", data.token);
         setIsAuthenticated(true);
     } catch (error) {
@@ -24,10 +21,12 @@ export function handelSignup() {
 
 export async function verifyAuth() {
     try {
+        console.log("in verifyAuth");
         const response = await axiosInstance.post(routes.checkToken);
         console.log("response: ",response);
-        return response.success;
+        return response.data.success;
     } catch (error) {
         console.error("Error checking authentication:", error);
+        return false;
     }
 }

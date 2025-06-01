@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Forgotpass from './pages/Forgotpass.jsx'
@@ -13,23 +12,24 @@ function AppContent() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Login />
+      element: isAuthenticated ? <Navigate to="/userList" /> : <Login />
     },
     {
       path: "/login",
-      element: <Login />
+      element: isAuthenticated ? <Navigate to="/userList" /> : <Login />
     },
     {
       path: "/signup",
-      element: <Signup />
+      element: isAuthenticated ? <Navigate to="/userList" /> : <Signup />
     },
     {
       path: "/forgotPassword",
-      element: <Forgotpass />
+      element: isAuthenticated ? <Navigate to="/userList" /> : <Forgotpass />
     },
     {
       path: "/userList",
       element: <UserList />
+      // element: isAuthenticated ? <UserList /> : <Navigate to="/login" />
     },
   ]);
 

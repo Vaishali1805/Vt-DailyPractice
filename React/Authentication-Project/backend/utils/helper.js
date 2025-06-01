@@ -5,7 +5,7 @@ export const createToken = async (payload) => {
     return token;
 }
 
-export const verifyToken = async (token) => {
+export const tokenVerify = async (token) => {
     const result = jwt.verify(token,process.env.TOKEN_SECRET);
     return result;
 }

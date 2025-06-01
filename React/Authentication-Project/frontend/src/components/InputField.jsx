@@ -1,6 +1,6 @@
 import formStyles from "../styles/formStyles";
 
-const InputField = ({ label, type = "text", placeholder, icon, id }) => (
+const InputField = ({ label, type = "text", placeholder, icon, id,value,onChange }) => (
   <div className="mb-4">
     {label && (
       <label className={formStyles.label}>
@@ -12,6 +12,8 @@ const InputField = ({ label, type = "text", placeholder, icon, id }) => (
       id={id}
       placeholder={placeholder}
       className={formStyles.input}
+      value={value}
+      onChange={onChange}
     />
   </div>
 );
