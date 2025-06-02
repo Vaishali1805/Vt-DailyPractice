@@ -2,15 +2,22 @@ import axiosInstance from "./axiosInstance.js";
 import { routes } from "./routes.js";
 import { setLocalStorageData } from "../utils/utils.js";
 
-export async function handleLogin(email,password,setIsAuthenticated) {
+export async function login(email, password) {
     try {
-        console.log("email:",email,"password:",password);
         const { data } = await axiosInstance.post(routes.login, { email, password });
-        console.log("data: ", data);
-        setLocalStorageData("token", data.token);
-        setIsAuthenticated(true);
+        if (data.success) {
+            setLocalStorageData("token", data.token);
+        }
+        return {
+            success: data.success,
+            message: data.message
+        };
     } catch (error) {
         console.log("error: ", error)
+        return {
+            success: false,
+            message: error.response?.data?.message || "Something went wrong"
+        };
     }
 }
 
@@ -19,14 +26,12 @@ export function handelSignup() {
     console.log("am in handle signup");
 }
 
-export async function verifyAuth() {
+export async function getUsersData() {
     try {
-        console.log("in verifyAuth");
-        const response = await axiosInstance.post(routes.checkToken);
-        console.log("response: ",response);
-        return response.data.success;
+        const response = await axiosInstance.get(routes.getData);
+        return response.data;
     } catch (error) {
-        console.error("Error checking authentication:", error);
-        return false;
+        console.log("error: ", error)
+        return { success: false, userData: [] };
     }
 }

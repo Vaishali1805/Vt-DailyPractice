@@ -1,5 +1,7 @@
 export const routes = {
-  checkToken: "/auth/checkToken",
   login: "/auth/loginUser",
   signup: "/auth/registerUser",
+  getData: "/auth/getUserData",
+  edit: "/auth/editUserData",
+  delete: "/auth/deleteUserData",
 }

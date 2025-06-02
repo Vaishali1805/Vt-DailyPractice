@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import cycleImg from "../assets/cycleImage.png";
 import formStyles from "../styles/formStyles";
 import RightSection from "../components/RightSection";
@@ -5,9 +6,18 @@ import InputField from "../components/InputField";
 import Button from "../components/Button";
 import { useNavigate } from 'react-router-dom';
 import { handelSignup } from '../api/apiHandlers.js'
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Signup = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/userlist");
+    }
+  }, [isAuthenticated]);
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Left Section: SignUp Form */}

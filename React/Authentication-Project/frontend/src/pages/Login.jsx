@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import cycleImg from "../assets/cycleImage.png";
 import formStyles from "../styles/formStyles";
 import Button from "../components/Button";
@@ -5,13 +6,32 @@ import InputField from "../components/InputField";
 import CheckboxWithLabel from "../components/CheckboxWithLabel";
 import RightSection from "../components/RightSection";
 import { useNavigate } from "react-router-dom";
-import { handleLogin } from "../api/apiHandlers.js";
+import { login } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
+// import ShowToast from '../components/showToast.jsx';
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setIsAuthenticated, email, setEmail, password, setPassword } =
-    useAuth();
+  const { isAuthenticated, setIsAuthenticated, email, setEmail, password, setPassword } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/userlist");
+    }
+  }, [isAuthenticated]);
+
+  const handleLogin = async () => {
+    const { success, message } = await login(email, password);
+    toast[success ? "success" : "error"](message);
+    if (success) {
+      setTimeout(() => {
+        setIsAuthenticated(true);
+      }, 3200);
+      //await new Promise(resolve => setTimeout(resolve, 3000)); -- also correct
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Left Section: Login Form */}
@@ -54,7 +74,7 @@ const Login = () => {
           <Button
             className={formStyles.buttonPrimary}
             value="Login"
-            onClick={() => handleLogin(email, password, setIsAuthenticated)}
+            onClick={handleLogin}
           />
           <Button
             className={formStyles.buttonSecondary}

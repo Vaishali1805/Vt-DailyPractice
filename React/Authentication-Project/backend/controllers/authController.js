@@ -25,7 +25,6 @@ export const handleRegister = async (req, res) => {
 
 export const handleLogin = async (req, res) => {
     try {
-        console.log("in handleLogin")
         let { email, password } = req.body;
         console.log("🚀 ~ handleLogin ~ email:", email, "password: ", password);
         const data = await readJsonFile('registeredUsers.json');
@@ -42,7 +41,7 @@ export const handleLogin = async (req, res) => {
                 id: user.id
             }
             token = await createToken(payload);
-            console.log("token: ",token)
+            console.log("token: ", token)
             // Cookies.set('token',token, {
             //     secure: true,
             //     httpOnly: true,
@@ -51,7 +50,7 @@ export const handleLogin = async (req, res) => {
         }
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, name: user.name, id: user.id,token: token
+            success: match, name: user.name, id: user.id, token: token
         });
     } catch (error) {
         console.log("error: ", error)
@@ -60,21 +59,33 @@ export const handleLogin = async (req, res) => {
 }
 
 export const getUserData = async (req, res) => {
-    const data = await readJsonFile('registeredUsers.json');
-    const userData = Object.values(data).map(({ name, email, id, role }) => ({ name, email, id, role }));
-    res.json(userData);
+    try {
+        const data = await readJsonFile('registeredUsers.json');
+        if(!data)
+            res.json({message: "Data not fetched properly",success: false});
+        const userData = Object.values(data).map(({ name, email, id, role }) => ({ name, email, id, role }));
+        res.json({ userData, success: true });
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(500).json({ message: 'Server Error', success: false });
+    }
 };
 
 export const handleDelete = async (req, res) => {
-    const { userIds } = req.body;
-    console.log("🚀 ~ handleDelete ~ userIds:", userIds)
-    if (userIds.length === 0) {
-        return res.json({ message: "No IDs provided for deletion", success: false });
+    try {
+        const { userIds } = req.body;
+        console.log("🚀 ~ handleDelete ~ userIds:", userIds)
+        if (userIds.length === 0) {
+            return res.json({ message: "No IDs provided for deletion", success: false });
+        }
+        const userData = await readJsonFile('registeredUsers.json');
+        userIds.map((id) => delete userData[id])
+        await writeData('registeredUsers.json', userData);
+        res.json({ message: "Rows deleted successfully", success: true });
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(500).json({ message: 'Server Error', success: false });
     }
-    const userData = await readJsonFile('registeredUsers.json');
-    userIds.map((id) => delete userData[id])
-    await writeData('registeredUsers.json', userData);
-    res.json({ message: "Rows deleted successfully", success: true });
 }
 
 export const handleEdit = async (req, res) => {
@@ -94,14 +105,6 @@ export const handleEdit = async (req, res) => {
         allUserData[id].role = role;
         await writeData('registeredUsers.json', allUserData);
         return res.json({ success: true, message: "Data updated successfully" });
-    } catch (error) {
-        res.json({ message: 'Server Error', success: false });
-    }
-}
-
-export const verifyLogin = async (req,res) => {
-    try {
-        res.json({message: 'user Logged In',success: true});
     } catch (error) {
         res.json({ message: 'Server Error', success: false });
     }
