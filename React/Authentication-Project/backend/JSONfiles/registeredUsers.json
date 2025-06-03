@@ -33,5 +33,26 @@
     "password": "$2b$10$zMo/WzTYP2aWAeU32DTqxuSLtTF6STpccnSRv5MgDlgw2fFmF7zUW",
     "role": "User",
     "id": 1748352028544
+  },
+  "1748917687809": {
+    "name": "Vs",
+    "email": "vaishali.223037@maimt.com",
+    "password": "$2b$10$CHvcRtEuB8I0oIIXnS9.suysR3Q07HZL2OhdKnnEvGZPzuGvddUM.",
+    "role": "User",
+    "id": 1748917687809
+  },
+  "1748917819404": {
+    "name": "skjdb n",
+    "email": "sharma200716@gmail.com",
+    "password": "$2b$10$/91sNWoJG6/lToaSHB1emeSaa4H8BFKVQqPn2N0yo7wDOoft3uyuW",
+    "role": "User",
+    "id": 1748917819404
+  },
+  "1748919703937": {
+    "name": "newnew",
+    "email": "newnew@gmail.com",
+    "password": "$2b$10$WLFvSKCfsT1S6rpYQih7yeSqultnhwomdBKH6TrEaRppNjsp9ZIdK",
+    "role": "User",
+    "id": 1748919703937
   }
 }

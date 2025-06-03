@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import cycleImg from "../assets/cycleImage.png";
 import formStyles from "../styles/formStyles";
 import Button from "../components/Button";
@@ -8,12 +8,20 @@ import RightSection from "../components/RightSection";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
-// import ShowToast from '../components/showToast.jsx';
 import { toast } from "react-toastify";
+import { validateLoginForm } from "../utils/formValidation.js";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated, email, setEmail, password, setPassword } = useAuth();
+  const {
+    isAuthenticated,
+    setIsAuthenticated,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    setCurrentUserId,
+  } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -22,15 +30,26 @@ const Login = () => {
   }, [isAuthenticated]);
 
   const handleLogin = async () => {
-    const { success, message } = await login(email, password);
+    const errors = validateLoginForm(email,password);
+
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((msg) => toast.error(msg));
+      return;
+    }
+
+    const { success, message, loggedUser } = await login(
+      email.toLowerCase(),
+      password
+    );
     toast[success ? "success" : "error"](message);
     if (success) {
+      setCurrentUserId(loggedUser);
       setTimeout(() => {
         setIsAuthenticated(true);
       }, 3200);
       //await new Promise(resolve => setTimeout(resolve, 3000)); -- also correct
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100">

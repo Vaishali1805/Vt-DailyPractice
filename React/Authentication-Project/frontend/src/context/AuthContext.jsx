@@ -9,24 +9,48 @@ export default function AuthProvider({ children }) {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "User",
+  });
+  const [errors, setErrors] = useState({});
 
   // request to fetch userList
   useEffect(() => {
-  getUsersData()
-    .then(res => {
-      setUsers(res?.userData || []);
-      setIsAuthenticated(!!res?.success);   //Double NOT operator is used to convert any value into boolean - for ex: undefined,null,or nay falsy value - becomes false
-    })
-    .catch(err => {
-      console.error("Failed to fetch users:", err);
-      setIsAuthenticated(false);
-    });
-}, []);
+    getUsersData()
+      .then((res) => {
+        setUsers(res?.userData || []);
+        setIsAuthenticated(!!res?.success); //Double NOT operator is used to convert any value into boolean - for ex: undefined,null,or nay falsy value - becomes false
+      })
+      .catch((err) => {
+        console.error("Failed to fetch users:", err);
+        setIsAuthenticated(false);
+      });
+  }, []);
 
-  
   console.log("isAuthenticated: ", isAuthenticated);
   return (
-    <AuthContext.Provider value={{ users, setUsers, isAuthenticated, setIsAuthenticated, email, setEmail, password, setPassword }}>
+    <AuthContext.Provider
+      value={{
+        users,
+        setUsers,
+        isAuthenticated,
+        setIsAuthenticated,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        currentUser,
+        setCurrentUser,
+        form,
+        setForm,
+        errors,
+        setErrors,
+      }}>
       {children}
     </AuthContext.Provider>
   );

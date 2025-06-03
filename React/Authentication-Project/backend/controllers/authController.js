@@ -5,8 +5,9 @@ import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers
 
 export const handleRegister = async (req, res) => {
     try {
-        const newUser = req.body;
+        const { newUser } = req.body;
         console.log("newUser: ", newUser);
+        
         const data = await readJsonFile('registeredUsers.json');
         const userExists = Object.values(data).some(user => user.email === newUser.email);
         if (userExists) {
@@ -50,7 +51,7 @@ export const handleLogin = async (req, res) => {
         }
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, name: user.name, id: user.id, token: token
+            success: match, name: user.name, id: user.id, email: user.email, role: user.role, token: token
         });
     } catch (error) {
         console.log("error: ", error)
