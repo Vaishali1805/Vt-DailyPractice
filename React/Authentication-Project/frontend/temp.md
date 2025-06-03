@@ -1,103 +1,58 @@
 Tasks
- - replace input field on click on the edit button
  - optimize the code
  - Add comments
 
 
-
-import React, { useState, useEffect } from 'react';
-import InputField from '../components/InputField';
-import Image from '../components/Image';
-import defaultImage from '../assets/defaultImage.webp';
-import Button from '../components/Button';
-import { useNavigate } from 'react-router-dom';
-import formStyles from '../styles/formStyles';
-import { useAuth } from '../context/AuthContext';
-
-const ProfileForm = () => {
-    const navigate = useNavigate();
-    const { currentUser, setCurrentUser } = useAuth();
-
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        role: 'User'
-    });
-
-    useEffect(() => {
-        if (currentUser) {
-            setFormData({
-                name: currentUser.name || '',
-                email: currentUser.email || '',
-                role: currentUser.role || 'User'
-            });
-        }
-    }, [currentUser]);
-
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [id]: value
-        }));
-    };
-
-    const handleSubmit = () => {
-        console.log("Submitted Data:", formData);
-        // You can also update `currentUser` if needed:
-        // setCurrentUser(formData);
-    };
-
-    return (
-        <div>
-            <div id="userForm" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-96">
-                <div className="flex justify-center mb-4">
-                    <Image src={defaultImage} alt="User Image" className="w-24 h-24 rounded-full" />
-                </div>
-
-                <div className="space-y-4">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                        <InputField
-                            type="text"
-                            id="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                            placeholder="Enter your name"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <InputField
-                            type="email"
-                            id="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                            placeholder="Enter your email"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-                        <select
-                            id="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                        >
-                            <option value="User">User</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                    </div>
-                    <div className="flex justify-end space-x-2">
-                        <Button id="cancelBtn" className={formStyles.formButton} onClick={() => navigate('/userlist')} value="Cancel" />
-                        <Button id="submitBtn" className={formStyles.formButton} onClick={handleSubmit} value="Submit" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default ProfileForm;
+<tbody className="bg-white divide-y divide-gray-200">
+              {users
+                .filter((user) => user.id !== currentUser.id)
+                .map((user) => (
+                  <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
+                    {currentUser.role === "Admin" && (
+                      <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
+                        <button
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={() => showInput(user.id)}
+                          title="Edit">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDelete(user.id)}
+                          title="Delete">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+            </tbody>

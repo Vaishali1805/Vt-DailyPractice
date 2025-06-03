@@ -6,14 +6,22 @@ import showToastMessage from "../components/showToastMessage.jsx";
 import Popup from "../components/Popup.jsx";
 import Button from "../components/Button.jsx";
 import formStyles from "../styles/formStyles.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const UserTable = () => {
   const navigate = useNavigate();
-  const { users, setUsers, currentUser, setCurrentUser, setIsAuthenticated } = useAuth();
+  const { users, setUsers, currentUser, setCurrentUser, setIsAuthenticated } =
+    useAuth();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
+
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [editedData, setEditedData] = useState({
+    name: "",
+    email: "",
+    role: "",
+  });
 
   // request to fetch userList
   useEffect(() => {
@@ -21,7 +29,7 @@ const UserTable = () => {
       const res = await getUsersData();
       console.log("res: ", res);
       if (res?.success) {
-        setUsers(res?.userData || []);   // update the state
+        setUsers(res?.userData || []); // update the state
         setCurrentUser(getLocalStorageData("currentUser") || {});
       } else {
         if (res.error.status === 401 || res.error.status === 403)
@@ -32,7 +40,7 @@ const UserTable = () => {
   }, []);
 
   const handleEdit = async (id) => {
-    navigate('/profileform');
+    navigate("/profileform");
   };
 
   const confirmDelete = async (id) => {
@@ -40,8 +48,10 @@ const UserTable = () => {
     console.log("res: ", res);
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
-      console.log("am in")
-      setUsers(prevUsers => prevUsers.filter(user => user.id !== selectedUserId));
+      console.log("am in");
+      setUsers((prevUsers) =>
+        prevUsers.filter((user) => user.id !== selectedUserId)
+      );
     }
     setShowDeletePopup(false);
     setSelectedUserId(null);
@@ -53,18 +63,46 @@ const UserTable = () => {
   };
 
   const confirmLogout = () => {
-    console.log("in logout");
     localStorage.clear();
     setIsAuthenticated(false);
-  }
+  };
 
   const handleLogout = () => {
     setShowLogoutPopup(true);
-  }
+  };
 
-  const showInput = () => {
-    console.log("am in showInput")
-  }
+  const showInput = (userId) => {
+    const userToEdit = users.find((user) => user.id === userId);
+    if (userToEdit) {
+      setEditingUserId(userId);
+      setEditedData({
+        name: userToEdit.name,
+        email: userToEdit.email,
+        role: userToEdit.role,
+      });
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const saveEdit = async (id) => {
+    const res = await editUser({ id, ...editedData });
+    showToastMessage(res?.success, res?.message);
+    if (res?.success) {
+      setUsers((prev) =>
+        prev.map((user) => (user.id === id ? { ...user, ...editedData } : user))
+      );
+      setEditingUserId(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingUserId(null);
+    setEditedData({ name: "", email: "", role: "" });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -134,52 +172,82 @@ const UserTable = () => {
                 .filter((user) => user.id !== currentUser.id)
                 .map((user) => (
                   <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
-                    {currentUser.role === "Admin" && (
-                    <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
-                      <button
-                        className="text-blue-500 hover:text-blue-700"
-                        onClick={() => showInput(user.id)}
-                        title="Edit">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    {editingUserId === user.id ? (
+                      <>
+                        <td className="px-6 py-4">
+                          <input
+                            name="name"
+                            value={editedData.name}
+                            onChange={handleChange}
+                            className="border rounded p-1"
                           />
-                        </svg>
-                      </button>
-                      <button
-                        className="text-red-500 hover:text-red-700"
-                        onClick={() => handleDelete(user.id)}
-                        title="Delete">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
+                        </td>
+                        <td className="px-6 py-4">
+                          <input
+                            name="email"
+                            value={editedData.email}
+                            onChange={handleChange}
+                            className="border rounded p-1"
                           />
-                        </svg>
-                      </button>
-                    </td>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select
+                            name="role"
+                            value={editedData.role}
+                            onChange={handleChange}
+                            className="border rounded p-1">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap flex space-x-2">
+                          <button
+                            onClick={() => saveEdit(user.id)}
+                            className="text-green-600 hover:text-green-800"
+                            title="Save">
+                            ✅
+                          </button>
+                          <button
+                            onClick={cancelEdit}
+                            className="text-gray-600 hover:text-gray-800"
+                            title="Cancel">
+                            ❌
+                          </button>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {user.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {user.email}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {user.role}
+                        </td>
+                        {currentUser.role === "Admin" && (
+                          <td className="px-6 py-4 whitespace-nowrap flex space-x-4">
+                            <button
+                              className="text-blue-500 hover:text-blue-700"
+                              onClick={() => showInput(user.id)}
+                              title="Edit">
+                              ✏️
+                            </button>
+                            <button
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => handleDelete(user.id)}
+                              title="Delete">
+                              ❌
+                            </button>
+                          </td>
+                        )}
+                      </>
                     )}
                   </tr>
                 ))}
             </tbody>
+
           </table>
         </div>
       </div>
