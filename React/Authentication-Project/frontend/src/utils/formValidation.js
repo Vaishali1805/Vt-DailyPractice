@@ -7,20 +7,20 @@ export function validateSignupForm({ name, email, password, confirmPassword, rol
   errors.name = !name
     ? "*Name is required"
     : name.length < 2 || name.length > 30
-    ? "*Name must be between 2 and 30 characters"
-    : "";
+      ? "*Name must be between 2 and 30 characters"
+      : "";
 
   errors.email = !email
     ? "*Email is required"
     : !EmailRegex.test(email)
-    ? "*Invalid email address"
-    : "";
+      ? "*Invalid email address"
+      : "";
 
   errors.password = password.length < 6
     ? "*Password must be at least 6 characters"
     : !PasswordRegex.test(password)
-    ? "*Password must include uppercase, lowercase, number, special char"
-    : "";
+      ? "*Password must include uppercase, lowercase, number, special char"
+      : "";
 
   errors.confirmPassword =
     confirmPassword !== password ? "*Confirm password must match" : "";
@@ -41,6 +41,22 @@ export const validateLoginForm = (email, password) => {
 
   if (!password.trim()) {
     errors.password = "Password is required";
+  }
+
+  return errors;
+};
+
+export const validateProfileForm = (email, name) => {
+  const errors = {};
+
+  if (!name.trim()) {
+    errors.name = 'Name is required.';
+  }
+
+  if (!email.trim()) {
+    errors.email = 'Email is required.';
+  } else if (!EmailRegex.test(email)) {
+    errors.email = 'Enter a valid email address.';
   }
 
   return errors;

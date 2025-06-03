@@ -11,19 +11,15 @@ export async function login(email, password) {
     console.log("data: ", data);
     if (data.success) {
       setLocalStorageData("token", data.token);
+      setLocalStorageData("currentUser",data.userData);
     }
     return {
       success: data.success,
       message: data.message,
-      loggedUser: {
-        id: data.id,
-        name: data.name,
-        email: user.email,
-        role: data.role,
-      },
+      loggedUser: data.userData,
     };
   } catch (error) {
-    console.log("error: ", error);
+    console.log("login error: ", error);
     return {
       success: false,
       message: error.response?.data?.message || "Something went wrong",
@@ -36,7 +32,7 @@ export async function handelSignup(newUser) {
     const { data } = await axiosInstance.post(routes.signup, { newUser });
     return data;
   } catch (error) {
-    console.log("Signup error: ", error);
+    // console.log("Signup error: ", error);
 
     if (error.response) {
       return {
@@ -64,7 +60,24 @@ export async function getUsersData() {
     const response = await axiosInstance.get(routes.getData);
     return response.data;
   } catch (error) {
-    console.log("error: ", error);
-    return { success: false, userData: [] };
+    return { error: error, success: false, userData: [] };
+  }
+}
+
+export async function deleteUser(userIds) {
+  try {
+    const response = await axiosInstance.post(routes.delete,{ userIds });
+    return response.data;
+  } catch (error) {
+    return { error: error, success: false}
+  }
+}
+
+export async function editUser(formData,id) {
+  try {
+    const response = await axiosInstance.post(routes.edit, { id,name: formData.name, email: formData.email, role: formData.role });
+    return response.data;
+  } catch (error) {
+    return { error: error, success: false}
   }
 }

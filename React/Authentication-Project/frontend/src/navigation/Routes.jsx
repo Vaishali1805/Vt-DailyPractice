@@ -5,6 +5,7 @@ import UserList from "../pages/userList";
 import { Outlet,createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
+import ProfileForm from "../pages/ProfileForm";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -12,6 +13,7 @@ const router = createBrowserRouter(
             <Route element={<ProtectedRoutes />}>
                 <Route index element={<HomePage />} />
                 <Route path="userlist" element={<UserList />} />
+                <Route path="profileform" element={<ProfileForm />} />
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />

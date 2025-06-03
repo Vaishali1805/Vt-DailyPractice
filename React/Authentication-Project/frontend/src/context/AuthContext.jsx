@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getUsersData } from "../api/apiHandlers.js";
+import { getLocalStorageData } from "../utils/utils.js"
 
 //create context
 export const AuthContext = createContext();
@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [form, setForm] = useState({
@@ -19,18 +19,13 @@ export default function AuthProvider({ children }) {
   });
   const [errors, setErrors] = useState({});
 
-  // request to fetch userList
-  useEffect(() => {
-    getUsersData()
-      .then((res) => {
-        setUsers(res?.userData || []);
-        setIsAuthenticated(!!res?.success); //Double NOT operator is used to convert any value into boolean - for ex: undefined,null,or nay falsy value - becomes false
-      })
-      .catch((err) => {
-        console.error("Failed to fetch users:", err);
-        setIsAuthenticated(false);
-      });
-  }, []);
+   useEffect(() => {
+      async function checkToken() {
+        const token = getLocalStorageData("token");
+        token ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      }
+      checkToken();
+    }, [isAuthenticated]);
 
   console.log("isAuthenticated: ", isAuthenticated);
   return (
@@ -61,14 +56,17 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-/* 
-  useEffect(() => {
-    async function fetchData() {
-      const {userData,success} = await getUsersData();
-      setUsers(userData);    // update the state
-      setIsAuthenticated(success);
-      console.log("userData: ", userData);
-    }
-    fetchData();
-  }, []);
-*/
+// useEffect(() => {
+//   getUsersData()
+//     .then((res) => {
+//       setUsers(res?.userData || []);
+//       setCurrentUser(getLocalStorageData("currentUser") || {});
+//       setIsAuthenticated(!!res?.success); //Double NOT operator is used to convert any value into boolean - for ex: undefined,null,or nay falsy value - becomes false
+//     })
+//     .catch((err) => {
+//       console.error("Failed to fetch users:", err);
+//       setIsAuthenticated(false);
+//     });
+// }, []);
+
+// setIsAuthenticated(!!res?.success); //Double NOT operator is used to convert any value into boolean - for ex: undefined,null,or nay falsy value - becomes false

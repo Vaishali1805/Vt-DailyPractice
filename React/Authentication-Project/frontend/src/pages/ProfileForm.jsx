@@ -1,11 +1,4 @@
-Tasks
- - replace input field on click on the edit button
- - optimize the code
- - Add comments
-
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import InputField from '../components/InputField';
 import Image from '../components/Image';
 import defaultImage from '../assets/defaultImage.webp';
@@ -13,16 +6,20 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import formStyles from '../styles/formStyles';
 import { useAuth } from '../context/AuthContext';
+import { validateProfileForm } from '../utils/formValidation';
+import { editUser } from '../api/apiHandlers';
+import ShowToastMessage from '../components/showToastMessage';
+import { setLocalStorageData } from '../utils/utils';
 
 const ProfileForm = () => {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useAuth();
-
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         role: 'User'
     });
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (currentUser) {
@@ -42,11 +39,28 @@ const ProfileForm = () => {
         }));
     };
 
-    const handleSubmit = () => {
-        console.log("Submitted Data:", formData);
-        // You can also update `currentUser` if needed:
-        // setCurrentUser(formData);
-    };
+    const handleSubmit = async () => {
+        const validationErrors = validateProfileForm(formData.email, formData.name);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+        console.log("formData: ", formData);
+        const res = await editUser(formData,currentUser.id);
+        console.log("res: ", res);
+        ShowToastMessage(res?.success,res?.message);
+        if(res?.success){
+            setCurrentUser(prev => ({
+                ...prev,
+                ...formData,
+            }));
+            setLocalStorageData("currentUser",{
+                ...currentUser,
+                ...formData,
+            });
+            navigate('/userlist')
+        }
+    }
 
     return (
         <div>
@@ -58,34 +72,15 @@ const ProfileForm = () => {
                 <div className="space-y-4">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                        <InputField
-                            type="text"
-                            id="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                            placeholder="Enter your name"
-                        />
+                        <InputField type="text" value={formData.name} id="name" onChange={handleChange} error={errors.name} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your name" />
                     </div>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <InputField
-                            type="email"
-                            id="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                            placeholder="Enter your email"
-                        />
+                        <InputField type="email" value={formData.email} id="email" onChange={handleChange} error={errors.email} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your email" />
                     </div>
                     <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-                        <select
-                            id="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
-                        >
+                        <select id="role" onChange={handleChange} value={formData.role} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" >
                             <option value="User">User</option>
                             <option value="Admin">Admin</option>
                         </select>
@@ -98,6 +93,6 @@ const ProfileForm = () => {
             </div>
         </div>
     );
-};
+}
 
-export default ProfileForm;
+export default ProfileForm

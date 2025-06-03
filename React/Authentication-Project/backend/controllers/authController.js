@@ -51,7 +51,7 @@ export const handleLogin = async (req, res) => {
         }
         res.json({
             message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, name: user.name, id: user.id, email: user.email, role: user.role, token: token
+            success: match, userData:{name: user.name, id: user.id, email: user.email, role: user.role} , token: token
         });
     } catch (error) {
         console.log("error: ", error)
@@ -97,7 +97,7 @@ export const handleEdit = async (req, res) => {
 
         //check email must be unique
         const isEmailTaken = Object.keys(allUserData)
-            .filter(userId => userId !== id) // Exclude the current user
+            .filter(userId => userId !== String(id)) // Exclude the current user
             .some(userId => allUserData[userId].email === email);
         if (isEmailTaken)
             return res.json({ success: false, message: "Email is already in use by another user" });

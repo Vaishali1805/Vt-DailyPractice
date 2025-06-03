@@ -20,17 +20,18 @@ const Login = () => {
     setEmail,
     password,
     setPassword,
-    setCurrentUserId,
   } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
+      setEmail("");
+      setPassword("");
       navigate("/userlist");
     }
   }, [isAuthenticated]);
 
   const handleLogin = async () => {
-    const errors = validateLoginForm(email,password);
+    const errors = validateLoginForm(email, password);
 
     if (Object.keys(errors).length > 0) {
       Object.values(errors).forEach((msg) => toast.error(msg));
@@ -43,7 +44,7 @@ const Login = () => {
     );
     toast[success ? "success" : "error"](message);
     if (success) {
-      setCurrentUserId(loggedUser);
+      // setCurrentUser(loggedUser);
       setTimeout(() => {
         setIsAuthenticated(true);
       }, 3200);
