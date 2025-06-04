@@ -45,20 +45,31 @@ const ProfileForm = () => {
             setErrors(validationErrors);
             return;
         }
-        console.log("formData: ", formData);
-        const res = await editUser(formData,currentUser.id);
-        console.log("res: ", res);
-        ShowToastMessage(res?.success,res?.message);
-        if(res?.success){
+
+        const hasChanges =
+            formData.name !== currentUser.name ||
+            formData.email !== currentUser.email ||
+            formData.role !== currentUser.role;
+
+        if (!hasChanges) {
+            ShowToastMessage(false, "No changes to update.");
+            return;
+        }
+        // const payload = { id: currentUser.id, name: formData.name, email: "testuser132", role: "Admin" }
+        // const res = await editUser(payload);
+        const id = currentUser.id;
+        const res = await editUser({ id, ...formData });
+        ShowToastMessage(res?.success, res?.message);
+        if (res?.success) {
             setCurrentUser(prev => ({
                 ...prev,
-                ...formData,
+                ...res.userData,
             }));
-            setLocalStorageData("currentUser",{
+            setLocalStorageData("currentUser", {
                 ...currentUser,
-                ...formData,
+                ...res.userData,
             });
-            navigate('/userlist')
+            navigate('/userlist');
         }
     }
 

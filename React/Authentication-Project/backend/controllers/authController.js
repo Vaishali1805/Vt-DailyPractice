@@ -1,40 +1,53 @@
 import bcrypt from 'bcrypt';
 import Cookies from 'js-cookie';
-import { createToken } from "../utils/helper.js";
+import { createToken, sendResponse, validateData } from "../utils/helper.js";
 import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers.js";
 
+//function to register the new user
 export const handleRegister = async (req, res) => {
     try {
         const { newUser } = req.body;
-        console.log("newUser: ", newUser);
-        
+        if(!newUser) return sendResponse(res,"Data Not Found",false,400)
+
+        console.log("new user: ",newUser)
+        const result = validateData(newUser);
+        if(!result) return sendResponse(res,"Validation failed",false,400);
+
         const data = await readJsonFile('registeredUsers.json');
         const userExists = Object.values(data).some(user => user.email === newUser.email);
         if (userExists) {
-            return res.json({ message: 'User Already Exists', success: false });
+            return sendResponse(res,"User Already Exists",false,409);
         }
+
+        //generate a unique id for every user
         newUser.id = Date.now() + Math.floor(Math.random() * 1000);
-        newUser.password = await getHashedPassword(newUser.password);
+
+        //convert password into hashed password
+        const hashedresult = await getHashedPassword(newUser.password);
+        if(!hashedresult) return sendResponse(res,"Password hashing failed. Please try again.",false,500);
+        else newUser.password = hashedresult;
+
         data[newUser.id] = newUser;
         await writeData('registeredUsers.json', data);
-        res.json({ message: 'User Registered Successfully', success: true });
+        return sendResponse(res,"User Registered Successfully",true,200);
     } catch (error) {
-        console.log("error: ", error)
-        res.status(500).json({ message: 'Server Error', success: false });
+        // console.log("signup error: ", error)
+        sendResponse(res,"Server Error",false,500);
     }
 }
 
 export const handleLogin = async (req, res) => {
     try {
         let { email, password } = req.body;
-        console.log("🚀 ~ handleLogin ~ email:", email, "password: ", password);
-        const data = await readJsonFile('registeredUsers.json');
-        if (!data) return res.json({ message: 'Data not found', success: false });
+        if(!email || !password) return sendResponse(res,"Data Not Found",false,400);
+        
+        const result = validateData({email,password});
+        if(!result) return sendResponse(res,"Validation failed",false,400);
 
+        const data = await readJsonFile('registeredUsers.json');
         const user = Object.values(data).find(user => user.email === email);
-        if (!user) {
-            return res.json({ message: 'User not Exist Signup first', success: false });
-        }
+        if (!user) return sendResponse(res,"User not Exist Signup first",false,400);
+        
         const match = await bcrypt.compare(password, user.password);
         let token;
         if (match) {
@@ -42,71 +55,77 @@ export const handleLogin = async (req, res) => {
                 id: user.id
             }
             token = await createToken(payload);
-            console.log("token: ", token)
             // Cookies.set('token',token, {
             //     secure: true,
             //     httpOnly: true,
             //     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
             // })
+            const {password,...data} = user;
+            return sendResponse(res,"Login Successfull",true,200,data,token);
         }
-        res.json({
-            message: match ? 'Login Successfull' : 'Incorrect Password',
-            success: match, userData:{name: user.name, id: user.id, email: user.email, role: user.role} , token: token
-        });
+        sendResponse(res,"Incorrect Password",false,400);
     } catch (error) {
-        console.log("error: ", error)
-        res.status(500).json({ message: 'Server Error', success: false });
+        // console.log("login error: ", error)
+        sendResponse(res,"Server Error",false,500);
     }
 }
 
 export const getUserData = async (req, res) => {
     try {
         const data = await readJsonFile('registeredUsers.json');
-        if(!data)
-            res.json({message: "Data not fetched properly",success: false});
         const userData = Object.values(data).map(({ name, email, id, role }) => ({ name, email, id, role }));
-        res.json({ userData, success: true });
+        sendResponse(res,"Data fetched properly",true,200,userData);
     } catch (error) {
-        console.log("error: ", error);
-        res.status(500).json({ message: 'Server Error', success: false });
+        console.log("Read file error: ", error);
+        sendResponse(res, "Failed to load user data", false, 500);
     }
 };
 
 export const handleDelete = async (req, res) => {
     try {
         const { userIds } = req.body;
-        console.log("🚀 ~ handleDelete ~ userIds:", userIds)
         if (userIds.length === 0) {
-            return res.json({ message: "No IDs provided for deletion", success: false });
+            return sendResponse(res,"No IDs provided for deletion",false,400);
         }
         const userData = await readJsonFile('registeredUsers.json');
         userIds.map((id) => delete userData[id])
         await writeData('registeredUsers.json', userData);
-        res.json({ message: "Rows deleted successfully", success: true });
+        sendResponse(res,"Data deleted successfully",true,200);
     } catch (error) {
-        console.log("error: ", error);
-        res.status(500).json({ message: 'Server Error', success: false });
+        console.log("Delete data error: ", error);
+        sendResponse(res,"Server Error",false,500);
     }
 }
 
 export const handleEdit = async (req, res) => {
     try {
         const allUserData = await readJsonFile('registeredUsers.json');
-        console.log("req.body: ", req.body);
         const { id, name, email, role } = req.body;
+        if(!id || !name || !email || !role)
+            sendResponse(res,"Something went wrong",false,400);
+
+        const result = validateData({name,email,role});
+        if(!result) return sendResponse(res,"Validation failed",false,400);
+
+        //check user exist or not
+        const userExist = Object.keys(allUserData).some(userId => userId === String(id))
+        if(!userExist) return sendResponse(res,"User not exist",false,400);
 
         //check email must be unique
         const isEmailTaken = Object.keys(allUserData)
             .filter(userId => userId !== String(id)) // Exclude the current user
             .some(userId => allUserData[userId].email === email);
         if (isEmailTaken)
-            return res.json({ success: false, message: "Email is already in use by another user" });
+            return sendResponse(res, "Email is already in use by another user",false,400);
+
         allUserData[id].name = name;
         allUserData[id].email = email;
         allUserData[id].role = role;
+
         await writeData('registeredUsers.json', allUserData);
-        return res.json({ success: true, message: "Data updated successfully" });
+        sendResponse(res,"Data updated successfully",true,200,{name,email,role});
     } catch (error) {
-        res.json({ message: 'Server Error', success: false });
+        console.log("Edit data error: ",error)
+        sendResponse(res,"Server Error",false,500);
     }
 }

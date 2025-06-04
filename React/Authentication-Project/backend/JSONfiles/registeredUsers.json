@@ -1,16 +1,16 @@
 {
   "1748944928553": {
-    "name": "Hardik",
+    "name": "Jaggi",
     "email": "hardik@gmail.com",
     "password": "$2b$10$gg77k1xCNGYJv/XQkb9jP.2.OPaqBKznZe8G2MWo4szCJmWHz7Za6",
     "role": "Admin",
     "id": 1748944928553
   },
   "1748945589210": {
-    "name": "Riyansh",
-    "email": "riyansh@gmail.com",
+    "name": "Riyanshi",
+    "email": "riyanshi@gmail.com",
     "password": "$2b$10$4YbxnKexLq.DLShzcAvRV.X5NAkJvrXfnPL5UvPnTq6Z1fmPGvif2",
-    "role": "Admin",
+    "role": "User",
     "id": 1748945589210
   },
   "1748949165255": {
@@ -26,5 +26,19 @@
     "password": "$2b$10$SDjaLqPFCJiYQrUP9mLopu.qhn5zPJX6v7F.cR3INwsdHDn.sQXFm",
     "role": "Admin",
     "id": 1748958299664
+  },
+  "1749013778800": {
+    "name": "Ram",
+    "email": "ram@gmail.comm",
+    "password": "$2b$10$mVu76uDBnIwg8FsPnkEFeelctUM.rhyKlTxDkHs.iN5/soBue4Tp6",
+    "role": "Admin",
+    "id": 1749013778800
+  },
+  "1749021955489": {
+    "name": "Ram",
+    "email": "ram@gmail.com",
+    "password": "$2b$10$b..SECglY12WZeIIZhP1VuuJmsbvxukaSuhIVMEw2UiQ2Jd8VQ5YK",
+    "role": "Admin",
+    "id": 1749021955489
   }
 }

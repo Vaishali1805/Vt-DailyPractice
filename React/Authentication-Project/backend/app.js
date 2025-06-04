@@ -5,7 +5,7 @@ import configDotenv from 'dotenv';
 configDotenv.config();
 import userRoute from './routes/userRoute.js'
 import authRoute from './routes/authRoute.js'
-const PORT = 5000;
+import { PORT } from './utils/constant.js';
 const app = express();
 
 // app.use(cors({

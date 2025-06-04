@@ -1,29 +1,23 @@
 import axiosInstance from "./axiosInstance.js";
 import { routes } from "./routes.js";
-import { setLocalStorageData } from "../utils/utils.js";
+import { sendResponseTofunction } from "../utils/utils.js";
 
-export async function login(email, password) {
+export async function handleLogin(email, password) {
   try {
     const { data } = await axiosInstance.post(routes.login, {
       email,
       password,
     });
-    console.log("data: ", data);
-    if (data.success) {
-      setLocalStorageData("token", data.token);
-      setLocalStorageData("currentUser",data.userData);
-    }
-    return {
-      success: data.success,
-      message: data.message,
-      loggedUser: data.userData,
-    };
+    return data;
   } catch (error) {
-    console.log("login error: ", error);
-    return {
-      success: false,
-      message: error.response?.data?.message || "Something went wrong",
-    };
+    // console.log("login error: ", error);
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
   }
 }
 
@@ -32,52 +26,66 @@ export async function handelSignup(newUser) {
     const { data } = await axiosInstance.post(routes.signup, { newUser });
     return data;
   } catch (error) {
-    // console.log("Signup error: ", error);
-
+    // console.log("signup error: ", error);
     if (error.response) {
-      return {
-        success: false,
-        message:
-          error.response.data.message || "Something went wrong during signup",
-      };
-    } else if (error.request) {
-      return {
-        success: false,
-        message: "No response from server. Please check your connection.",
-      };
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
     } else {
-      return {
-        success: false,
-        message: "Unexpected error occurred.",
-      };
+      return sendResponseTofunction(false, "Unexpected error occurred")
     }
-    F;
   }
 }
 
 export async function getUsersData() {
   try {
-    const response = await axiosInstance.get(routes.getData);
-    return response.data;
+    const { data } = await axiosInstance.get(routes.getData);
+    return data;
   } catch (error) {
-    return { error: error, success: false, userData: [] };
+    // console.log("Data fetch error: ", error);
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
   }
 }
 
 export async function deleteUser(userIds) {
   try {
-    const response = await axiosInstance.post(routes.delete,{ userIds });
-    return response.data;
+    const { data } = await axiosInstance.post(routes.delete, { userIds });
+    return data;
   } catch (error) {
-    return { error: error, success: false}
+    // console.log("Delete user error: ", error);
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
   }
 }
 
-export async function editUser(formData,id) {
+export async function editUser(formData) {
   try {
-    const response = await axiosInstance.post(routes.edit, { id,name: formData.name, email: formData.email, role: formData.role });
-    return response.data;
+    const { data } = await axiosInstance.post(routes.edit, {
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      role: formData.role
+    });
+    return data;
   } catch (error) {
-    return { error: error, success: false}
+    // console.log("Edit user error: ", error);
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
   }
 }

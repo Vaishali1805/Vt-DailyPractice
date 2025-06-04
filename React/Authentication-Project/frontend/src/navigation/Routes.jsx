@@ -12,6 +12,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<Outlet />}>
             <Route element={<ProtectedRoutes />}>
                 <Route index element={<HomePage />} />
+                <Route path="home" element={<HomePage />} />
                 <Route path="userlist" element={<UserList />} />
                 <Route path="profileform" element={<ProfileForm />} />
             </Route>

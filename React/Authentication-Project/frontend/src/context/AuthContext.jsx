@@ -27,7 +27,6 @@ export default function AuthProvider({ children }) {
       checkToken();
     }, [isAuthenticated]);
 
-  console.log("isAuthenticated: ", isAuthenticated);
   return (
     <AuthContext.Provider
       value={{

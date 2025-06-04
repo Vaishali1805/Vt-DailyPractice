@@ -6,7 +6,7 @@ const __dirname = path.resolve();
 
 // Utility to read and parse a JSON file asynchronously
 export const readJsonFile = async (filename) => {
-    const filePath = path.join(__dirname, "JSONfiles" ,filename);
+    const filePath = path.join(__dirname, "JSONfiles", filename);
     try {
         const data = await fs.promises.readFile(filePath, 'utf8');
         if (data.trim() === '') return {};
@@ -38,7 +38,11 @@ export const setDataInCache = (data) => {
 }
 
 export const getHashedPassword = async (password) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password,salt);
-    return hashedPassword;
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        return hashedPassword;
+    } catch (error) {
+        return false;
+    }
 }

@@ -27,13 +27,10 @@ const UserTable = () => {
   useEffect(() => {
     async function fetchData() {
       const res = await getUsersData();
-      console.log("res: ", res);
+      // showToastMessage(res?.success,res?.message);
       if (res?.success) {
         setUsers(res?.userData || []); // update the state
         setCurrentUser(getLocalStorageData("currentUser") || {});
-      } else {
-        if (res.error.status === 401 || res.error.status === 403)
-          setIsAuthenticated(false);
       }
     }
     fetchData();
@@ -45,10 +42,8 @@ const UserTable = () => {
 
   const confirmDelete = async (id) => {
     const res = await deleteUser([selectedUserId]);
-    console.log("res: ", res);
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
-      console.log("am in");
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== selectedUserId)
       );
@@ -89,11 +84,24 @@ const UserTable = () => {
   };
 
   const saveEdit = async (id) => {
+    const originalUser = users.find(user => user.id === id);
+
+    const hasChanges =
+      editedData.name !== originalUser.name ||
+      editedData.email !== originalUser.email ||
+      editedData.role !== originalUser.role;
+
+    if (!hasChanges) {
+      showToastMessage(false, "No changes to update.");
+      setEditingUserId(null);
+      return;
+    }
     const res = await editUser({ id, ...editedData });
     showToastMessage(res?.success, res?.message);
+    console.log("res: ",res);
     if (res?.success) {
       setUsers((prev) =>
-        prev.map((user) => (user.id === id ? { ...user, ...editedData } : user))
+        prev.map((user) => (user.id === id ? { ...user, ...res.userData } : user))
       );
       setEditingUserId(null);
     }

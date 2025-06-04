@@ -27,6 +27,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 || error.response?.status === 403) {
       showToastMessage(error.response.data?.success,error.response.data?.message);
       localStorage.clear();
+      window.location.href = "http://localhost:5173";
     }
     return Promise.reject(error);
   }

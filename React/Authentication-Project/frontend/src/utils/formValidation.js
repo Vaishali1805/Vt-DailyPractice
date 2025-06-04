@@ -1,6 +1,7 @@
-export const EmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{6,}$/;    //move in constant.js
+import { EmailRegex } from "./constant";
+import { PasswordRegex } from "./constant";
 
+//function to validate the signup form
 export function validateSignupForm({ name, email, password, confirmPassword, role }) {
   const errors = {};
 
@@ -30,6 +31,7 @@ export function validateSignupForm({ name, email, password, confirmPassword, rol
   return errors;
 }
 
+//function to validate the login form
 export const validateLoginForm = (email, password) => {
   const errors = {};
 
@@ -46,6 +48,7 @@ export const validateLoginForm = (email, password) => {
   return errors;
 };
 
+// function to validate the Profile form
 export const validateProfileForm = (email, name) => {
   const errors = {};
 
