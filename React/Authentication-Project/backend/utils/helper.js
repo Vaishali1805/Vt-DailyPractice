@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { EmailRegex, PasswordRegex } from './constant.js';
 
 export const createToken = async (payload) => {
-    const token = jwt.sign(payload,process.env.TOKEN_SECRET,{ expiresIn: '1h' });
+    const token = jwt.sign(payload,process.env.TOKEN_SECRET,{ expiresIn: '4h' });
     return token;
 }
 

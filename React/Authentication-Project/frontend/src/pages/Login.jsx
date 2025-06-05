@@ -16,7 +16,7 @@ import ShowToastMessage from "../components/showToastMessage.jsx";
 import { useNavigate } from "react-router-dom";
 import { handleLogin } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { validateLoginForm } from "../utils/formValidation.js";
+import { validateLoginForm } from "../utils/validation.js";
 import { setLocalStorageData } from "../utils/utils.js";
 
 const Login = () => {

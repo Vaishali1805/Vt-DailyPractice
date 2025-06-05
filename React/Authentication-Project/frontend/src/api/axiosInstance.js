@@ -23,7 +23,6 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // console.log("error.response: ",error.response);
     if (error.response?.status === 401 || error.response?.status === 403) {
       showToastMessage(error.response.data?.success,error.response.data?.message);
       localStorage.clear();

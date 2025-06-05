@@ -4,14 +4,16 @@
     "email": "hardik@gmail.com",
     "password": "$2b$10$gg77k1xCNGYJv/XQkb9jP.2.OPaqBKznZe8G2MWo4szCJmWHz7Za6",
     "role": "Admin",
-    "id": 1748944928553
+    "id": 1748944928553,
+    "profilePath": "uploads\\1749133217056_CO2-oil-min.png"
   },
   "1748945589210": {
     "name": "Riyanshi",
     "email": "riyanshi@gmail.com",
     "password": "$2b$10$4YbxnKexLq.DLShzcAvRV.X5NAkJvrXfnPL5UvPnTq6Z1fmPGvif2",
     "role": "User",
-    "id": 1748945589210
+    "id": 1748945589210,
+    "profilePath": "uploads\\1749132944456_download.jpeg"
   },
   "1748949165255": {
     "name": "Isha",
@@ -22,9 +24,9 @@
   },
   "1748958299664": {
     "name": "Ishaaaa",
-    "email": "xyz@gmail.com",
+    "email": "xyz@gmail.comhn",
     "password": "$2b$10$SDjaLqPFCJiYQrUP9mLopu.qhn5zPJX6v7F.cR3INwsdHDn.sQXFm",
-    "role": "Admin",
+    "role": "User",
     "id": 1748958299664
   },
   "1749013778800": {
@@ -40,5 +42,34 @@
     "password": "$2b$10$b..SECglY12WZeIIZhP1VuuJmsbvxukaSuhIVMEw2UiQ2Jd8VQ5YK",
     "role": "Admin",
     "id": 1749021955489
+  },
+  "1749047400513": {
+    "name": "aakash shukla",
+    "email": "aakashshukla326@gmail.com",
+    "password": "$2b$10$yLy/WBUGm0eOK3cF3d50EOwYVC4gtVdEj3.Fk90JU03Q6A1FmtvU6",
+    "role": "User",
+    "id": 1749047400513
+  },
+  "1749100219843": {
+    "name": "James Bond",
+    "email": "jamesbond@gmail.com",
+    "password": "$2b$10$fsTQT3UlwPT69pXrpwCNluxm/TiCqzA7fv9Mvv.QOoacTloynPo6W",
+    "role": "Admin",
+    "id": 1749100219843
+  },
+  "1749100323638": {
+    "name": "James Bond",
+    "email": "jamesbond2@gmail.com",
+    "password": "$2b$10$btc3n5pZ.4sOAMREjUQvn.6YJSWcKwCDpd77WqMmj89wdaKvp8E/O",
+    "role": "User",
+    "id": 1749100323638
+  },
+  "1749115220880": {
+    "name": "Kartik",
+    "email": "kartik@gmail.com",
+    "password": "$2b$10$uAkAzUChomykA8J91syX1O7AiLc.z0q6D5x/crT3Itidjg7npXu.W",
+    "role": "Admin",
+    "id": 1749115220880,
+    "profilePath": "uploads\\1749123934548_5.jpg"
   }
 }

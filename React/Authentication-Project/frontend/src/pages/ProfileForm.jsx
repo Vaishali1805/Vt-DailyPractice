@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import InputField from '../components/InputField';
 import Image from '../components/Image';
-import defaultImage from '../assets/defaultImage.webp';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import formStyles from '../styles/formStyles';
 import { useAuth } from '../context/AuthContext';
-import { validateProfileForm } from '../utils/formValidation';
+import { validateFile, validateProfileForm } from '../utils/validation.js';
 import { editUser } from '../api/apiHandlers';
 import ShowToastMessage from '../components/showToastMessage';
-import { setLocalStorageData } from '../utils/utils';
+import { getSource, setLocalStorageData } from '../utils/utils';
 
 const ProfileForm = () => {
     const navigate = useNavigate();
@@ -17,16 +16,19 @@ const ProfileForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        role: 'User'
+        role: 'User',
+        profilePath: '',
     });
     const [errors, setErrors] = useState({});
+    const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
         if (currentUser) {
             setFormData({
                 name: currentUser.name || '',
                 email: currentUser.email || '',
-                role: currentUser.role || 'User'
+                role: currentUser.role || 'User',
+                profilePath: currentUser.profilePath || '',
             });
         }
     }, [currentUser]);
@@ -39,6 +41,17 @@ const ProfileForm = () => {
         }));
     };
 
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        console.log("file: ", file)
+        if (!file) return ShowToastMessage(true, "Please select a file");
+
+        const { result, message } = validateFile(file);
+        if (!result) return ShowToastMessage(false, message);
+
+        setSelectedImage(URL.createObjectURL(file));
+    };
+
     const handleSubmit = async () => {
         const validationErrors = validateProfileForm(formData.email, formData.name);
         if (Object.keys(validationErrors).length > 0) {
@@ -49,35 +62,67 @@ const ProfileForm = () => {
         const hasChanges =
             formData.name !== currentUser.name ||
             formData.email !== currentUser.email ||
-            formData.role !== currentUser.role;
+            formData.role !== currentUser.role || selectedImage;
 
         if (!hasChanges) {
             ShowToastMessage(false, "No changes to update.");
             return;
         }
-        // const payload = { id: currentUser.id, name: formData.name, email: "testuser132", role: "Admin" }
-        // const res = await editUser(payload);
-        const id = currentUser.id;
-        const res = await editUser({ id, ...formData });
-        ShowToastMessage(res?.success, res?.message);
-        if (res?.success) {
-            setCurrentUser(prev => ({
-                ...prev,
-                ...res.userData,
-            }));
-            setLocalStorageData("currentUser", {
-                ...currentUser,
-                ...res.userData,
-            });
-            navigate('/userlist');
+        const payload = new FormData();
+        payload.append("userId", currentUser.id);
+        payload.append("name", formData.name);
+        payload.append("email", formData.email);
+        payload.append("role", formData.role);
+
+        if (selectedImage) {
+            const file = document.getElementById("imageUpload").files[0];
+            payload.append("file", file, `${Date.now()}_${file.name}`);
+        }
+        try {
+            const { message, success, userData} = await editUser(payload);
+            ShowToastMessage(success, message);
+            if (success) {
+                setCurrentUser(prev => ({
+                    ...prev,
+                    ...userData,
+                }));
+                setLocalStorageData("currentUser", {
+                    ...currentUser,
+                    ...userData,
+                });
+                navigate('/userlist');
+            }
+        } catch (error) {
+            ShowToastMessage(false, "Something went wrong");
         }
     }
 
     return (
         <div>
             <div id="userForm" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-96">
-                <div className="flex justify-center mb-4">
+                {/* <div className="flex justify-center mb-4">
                     <Image src={defaultImage} alt="User Image" className="w-24 h-24 rounded-full" />
+                </div> */}
+
+                <div className="flex flex-col items-center mb-4">
+                    <Image
+                        src={getSource(selectedImage,currentUser.profilePath)}
+                        alt="User Image"
+                        className="w-24 h-24 rounded-full object-cover"
+                    />
+                    <label
+                        htmlFor="imageUpload"
+                        className="mt-2 px-4 py-1 text-sm font-medium text-white bg-gray-600 rounded cursor-pointer hover:bg-gray-500"
+                    >
+                        Choose Image
+                    </label>
+                    <input
+                        id="imageUpload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                    />
                 </div>
 
                 <div className="space-y-4">

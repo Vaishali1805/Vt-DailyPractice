@@ -98,7 +98,6 @@ const UserTable = () => {
     }
     const res = await editUser({ id, ...editedData });
     showToastMessage(res?.success, res?.message);
-    console.log("res: ",res);
     if (res?.success) {
       setUsers((prev) =>
         prev.map((user) => (user.id === id ? { ...user, ...res.userData } : user))

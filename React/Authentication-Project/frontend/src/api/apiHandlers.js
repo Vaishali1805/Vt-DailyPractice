@@ -69,13 +69,12 @@ export async function deleteUser(userIds) {
   }
 }
 
-export async function editUser(formData) {
+export async function editUser(payload) {
   try {
-    const { data } = await axiosInstance.post(routes.edit, {
-      id: formData.id,
-      name: formData.name,
-      email: formData.email,
-      role: formData.role
+    const { data } = await axiosInstance.post(routes.edit, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return data;
   } catch (error) {

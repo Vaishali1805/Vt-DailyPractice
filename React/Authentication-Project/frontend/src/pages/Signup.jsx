@@ -15,7 +15,7 @@ import formStyles from "../styles/formStyles";
 import { useNavigate } from "react-router-dom";
 import { handelSignup } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { validateSignupForm } from "../utils/formValidation.js";
+import { validateSignupForm } from "../utils/validation.js";
 
 const Signup = () => {
   const navigate = useNavigate();
