@@ -71,5 +71,12 @@
     "role": "Admin",
     "id": 1749115220880,
     "profilePath": "uploads\\1749123934548_5.jpg"
+  },
+  "1749178698037": {
+    "name": "Vs",
+    "email": "vaishali@maimt.com",
+    "password": "$2b$10$E6HlAxxKXtcQoZt6PnozR.SgtDNky4nrEMYJFucFDarM86TwXpHbm",
+    "role": "Admin",
+    "id": 1749178698037
   }
 }
