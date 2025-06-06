@@ -73,7 +73,11 @@ export const handleLogin = async (req, res) => {
 export const getUserData = async (req, res) => {
     try {
         const data = await readJsonFile('registeredUsers.json');
-        const userData = Object.values(data).map(({ name, email, id, role }) => ({ name, email, id, role }));
+        // const userData = Object.values(data).map(({ name, email, id, role, profilePath, uploadedImages}) => ({ name, email, id, role, profilePath, uploadedImages }));
+        const userData = Object.values(data).map((user) => {
+            const {password, ...data} = user;
+            return data;
+        })
         sendResponse(res, "Data fetched properly", true, 200, userData);
     } catch (error) {
         console.log("Read file error: ", error);
@@ -123,15 +127,36 @@ export const handleEdit = async (req, res) => {
         allUserData[userId].role = role;
 
         // Save image if provided
-        if(req.file) {
+        if (req.file) {
             allUserData[userId].profilePath = req.file.path;
         }
+        // ----pending if user change the profile picture then first delete the previous from the uploads folder
 
-        const { id, password, ...userData } = allUserData[userId]; 
+        const { id, password, ...userData } = allUserData[userId];
         await writeData('registeredUsers.json', allUserData);
         sendResponse(res, "Data updated successfully", true, 200, userData);
     } catch (error) {
         console.log("Edit data error: ", error)
         sendResponse(res, "Server Error", false, 500);
     }
+}
+
+export const handleImagesUpload = async (req, res) => {
+    if (!req.files) return sendResponse(res, "No files Provided", false, 400);
+    const { userId } = req.body;
+    const allUserData = await readJsonFile('registeredUsers.json')
+
+    // If user does not exist, send error
+    if (!userId || !allUserData[userId]) {
+        return sendResponse(res, "User not found", false, 404);
+    }
+
+    if (!Array.isArray(allUserData[userId].uploadedImages)) {
+        allUserData[userId].uploadedImages = [];
+    }
+    const pathArray = req.files.map(file => file.path);
+    allUserData[userId].uploadedImages.push(...pathArray);
+
+    await writeData('registeredUsers.json', allUserData);
+    sendResponse(res,"Images Uploaded Successfully",true,200);
 }

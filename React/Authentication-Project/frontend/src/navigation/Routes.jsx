@@ -6,6 +6,7 @@ import { Outlet,createBrowserRouter, createRoutesFromElements, Route } from "rea
 import ProtectedRoutes from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ProfileForm from "../pages/ProfileForm";
+import CreatePost from "../pages/CreatePost";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
                 <Route path="home" element={<HomePage />} />
                 <Route path="userlist" element={<UserList />} />
                 <Route path="profileform" element={<ProfileForm />} />
+                <Route path="createpost" element={<CreatePost />} />
             </Route>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />

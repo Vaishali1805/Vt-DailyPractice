@@ -7,6 +7,7 @@ import Popup from "../components/Popup.jsx";
 import Button from "../components/Button.jsx";
 import formStyles from "../styles/formStyles.js";
 import { useNavigate } from "react-router-dom";
+import ImageModal from "../components/ImageModal.jsx";
 
 const UserTable = () => {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ const UserTable = () => {
     email: "",
     role: "",
   });
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [userIdViewImage, setUserIdViewImage] = useState(null);
 
   // request to fetch userList
   useEffect(() => {
@@ -111,6 +114,11 @@ const UserTable = () => {
     setEditedData({ name: "", email: "", role: "" });
   };
 
+  const handleViewImages = (userId) => {
+    setUserIdViewImage(userId);
+    setShowImageModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -153,6 +161,9 @@ const UserTable = () => {
           <p>
             <strong>Role:</strong> {currentUser.role}
           </p>
+          <div className="flext justify-items-end">
+            <Button className="bg-gray-500 text-white px-4 py-2 cursor-pointer rounded-lg" value="Create Post" onClick={() => navigate('/createPost')} />
+          </div>
         </div>
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="min-w-full">
@@ -172,6 +183,9 @@ const UserTable = () => {
                     Action
                   </th>
                 )}
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" >
+                  Posts
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -221,6 +235,14 @@ const UserTable = () => {
                             ❌
                           </button>
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleViewImages(user.id)}
+                            className="text-blue-600 hover:underline cursor-pointer"
+                          >
+                            View Posts
+                          </button>
+                        </td>
                       </>
                     ) : (
                       <>
@@ -249,6 +271,14 @@ const UserTable = () => {
                             </button>
                           </td>
                         )}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleViewImages(user.id)}
+                            className="text-blue-600 hover:underline cursor-pointer"
+                          >
+                            View Posts
+                          </button>
+                        </td>
                       </>
                     )}
                   </tr>
@@ -279,6 +309,14 @@ const UserTable = () => {
           onCancel={() => {
             setShowLogoutPopup(false);
           }}
+        />
+      )}
+
+      {/* Image Modal */}
+      {showImageModal && (
+        <ImageModal
+          userId={userIdViewImage}
+          setShowImageModal={setShowImageModal}
         />
       )}
     </div>

@@ -88,3 +88,22 @@ export async function editUser(payload) {
     }
   }
 }
+
+export async function uploadFiles(filesData) {
+  try {
+    const { data } = await axiosInstance.post(routes.uploadImages,filesData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
+  }
+}

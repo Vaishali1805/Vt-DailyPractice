@@ -43,7 +43,6 @@ const ProfileForm = () => {
 
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
-        console.log("file: ", file)
         if (!file) return ShowToastMessage(true, "Please select a file");
 
         const { result, message } = validateFile(file);

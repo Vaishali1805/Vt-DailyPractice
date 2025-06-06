@@ -4,16 +4,14 @@
     "email": "hardik@gmail.com",
     "password": "$2b$10$gg77k1xCNGYJv/XQkb9jP.2.OPaqBKznZe8G2MWo4szCJmWHz7Za6",
     "role": "Admin",
-    "id": 1748944928553,
-    "profilePath": "uploads\\1749133217056_CO2-oil-min.png"
+    "id": 1748944928553
   },
   "1748945589210": {
     "name": "Riyanshi",
     "email": "riyanshi@gmail.com",
     "password": "$2b$10$4YbxnKexLq.DLShzcAvRV.X5NAkJvrXfnPL5UvPnTq6Z1fmPGvif2",
     "role": "User",
-    "id": 1748945589210,
-    "profilePath": "uploads\\1749132944456_download.jpeg"
+    "id": 1748945589210
   },
   "1748949165255": {
     "name": "Isha",
@@ -69,8 +67,7 @@
     "email": "kartik@gmail.com",
     "password": "$2b$10$uAkAzUChomykA8J91syX1O7AiLc.z0q6D5x/crT3Itidjg7npXu.W",
     "role": "Admin",
-    "id": 1749115220880,
-    "profilePath": "uploads\\1749123934548_5.jpg"
+    "id": 1749115220880
   },
   "1749178698037": {
     "name": "Vs",

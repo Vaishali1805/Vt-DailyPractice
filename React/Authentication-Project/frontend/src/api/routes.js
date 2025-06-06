@@ -4,5 +4,5 @@ export const routes = {
   getData: "/auth/getUserData",
   edit: "/auth/editUserData",
   delete: "/auth/deleteUserData",
-  uploadProfile: "/auth/uploadProfile",
+  uploadImages: "/auth/uploadImages",
 }
