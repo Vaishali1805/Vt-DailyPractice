@@ -13,7 +13,7 @@ export function sendResponseTofunction(success, message) {
     return { success, message };
 }
 
-export const getSource = (selectedImage, profilePath) => {
+export const getSource = (profilePath,selectedImage = null) => {
     if (selectedImage) return selectedImage;
     if (profilePath) return `http://localhost:5000/${profilePath}`
     return defaultImage;

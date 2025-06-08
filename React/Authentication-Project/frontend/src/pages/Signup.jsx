@@ -1,5 +1,5 @@
 // React hook for side effects
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 //components
 import RightSection from "../components/RightSection";
@@ -19,7 +19,16 @@ import { validateSignupForm } from "../utils/validation.js";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, form, setForm, errors, setErrors } = useAuth();
+  const { isAuthenticated } = useAuth();
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "User",
+  });
+  const [errors, setErrors] = useState({});
 
   // Redirect to user list page if user is already logged in
   useEffect(() => {

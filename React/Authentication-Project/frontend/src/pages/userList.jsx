@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { deleteUser, editUser, getUsersData } from "../api/apiHandlers.js";
-import { getLocalStorageData } from "../utils/utils.js";
+import { getLocalStorageData, getSource } from "../utils/utils.js";
 import showToastMessage from "../components/showToastMessage.jsx";
 import Popup from "../components/Popup.jsx";
 import Button from "../components/Button.jsx";
 import formStyles from "../styles/formStyles.js";
 import { useNavigate } from "react-router-dom";
 import ImageModal from "../components/ImageModal.jsx";
+import Image from "../components/Image.jsx";
 
 const UserTable = () => {
   const navigate = useNavigate();
-  const { users, setUsers, currentUser, setCurrentUser, setIsAuthenticated } =
-    useAuth();
+  const {
+    users,
+    setUsers,
+    currentUserId,
+    setCurrentUserId,
+    setIsAuthenticated,
+  } = useAuth();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
@@ -25,6 +31,7 @@ const UserTable = () => {
   });
   const [showImageModal, setShowImageModal] = useState(false);
   const [userIdViewImage, setUserIdViewImage] = useState(null);
+  const currentUser = users.find((user) => user.id === currentUserId) || {};
 
   // request to fetch userList
   useEffect(() => {
@@ -33,7 +40,7 @@ const UserTable = () => {
       // showToastMessage(res?.success,res?.message);
       if (res?.success) {
         setUsers(res?.userData || []); // update the state
-        setCurrentUser(getLocalStorageData("currentUser") || {});
+        setCurrentUserId(getLocalStorageData("currentUserId") || "");
       }
     }
     fetchData();
@@ -87,7 +94,7 @@ const UserTable = () => {
   };
 
   const saveEdit = async (id) => {
-    const originalUser = users.find(user => user.id === id);
+    const originalUser = users.find((user) => user.id === id);
 
     const hasChanges =
       editedData.name !== originalUser.name ||
@@ -103,7 +110,9 @@ const UserTable = () => {
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
       setUsers((prev) =>
-        prev.map((user) => (user.id === id ? { ...user, ...res.userData } : user))
+        prev.map((user) =>
+          user.id === id ? { ...user, ...res.userData } : user
+        )
       );
       setEditingUserId(null);
     }
@@ -162,13 +171,20 @@ const UserTable = () => {
             <strong>Role:</strong> {currentUser.role}
           </p>
           <div className="flext justify-items-end">
-            <Button className="bg-gray-500 text-white px-4 py-2 cursor-pointer rounded-lg" value="Create Post" onClick={() => navigate('/createPost')} />
+            <Button
+              className="bg-gray-500 text-white px-4 py-2 cursor-pointer rounded-lg"
+              value="Create Post"
+              onClick={() => navigate("/createPost")}
+            />
           </div>
         </div>
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="min-w-full">
             <thead className="bg-gray-200">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Profile picture
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
@@ -183,7 +199,7 @@ const UserTable = () => {
                     Action
                   </th>
                 )}
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" >
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Posts
                 </th>
               </tr>
@@ -195,6 +211,13 @@ const UserTable = () => {
                   <tr key={user.id}>
                     {editingUserId === user.id ? (
                       <>
+                        <td className="px-6 py-4">
+                          <Image
+                            className="w-14 h-14 rounded-full object-cover"
+                            src={getSource(user?.profilePath)}
+                            alt="Profile Picture"
+                          />
+                        </td>
                         <td className="px-6 py-4">
                           <input
                             name="name"
@@ -238,14 +261,20 @@ const UserTable = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleViewImages(user.id)}
-                            className="text-blue-600 hover:underline cursor-pointer"
-                          >
+                            className="text-blue-600 hover:underline cursor-pointer">
                             View Posts
                           </button>
                         </td>
                       </>
                     ) : (
                       <>
+                        <td className="px-6 py-4">
+                          <Image
+                            className="w-14 h-14 rounded-full object-cover"
+                            src={getSource(user?.profilePath)}
+                            alt="Profile Picture"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {user.name}
                         </td>
@@ -274,8 +303,7 @@ const UserTable = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleViewImages(user.id)}
-                            className="text-blue-600 hover:underline cursor-pointer"
-                          >
+                            className="text-blue-600 hover:underline cursor-pointer">
                             View Posts
                           </button>
                         </td>
@@ -284,7 +312,6 @@ const UserTable = () => {
                   </tr>
                 ))}
             </tbody>
-
           </table>
         </div>
       </div>

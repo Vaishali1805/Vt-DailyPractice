@@ -1,26 +1,30 @@
-export const handleImagesUpload = async (req, res) => {
-    if (!req.files) return sendResponse(res, "No files Provided", false, 400);
+multiple request prevention
 
-    const { userId } = req.body;
-    const allUserData = await readJsonFile('registeredUsers.json');
+1. Disable button while processing
+const [isProcessing, setIsProcessing] = useState(false);
 
-    // If user does not exist, send error
-    if (!allUserData[userId]) {
-        return sendResponse(res, "User not found", false, 404);
-    }
+const handleClick = async () => {
+  if (isProcessing) return; // Prevent double click
 
-    const pathArray = req.files.map(file => file.path);
+  setIsProcessing(true); // Disable button
+  const res = await someAsyncRequest();
+  setIsProcessing(false); // Enable button again
 
-    // Ensure uploadedImages key exists
-    if (!Array.isArray(allUserData[userId].uploadedImages)) {
-        allUserData[userId].uploadedImages = [];
-    }
-
-    // Add new images to existing uploadedImages
-    allUserData[userId].uploadedImages.push(...pathArray);
-
-    // Save back to file
-    await writeData('registeredUsers.json', allUserData);
-
-    return sendResponse(res, "Images uploaded successfully", true, 200);
+  // handle response...
 };
+
+<Button 
+  onClick={handleClick} 
+  disabled={isProcessing}
+  className={isProcessing ? "opacity-50 cursor-not-allowed" : ""}
+  value={isProcessing ? "Please wait..." : "Submit"} 
+/>
+
+2. Debounce the button click
+
+npm install lodash
+import { debounce } from "lodash";
+
+const handleClick = debounce(async () => {
+  const res = await someAsyncRequest();
+}, 1000); // executes only once per 1 second

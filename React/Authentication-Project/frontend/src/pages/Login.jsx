@@ -1,5 +1,5 @@
 // React hook for side effects
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 //assets and styles
 import cycleImg from "../assets/cycleImage.png";
@@ -24,11 +24,10 @@ const Login = () => {
   const {
     isAuthenticated,
     setIsAuthenticated,
-    email,
-    setEmail,
-    password,
-    setPassword,
   } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Redirect to user list page if user is already logged in
   useEffect(() => {
@@ -53,7 +52,7 @@ const Login = () => {
     ShowToastMessage(res?.success, res?.message);
     if (res?.success) {
       setLocalStorageData("token", res?.token);
-      setLocalStorageData("currentUser", res?.userData);
+      setLocalStorageData("currentUserId", res?.userData.id);
       setTimeout(() => {
         setIsAuthenticated(true);
       }, 1500);

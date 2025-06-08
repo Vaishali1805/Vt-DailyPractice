@@ -5,19 +5,9 @@ import { getLocalStorageData } from "../utils/utils.js"
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "User",
-  });
-  const [errors, setErrors] = useState({});
+  const [currentUserId, setCurrentUserId] = useState(null);
 
    useEffect(() => {
       async function checkToken() {
@@ -34,16 +24,8 @@ export default function AuthProvider({ children }) {
         setUsers,
         isAuthenticated,
         setIsAuthenticated,
-        email,
-        setEmail,
-        password,
-        setPassword,
-        currentUser,
-        setCurrentUser,
-        form,
-        setForm,
-        errors,
-        setErrors,
+        currentUserId,
+        setCurrentUserId,
       }}>
       {children}
     </AuthContext.Provider>

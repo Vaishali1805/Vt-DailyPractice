@@ -27,13 +27,6 @@
     "role": "User",
     "id": 1748958299664
   },
-  "1749013778800": {
-    "name": "Ram",
-    "email": "ram@gmail.comm",
-    "password": "$2b$10$mVu76uDBnIwg8FsPnkEFeelctUM.rhyKlTxDkHs.iN5/soBue4Tp6",
-    "role": "Admin",
-    "id": 1749013778800
-  },
   "1749021955489": {
     "name": "Ram",
     "email": "ram@gmail.com",
@@ -55,25 +48,25 @@
     "role": "Admin",
     "id": 1749100219843
   },
-  "1749100323638": {
-    "name": "James Bond",
-    "email": "jamesbond2@gmail.com",
-    "password": "$2b$10$btc3n5pZ.4sOAMREjUQvn.6YJSWcKwCDpd77WqMmj89wdaKvp8E/O",
-    "role": "User",
-    "id": 1749100323638
-  },
   "1749115220880": {
     "name": "Kartik",
     "email": "kartik@gmail.com",
     "password": "$2b$10$uAkAzUChomykA8J91syX1O7AiLc.z0q6D5x/crT3Itidjg7npXu.W",
     "role": "Admin",
-    "id": 1749115220880
+    "id": 1749115220880,
+    "uploadedImages": [
+      "uploads\\1749383580992_info.svg"
+    ],
+    "profilePath": "uploads\\1749386297596_a bird.png"
   },
   "1749178698037": {
     "name": "Vs",
     "email": "vaishali@maimt.com",
     "password": "$2b$10$E6HlAxxKXtcQoZt6PnozR.SgtDNky4nrEMYJFucFDarM86TwXpHbm",
     "role": "Admin",
-    "id": 1749178698037
+    "id": 1749178698037,
+    "uploadedImages": [
+      "uploads\\1749381229196_null.png"
+    ]
   }
 }
