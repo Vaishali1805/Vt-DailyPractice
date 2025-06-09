@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getLocalStorageData } from "../utils/utils.js"
+import { jwtDecode } from 'jwt-decode';
 
 //create context
 export const AuthContext = createContext();
@@ -9,13 +10,17 @@ export default function AuthProvider({ children }) {
   const [users, setUsers] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
 
-   useEffect(() => {
-      async function checkToken() {
-        const token = getLocalStorageData("token");
-        token ? setIsAuthenticated(true) : setIsAuthenticated(false);
-      }
-      checkToken();
-    }, [isAuthenticated]);
+  useEffect(() => {
+    async function checkToken() {
+      const token = getLocalStorageData("token");
+      if (!token)
+        return setIsAuthenticated(false);
+      const decoded = jwtDecode(token);
+      setCurrentUserId(decoded.id);
+      setIsAuthenticated(true);
+    }
+    checkToken();
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider

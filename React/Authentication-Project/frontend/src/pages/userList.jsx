@@ -40,7 +40,6 @@ const UserTable = () => {
       // showToastMessage(res?.success,res?.message);
       if (res?.success) {
         setUsers(res?.userData || []); // update the state
-        setCurrentUserId(getLocalStorageData("currentUserId") || "");
       }
     }
     fetchData();

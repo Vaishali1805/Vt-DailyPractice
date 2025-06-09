@@ -28,3 +28,16 @@ import { debounce } from "lodash";
 const handleClick = debounce(async () => {
   const res = await someAsyncRequest();
 }, 1000); // executes only once per 1 second
+
+
+import jwtDecode from "jwt-decode";
+
+// Get token from localStorage
+const token = localStorage.getItem("token");
+
+// Decode token
+if (token) {
+  const decoded = jwtDecode(token);
+  console.log("User ID from token:", decoded.id);
+}
+

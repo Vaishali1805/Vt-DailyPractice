@@ -48,11 +48,10 @@ const Login = () => {
     }
 
     //send request to backend 
-    const res = await handleLogin( email.toLowerCase(), password );
+    const res = await handleLogin(email.toLowerCase(), password);
     ShowToastMessage(res?.success, res?.message);
     if (res?.success) {
-      setLocalStorageData("token", res?.token);
-      setLocalStorageData("currentUserId", res?.userData.id);
+      setLocalStorageData("token",res?.token);
       setTimeout(() => {
         setIsAuthenticated(true);
       }, 1500);
