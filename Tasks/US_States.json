@@ -1,0 +1,332 @@
+[
+    {
+        "id": 1398,
+        "name": "Howland Island",
+        "iso2": "UM-84"
+    },
+    {
+        "id": 1399,
+        "name": "Delaware",
+        "iso2": "DE"
+    },
+    {
+        "id": 1400,
+        "name": "Alaska",
+        "iso2": "AK"
+    },
+    {
+        "id": 1401,
+        "name": "Maryland",
+        "iso2": "MD"
+    },
+    {
+        "id": 1402,
+        "name": "Baker Island",
+        "iso2": "UM-81"
+    },
+    {
+        "id": 1403,
+        "name": "Kingman Reef",
+        "iso2": "UM-89"
+    },
+    {
+        "id": 1404,
+        "name": "New Hampshire",
+        "iso2": "NH"
+    },
+    {
+        "id": 1405,
+        "name": "Wake Island",
+        "iso2": "UM-79"
+    },
+    {
+        "id": 1406,
+        "name": "Kansas",
+        "iso2": "KS"
+    },
+    {
+        "id": 1407,
+        "name": "Texas",
+        "iso2": "TX"
+    },
+    {
+        "id": 1408,
+        "name": "Nebraska",
+        "iso2": "NE"
+    },
+    {
+        "id": 1409,
+        "name": "Vermont",
+        "iso2": "VT"
+    },
+    {
+        "id": 1410,
+        "name": "Jarvis Island",
+        "iso2": "UM-86"
+    },
+    {
+        "id": 1411,
+        "name": "Hawaii",
+        "iso2": "HI"
+    },
+    {
+        "id": 1412,
+        "name": "Guam",
+        "iso2": "GU"
+    },
+    {
+        "id": 1413,
+        "name": "United States Virgin Islands",
+        "iso2": "VI"
+    },
+    {
+        "id": 1414,
+        "name": "Utah",
+        "iso2": "UT"
+    },
+    {
+        "id": 1415,
+        "name": "Oregon",
+        "iso2": "OR"
+    },
+    {
+        "id": 1416,
+        "name": "California",
+        "iso2": "CA"
+    },
+    {
+        "id": 1417,
+        "name": "New Jersey",
+        "iso2": "NJ"
+    },
+    {
+        "id": 1418,
+        "name": "North Dakota",
+        "iso2": "ND"
+    },
+    {
+        "id": 1419,
+        "name": "Kentucky",
+        "iso2": "KY"
+    },
+    {
+        "id": 1420,
+        "name": "Minnesota",
+        "iso2": "MN"
+    },
+    {
+        "id": 1421,
+        "name": "Oklahoma",
+        "iso2": "OK"
+    },
+    {
+        "id": 1422,
+        "name": "Pennsylvania",
+        "iso2": "PA"
+    },
+    {
+        "id": 1423,
+        "name": "New Mexico",
+        "iso2": "NM"
+    },
+    {
+        "id": 1424,
+        "name": "American Samoa",
+        "iso2": "AS"
+    },
+    {
+        "id": 1425,
+        "name": "Illinois",
+        "iso2": "IL"
+    },
+    {
+        "id": 1426,
+        "name": "Michigan",
+        "iso2": "MI"
+    },
+    {
+        "id": 1427,
+        "name": "Virginia",
+        "iso2": "VA"
+    },
+    {
+        "id": 1428,
+        "name": "Johnston Atoll",
+        "iso2": "UM-67"
+    },
+    {
+        "id": 1429,
+        "name": "West Virginia",
+        "iso2": "WV"
+    },
+    {
+        "id": 1430,
+        "name": "Mississippi",
+        "iso2": "MS"
+    },
+    {
+        "id": 1431,
+        "name": "Northern Mariana Islands",
+        "iso2": "MP"
+    },
+    {
+        "id": 1432,
+        "name": "United States Minor Outlying Islands",
+        "iso2": "UM"
+    },
+    {
+        "id": 1433,
+        "name": "Massachusetts",
+        "iso2": "MA"
+    },
+    {
+        "id": 1434,
+        "name": "Arizona",
+        "iso2": "AZ"
+    },
+    {
+        "id": 1435,
+        "name": "Connecticut",
+        "iso2": "CT"
+    },
+    {
+        "id": 1436,
+        "name": "Florida",
+        "iso2": "FL"
+    },
+    {
+        "id": 1437,
+        "name": "District of Columbia",
+        "iso2": "DC"
+    },
+    {
+        "id": 1438,
+        "name": "Midway Atoll",
+        "iso2": "UM-71"
+    },
+    {
+        "id": 1439,
+        "name": "Navassa Island",
+        "iso2": "UM-76"
+    },
+    {
+        "id": 1440,
+        "name": "Indiana",
+        "iso2": "IN"
+    },
+    {
+        "id": 1441,
+        "name": "Wisconsin",
+        "iso2": "WI"
+    },
+    {
+        "id": 1442,
+        "name": "Wyoming",
+        "iso2": "WY"
+    },
+    {
+        "id": 1443,
+        "name": "South Carolina",
+        "iso2": "SC"
+    },
+    {
+        "id": 1444,
+        "name": "Arkansas",
+        "iso2": "AR"
+    },
+    {
+        "id": 1445,
+        "name": "South Dakota",
+        "iso2": "SD"
+    },
+    {
+        "id": 1446,
+        "name": "Montana",
+        "iso2": "MT"
+    },
+    {
+        "id": 1447,
+        "name": "North Carolina",
+        "iso2": "NC"
+    },
+    {
+        "id": 1448,
+        "name": "Palmyra Atoll",
+        "iso2": "UM-95"
+    },
+    {
+        "id": 1449,
+        "name": "Puerto Rico",
+        "iso2": "PR"
+    },
+    {
+        "id": 1450,
+        "name": "Colorado",
+        "iso2": "CO"
+    },
+    {
+        "id": 1451,
+        "name": "Missouri",
+        "iso2": "MO"
+    },
+    {
+        "id": 1452,
+        "name": "New York",
+        "iso2": "NY"
+    },
+    {
+        "id": 1453,
+        "name": "Maine",
+        "iso2": "ME"
+    },
+    {
+        "id": 1454,
+        "name": "Tennessee",
+        "iso2": "TN"
+    },
+    {
+        "id": 1455,
+        "name": "Georgia",
+        "iso2": "GA"
+    },
+    {
+        "id": 1456,
+        "name": "Alabama",
+        "iso2": "AL"
+    },
+    {
+        "id": 1457,
+        "name": "Louisiana",
+        "iso2": "LA"
+    },
+    {
+        "id": 1458,
+        "name": "Nevada",
+        "iso2": "NV"
+    },
+    {
+        "id": 1459,
+        "name": "Iowa",
+        "iso2": "IA"
+    },
+    {
+        "id": 1460,
+        "name": "Idaho",
+        "iso2": "ID"
+    },
+    {
+        "id": 1461,
+        "name": "Rhode Island",
+        "iso2": "RI"
+    },
+    {
+        "id": 1462,
+        "name": "Washington",
+        "iso2": "WA"
+    },
+    {
+        "id": 4851,
+        "name": "Ohio",
+        "iso2": "OH"
+    }
+]
