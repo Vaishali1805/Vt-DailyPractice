@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@syncfusion/ej2-react-inputs": "^29.2.5",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "jwt-decode": "^4.0.0",

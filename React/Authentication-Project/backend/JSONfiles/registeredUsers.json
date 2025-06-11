@@ -68,5 +68,12 @@
     "uploadedImages": [
       "uploads\\1749381229196_null.png"
     ]
+  },
+  "1749632167277": {
+    "name": "xyz",
+    "email": "xyz@gmail.com",
+    "password": "$2b$10$0rXxwCBnMmjHB9axFdr3veBpz3aU9ytqUHDFjJhwakTvaGEV90pNS",
+    "role": "User",
+    "id": 1749632167277
   }
 }
