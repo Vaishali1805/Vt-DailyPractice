@@ -6,10 +6,13 @@ import { readJsonFile, writeData, getHashedPassword } from "../utils/fileHelpers
 //function to register the new user
 export const handleRegister = async (req, res) => {
     try {
-        const { newUser } = req.body;
-        if (!newUser) return sendResponse(res, "Data Not Found", false, 400)
+        console.log("req.body: ",req.body);
+        const { name, email, password, role } = req.body || {};
+        if (!name || !email || !password || !role) {
+            return sendResponse(res, "All fields are required", false, 400);
+        }
 
-        console.log("new user: ", newUser)
+        const newUser = { name, email, password, role };
         const result = validateData(newUser);
         if (!result) return sendResponse(res, "Validation failed", false, 400);
 

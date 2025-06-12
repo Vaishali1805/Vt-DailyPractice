@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
-import { deleteUser, editUser, getUsersData } from "../api/apiHandlers.js";
+import { deleteUser, editUser, getUsersData, sendRequest } from "../api/apiHandlers.js";
 import { getLocalStorageData, getSource } from "../utils/utils.js";
 import showToastMessage from "../components/showToastMessage.jsx";
 import Popup from "../components/Popup.jsx";
@@ -9,6 +9,7 @@ import formStyles from "../styles/formStyles.js";
 import { useNavigate } from "react-router-dom";
 import ImageModal from "../components/ImageModal.jsx";
 import Image from "../components/Image.jsx";
+import { routes } from "../api/routes.js";
 
 const UserTable = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const UserTable = () => {
 
   const confirmDelete = async (id) => {
     const res = await deleteUser([selectedUserId]);
+    // const res = await sendRequest([selectedUserId],routes.delete);
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
       setUsers((prevUsers) =>

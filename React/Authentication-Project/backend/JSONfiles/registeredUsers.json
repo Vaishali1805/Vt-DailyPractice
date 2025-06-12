@@ -82,5 +82,12 @@
     "password": "$2b$10$0rXxwCBnMmjHB9axFdr3veBpz3aU9ytqUHDFjJhwakTvaGEV90pNS",
     "role": "User",
     "id": 1749632167277
+  },
+  "1749748268674": {
+    "name": "me",
+    "email": "me@gmail.com",
+    "password": "$2b$10$TuIxFTFzJrF9s8/CNES9QuTgx4X.386YYA4P.V975hMlSkonDYSye",
+    "role": "Admin",
+    "id": 1749748268674
   }
 }

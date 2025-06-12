@@ -13,7 +13,7 @@ import formStyles from "../styles/formStyles";
 
 // Import navigation, API call, authentication context, and form validation utility
 import { useNavigate } from "react-router-dom";
-import { handelSignup, sendRequest } from "../api/apiHandlers.js";
+import { sendRequest } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { validateSignupForm } from "../utils/validation.js";
 import { routes } from "../api/routes.js";
@@ -61,8 +61,7 @@ const Signup = () => {
     const signupData = { name, email: email.toLowerCase(), password, role };
 
     // send data to backend
-    const res = await handelSignup(signupData);
-    // const res = await sendRequest(signupData,routes.signup);
+    const res = await sendRequest(signupData,routes.signup);
     ShowToastMessage(res?.success, res?.message);
     if (res?.success) {
       setTimeout(() => {
