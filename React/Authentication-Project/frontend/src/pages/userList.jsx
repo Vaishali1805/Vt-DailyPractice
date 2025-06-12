@@ -105,7 +105,7 @@ const UserTable = () => {
       setEditingUserId(null);
       return;
     }
-    const res = await editUser({ id, ...editedData });
+    const res = await editUser({ userId:id, ...editedData });
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
       setUsers((prev) =>

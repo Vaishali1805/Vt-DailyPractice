@@ -12,7 +12,7 @@ import { getSource } from '../utils/utils';
 
 const ProfileForm = () => {
     const navigate = useNavigate();
-    const { currentUser, setCurrentUser } = useAuth();
+    const { users, currentUserId } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -21,9 +21,10 @@ const ProfileForm = () => {
     });
     const [errors, setErrors] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
+    const currentUser = users.find((user) => user.id === currentUserId) || {};
 
     useEffect(() => {
-        if (currentUser) {
+        if (users) {
             setFormData({
                 name: currentUser.name || '',
                 email: currentUser.email || '',
@@ -31,7 +32,7 @@ const ProfileForm = () => {
                 profilePath: currentUser.profilePath || '',
             });
         }
-    }, [currentUser]);
+    }, [users]);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -78,7 +79,8 @@ const ProfileForm = () => {
             payload.append("file", file, `${Date.now()}_${file.name}`);
         }
         try {
-            const { message, success, userData} = await editUser(payload);
+            console.log("payload: ", payload)
+            const { message, success } = await editUser(payload);
             ShowToastMessage(success, message);
             if (success) {
                 navigate('/userlist');
@@ -97,9 +99,10 @@ const ProfileForm = () => {
 
                 <div className="flex flex-col items-center mb-4">
                     <Image
-                        src={getSource(selectedImage,currentUser.profilePath)}
+                        src={getSource(currentUser?.profilePath, selectedImage)}
                         alt="User Image"
                         className="w-24 h-24 rounded-full object-cover"
+                        onError={(e) => e.currentTarget.src = defaultImage}
                     />
                     <label
                         htmlFor="imageUpload"
@@ -119,22 +122,22 @@ const ProfileForm = () => {
                 <div className="space-y-4">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                        <InputField type="text" value={formData.name} id="name" onChange={handleChange} error={errors.name} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your name" />
+                        <InputField type="text" value={formData?.name} id="name" onChange={handleChange} error={errors.name} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your name" />
                     </div>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <InputField type="email" value={formData.email} id="email" onChange={handleChange} error={errors.email} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your email" />
+                        <InputField type="email" value={formData?.email} id="email" onChange={handleChange} error={errors.email} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" placeholder="Enter your email" />
                     </div>
                     <div>
                         <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-                        <select id="role" onChange={handleChange} value={formData.role} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" >
+                        <select id="role" onChange={handleChange} value={formData?.role} className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200" >
                             <option value="User">User</option>
                             <option value="Admin">Admin</option>
                         </select>
                     </div>
                     <div className="flex justify-end space-x-2">
-                        <Button id="cancelBtn" className={formStyles.formButton} onClick={() => navigate('/userlist')} value="Cancel" />
-                        <Button id="submitBtn" className={formStyles.formButton} onClick={handleSubmit} value="Submit" />
+                        <Button id="cancelBtn" className={formStyles?.formButton} onClick={() => navigate('/userlist')} value="Cancel" />
+                        <Button id="submitBtn" className={formStyles?.formButton} onClick={handleSubmit} value="Submit" />
                     </div>
                 </div>
             </div>

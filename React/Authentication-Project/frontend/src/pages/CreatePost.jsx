@@ -1,91 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { UploaderComponent } from '@syncfusion/ej2-react-inputs';
 import { useAuth } from "../context/AuthContext";
 import ShowToastMessage from "../components/showToastMessage";
-import { uploadFiles } from "../api/apiHandlers";
+import { uploadFiles, uploadVideos } from "../api/apiHandlers";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import ImageUploader from "../components/ImageUploader";
+import VideoUploader from "../components/VideoUploader";
+import { CHUNK_SIZE } from "../utils/constant";
+import ShowUploadedImage from "../components/ShowUploadedImage";
+import ShowUploadedVideo from "../components/ShowUploadedVideo";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { users, currentUserId } = useAuth();
-  const [posts, setPosts] = useState([]);
-  const [videos, setVideos] = useState([]);
+  const [uploadedMedia, setUploadedMedia] = useState({ images: [], videos: [] });
   const [selectedMedia, setSelectedMedia] = useState({ images: [], videos: [] });
-  const [selectedFiles, setSelectedFiles] = useState(null);
-  const [selectedVideos, setSelectedVideos] = useState(null);
 
   useEffect(() => {
     const user = users.find((u) => u.id === currentUserId);
     if (!user) return;
-
-    setPosts(user.uploadedImages || []);
-    setVideos(user.uploadedVideos || []);
+    setUploadedMedia({
+      images: user.uploadedImages || [],
+      videos: user.uploadedVideos || [],
+    });
   }, [users, currentUserId]);
 
-
-  const handleFileChange = (e) => {
+  const handleMediaChange = async (e, type) => {
     const files = Array.from(e.target.files);
     if (!files.length) return ShowToastMessage(false, "No File Selected");
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setSelectedFiles(urls);
+    const previews = files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    console.log("previews: ", previews);
+    setSelectedMedia((prev) => ({
+      ...prev,
+      [type]: [...prev[type], ...previews]
+    }))
+  }
+
+   const uploadImages = async (images, userId) => {
+    const formData = new FormData();
+    images.forEach(img => formData.append("files", img.file));
+    formData.append("userId", userId);
+    const res = await uploadFiles(formData);
+    if (!res?.success) throw new Error(res.message || "Image upload failed");
+    return res;
   };
 
-  const handleFileChange2 = (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return ShowToastMessage(false, "No File Selected");
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setSelectedVideos(urls);
-  };
+  const uploadVideoInChunks = async (videoFile, userId) => {
+    const totalChunks = Math.ceil(videoFile.size / CHUNK_SIZE);
 
-  const handleMediaChange = (type, e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return ShowToastMessage(false, "No File Selected");
+    for (let i = 0; i < totalChunks; i++) {
+      const chunk = videoFile.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+      const formData = new FormData();
 
-    const urls = files.map(file => URL.createObjectURL(file));
-    setSelectedMedia(prev => ({ ...prev, [type]: urls }));
+      formData.append("chunk", chunk);
+      formData.append("fileName", videoFile.name);
+      formData.append("chunkIndex", i);
+      formData.append("totalChunks", totalChunks);
+      formData.append("userId", userId);
+
+      const res = await uploadVideos(formData);
+      if (!res?.success) {
+        throw new Error(`Chunk ${i + 1} failed: ${res.message}`);
+      }
+    }
+    return true;
   };
 
   const handleUpload = async () => {
-    if (!selectedFiles) return ShowToastMessage(false, "Please select a file!");
-    const files = Array.from(document.getElementById("fileInput").files);
-    // validateFile(files);       --pending bottom
+    const { images, videos } = selectedMedia;
+    const userId = currentUserId;
 
-    const filesData = new FormData();
-    filesData.append("userId", currentUserId);
-    files.map((file) =>
-      filesData.append("files", file, `${Date.now()}_${file.name}`)
-    );
-    const res = await uploadFiles(filesData);
-    ShowToastMessage(res?.success, res?.message);
-    setTimeout(() => {
-      setSelectedFiles(null);
-      navigate("/userlist");
-    }, 1000);
-  };
+    const tasks = [];
 
-  const new_handleUpload = async (type, inputId) => {
-    const media = selectedMedia[type];
-    if (!media.length) return ShowToastMessage(false, "Please select files!");
+    if (images.length > 0) {
+      tasks.push(uploadImages(images, userId));
+    }
 
-    const files = Array.from(document.getElementById(inputId).files);
-    const formData = new FormData();
-    formData.append("userId", currentUserId);
-    files.forEach(file =>
-      formData.append("files", file, `${Date.now()}_${file.name}`)
+    videos.forEach(video =>
+      tasks.push(uploadVideoInChunks(video.file, userId))
     );
 
-    const res = await uploadFiles(formData);
-    ShowToastMessage(res?.success, res?.message);
-    if (res?.success) {
-      setSelectedMedia(prev => ({ ...prev, [type]: [] }));
-      setTimeout(() => navigate("/userlist"), 1000);
+    try {
+      await Promise.all(tasks);
+      ShowToastMessage(true, "All media uploaded successfully!");
+      setTimeout(() => {
+        setSelectedMedia({ images: [], videos: [] });
+        navigate("/userlist");
+      }, 1000);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      ShowToastMessage(false, err.message || "Some uploads failed.");
     }
   };
-
-  const handleUpload2 = async () => {
-    console.log("am in handleUpload2")
-  }
 
   return (
     <>
@@ -103,133 +112,27 @@ const CreatePost = () => {
           </div>
         </div>
 
-        {/* <UploaderComponent
-          asyncSettings={{
-            saveUrl: "http://localhost:5000/auth/uploadImages", // your backend upload route
-            // removeUrl: "http://localhost:5000/auth/remove", // optional
-            chunkSize: 102400,
-          }}
-          allowedExtensions={type === 'images' ? '.jpg,.jpeg,.png' : '.mp4,.avi'}
-          multiple={true}
-        /> */}
-
-
-        <div className="flex justify-center gap-2">
-          {/* To upload photos */}
-          <div className="inline-block p-6 rounded-md border shadow-md">
-            <div className="mb-4">
-              <label className="mr-2">Select files:</label>
-              <input
-                type="file"
-                id="fileInput"
-                onChange={handleFileChange}
-                accept="image/*"
-                multiple
-                hidden
-              />
-              <label
-                htmlFor="fileInput"
-                className="px-4 py-2 bg-gray-700 text-white rounded cursor-pointer">
-                Click Here
-              </label>
-            </div>
-
-            {/* Show preview of selected file */}
-            {selectedFiles && (
-              <div className="mb-4 flex justify-evenly gap-2.5">
-                {selectedFiles.map((file, index) => (
-                  <img
-                    key={index}
-                    src={file}
-                    alt="preview"
-                    className=" mb-4 w-40 h-28 object-cover mx-auto rounded shadow"
-                  />
-                ))}
-              </div>
-            )}
-            {selectedFiles && (
-              <button
-                onClick={handleUpload}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
-                Upload
-              </button>
-            )}
-          </div>
-          {/* To upload videos */}
-          <div className="inline-block p-6 rounded-md border shadow-md">
-            <div className="mb-4">
-              <label className="mr-2">Select videos:</label>
-              <input
-                type="file"
-                id="videoInput"
-                onChange={handleFileChange2}
-                accept="video/*"
-                multiple
-                hidden
-              />
-              <label
-                htmlFor="videoInput"
-                className="px-4 py-2 bg-gray-700 text-white rounded cursor-pointer">
-                Click Here
-              </label>
-            </div>
-
-            {/* Show preview of selected videos */}
-            {selectedVideos && (
-              <div className="mb-4 flex justify-evenly gap-2.5">
-                {selectedVideos.map((file, index) => (
-                  <video key={index} className="mb-4 w-40 h-28 object-cover mx-auto rounded shadow" >
-                    <source src={file} ></source>
-                  </video>
-                ))}
-              </div>
-            )}
-            {selectedVideos && (
-              <button
-                onClick={handleUpload2}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
-                Upload
-              </button>
-            )}
-          </div>
+        <div className="mb-2 flex justify-center gap-2.5">
+          <ImageUploader handleChange={(e) => handleMediaChange(e, "images")} selectedImages={[...selectedMedia.images]} />
+          <VideoUploader handleChange={(e) => handleMediaChange(e, "videos")} selectedVideos={[...selectedMedia.videos]} />
         </div>
 
-        {/* All uploaded images shown below */}
-        {posts && <>
-          {/* <h4>Uploaded Images/Posts</h4> */}
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {posts.map((img, index) => (
-              <div
-                key={index}
-                className="border rounded p-2 shadow hover:scale-105 transition-transform">
-                <img
-                  src={`http://localhost:5000/${img}`}
-                  alt={`Image-${index}`}
-                  className="w-full h-40 object-cover rounded"
-                />
-              </div>
-            ))}
+        {(selectedMedia.images.length > 0 || selectedMedia.videos.length > 0) && (
+          <div className="flex justify-center mt-5">
+            <Button
+              onClick={handleUpload}
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 cursor-pointer"
+              value="Upload"
+            />
           </div>
-        </>
-        }
+        )}
+
+        {/* All uploaded images shown below */}
+        <ShowUploadedImage uploadedImages={uploadedMedia.images}  />
 
         {/* All uploaded videos shown below */}
-        {videos && <>
-          {/* <h4>Uploaded Videos</h4> */}
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {/* {videos.map((img, index) => (
-            <div
-              key={index}
-              className="border rounded p-2 shadow hover:scale-105 transition-transform">
-              <img
-                src={`http://localhost:5000/${img}`}
-                alt={`Image-${index}`}
-                className="w-full h-40 object-cover rounded"
-              />
-            </div>
-          ))} */}
-          </div>
-        </>}
+        <ShowUploadedVideo uploadedVideos={uploadedMedia.videos} />
+        
       </div>
     </>
   );

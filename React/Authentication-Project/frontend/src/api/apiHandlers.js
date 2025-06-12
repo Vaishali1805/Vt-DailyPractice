@@ -2,6 +2,22 @@ import axiosInstance from "./axiosInstance.js";
 import { routes } from "./routes.js";
 import { sendResponseTofunction } from "../utils/utils.js";
 
+export async function sendRequest(payload, route) {
+  try {
+    const { data } = await axiosInstance.post(route, payload);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
+      return sendResponseTofunction(false, "No response from server. Please check your connection");
+    } else {
+      return sendResponseTofunction(false, "Unexpected error occurred")
+    }
+  }
+}
+
+
 export async function handleLogin(email, password) {
   try {
     const { data } = await axiosInstance.post(routes.login, {
@@ -32,7 +48,7 @@ export async function handelSignup(newUser) {
     } else if (error.request) {     //error occurs when server is not reachable(due to network connection,wrong port etc)
       return sendResponseTofunction(false, "No response from server. Please check your connection");
     } else {
-      return sendResponseTofunction(false, "Unexpected error occurred")
+      return sendResponseTofunction(false, "Unexpected error occurred");
     }
   }
 }
@@ -108,7 +124,7 @@ export async function uploadFiles(filesData) {
   }
 }
 
-export async function uploadVideos(videosData) {
+export async function uploadVideos(filesData){
   try {
     const { data } = await axiosInstance.post(routes.uploadVideos, filesData, {
       headers: {

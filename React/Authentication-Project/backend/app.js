@@ -16,10 +16,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));   //serve 
 app.use(express.json({ limit: '50mb' }));     //limit to remove the error -payload too large
 
 //Routes
-import userRoute from './routes/userRoute.js'
 import authRoute from './routes/authRoute.js'
-app.use('/user', userRoute);
+import userRoute from './routes/userRoute.js'
 app.use('/auth', authRoute);
+app.use('/user', userRoute);
 
 app.listen(PORT, (req, res) => {
   console.log("server is running on PORT: ", PORT);

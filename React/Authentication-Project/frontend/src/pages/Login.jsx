@@ -14,10 +14,11 @@ import ShowToastMessage from "../components/showToastMessage.jsx";
 
 // Import navigation, API call, authentication context, and form validation utility
 import { useNavigate } from "react-router-dom";
-import { handleLogin } from "../api/apiHandlers.js";
+import { handleLogin, sendRequest } from "../api/apiHandlers.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { validateLoginForm } from "../utils/validation.js";
 import { setLocalStorageData } from "../utils/utils.js";
+import { routes } from "../api/routes.js";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,7 +49,8 @@ const Login = () => {
     }
 
     //send request to backend 
-    const res = await handleLogin(email.toLowerCase(), password);
+    // const res = await handleLogin(email.toLowerCase(), password);
+    const res = await sendRequest({email: email.toLowerCase(), password},routes.login)
     ShowToastMessage(res?.success, res?.message);
     if (res?.success) {
       setLocalStorageData("token",res?.token);
