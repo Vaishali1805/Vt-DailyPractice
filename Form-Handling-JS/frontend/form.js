@@ -313,6 +313,7 @@ function getAllCountries_API() {
     })
     .then((data) => {
       selectCountry.innerHTML = '<option value="">Select Country</option>'; // Default option
+      console.log("country: ",data);
       data.forEach((country) => {
         let option = document.createElement("option");
         const obj = { code: country.iso2, name: country.name };
@@ -332,6 +333,7 @@ function getStates_API(countryCode) {
   fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states`, { headers: { "X-CSCAPI-KEY": api_key } })
     .then(res => res.json())
     .then((data) => {
+      console.log("state: ",data)
       selectState.innerHTML = '<option value="">Select State</option>';
 
       if (!data.length) {
@@ -358,9 +360,10 @@ function getCities_API(countryCode, stateCode) {
   fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`, { headers: { "X-CSCAPI-KEY": api_key } })
     .then(res => res.json())
     .then((data) => {
+      console.log("city: ",data)
       selectCity.innerHTML = '<option value="">Select City</option>';
-      console.log("data for cities: ", data);
-      console.log("data.length for cities: ", data.length);
+      // console.log("data for cities: ", data);
+      // console.log("data.length for cities: ", data.length);
 
       if (!data.length) {
         console.log("no cities available")
