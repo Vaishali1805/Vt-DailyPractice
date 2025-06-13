@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
-import { deleteUser, editUser, getUsersData, sendRequest } from "../api/apiHandlers.js";
-import { getLocalStorageData, getSource } from "../utils/utils.js";
+import { getUsersData, sendRequest } from "../api/apiHandlers.js";
+import { getSource } from "../utils/utils.js";
 import showToastMessage from "../components/showToastMessage.jsx";
 import Popup from "../components/Popup.jsx";
 import Button from "../components/Button.jsx";
 import formStyles from "../styles/formStyles.js";
 import { useNavigate } from "react-router-dom";
-import ImageModal from "../components/ImageModal.jsx";
+import MediaModal from "../components/MediaModal.jsx";
 import Image from "../components/Image.jsx";
 import { routes } from "../api/routes.js";
 
@@ -17,7 +17,6 @@ const UserTable = () => {
     users,
     setUsers,
     currentUserId,
-    setCurrentUserId,
     setIsAuthenticated,
   } = useAuth();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -30,7 +29,7 @@ const UserTable = () => {
     email: "",
     role: "",
   });
-  const [showImageModal, setShowImageModal] = useState(false);
+  const [showMediaModal, setShowMediaModal] = useState(false);
   const [userIdViewImage, setUserIdViewImage] = useState(null);
   const currentUser = users.find((user) => user.id === currentUserId) || {};
 
@@ -51,8 +50,7 @@ const UserTable = () => {
   };
 
   const confirmDelete = async (id) => {
-    const res = await deleteUser([selectedUserId]);
-    // const res = await sendRequest([selectedUserId],routes.delete);
+    const res = await sendRequest({ userIds: [selectedUserId] },routes.delete);
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
       setUsers((prevUsers) =>
@@ -107,7 +105,7 @@ const UserTable = () => {
       setEditingUserId(null);
       return;
     }
-    const res = await editUser({ userId:id, ...editedData });
+    const res = await sendRequest({ userId:id, ...editedData },routes.edit);
     showToastMessage(res?.success, res?.message);
     if (res?.success) {
       setUsers((prev) =>
@@ -126,7 +124,7 @@ const UserTable = () => {
 
   const handleViewImages = (userId) => {
     setUserIdViewImage(userId);
-    setShowImageModal(true);
+    setShowMediaModal(true);
   };
 
   return (
@@ -171,7 +169,7 @@ const UserTable = () => {
           <p>
             <strong>Role:</strong> {currentUser.role}
           </p>
-          <div className="flext justify-items-end">
+          <div className="flex justify-end">
             <Button
               className="bg-gray-500 text-white px-4 py-2 cursor-pointer rounded-lg"
               value="Create Post"
@@ -341,10 +339,10 @@ const UserTable = () => {
       )}
 
       {/* Image Modal */}
-      {showImageModal && (
-        <ImageModal
+      {showMediaModal && (
+        <MediaModal
           userId={userIdViewImage}
-          setShowImageModal={setShowImageModal}
+          setShowMediaModal={setShowMediaModal}
         />
       )}
     </div>

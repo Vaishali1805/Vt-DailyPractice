@@ -21,18 +21,11 @@
     "id": 1748949165255
   },
   "1748958299664": {
-    "name": "Isha",
+    "name": "xyz",
     "email": "xyz@gmail.comhn",
     "password": "$2b$10$SDjaLqPFCJiYQrUP9mLopu.qhn5zPJX6v7F.cR3INwsdHDn.sQXFm",
     "role": "User",
     "id": 1748958299664
-  },
-  "1749021955489": {
-    "name": "Ramu",
-    "email": "ram@gmail.com",
-    "password": "$2b$10$b..SECglY12WZeIIZhP1VuuJmsbvxukaSuhIVMEw2UiQ2Jd8VQ5YK",
-    "role": "Admin",
-    "id": 1749021955489
   },
   "1749047400513": {
     "name": "aakash shukla",
@@ -47,13 +40,6 @@
     "password": "$2b$10$fsTQT3UlwPT69pXrpwCNluxm/TiCqzA7fv9Mvv.QOoacTloynPo6W",
     "role": "Admin",
     "id": 1749100219843
-  },
-  "1749115220880": {
-    "name": "Kartik",
-    "email": "kartik@gmail.com",
-    "password": "$2b$10$uAkAzUChomykA8J91syX1O7AiLc.z0q6D5x/crT3Itidjg7npXu.W",
-    "role": "Admin",
-    "id": 1749115220880
   },
   "1749178698037": {
     "name": "Vishu",
@@ -77,11 +63,26 @@
     ]
   },
   "1749632167277": {
-    "name": "xyz",
+    "name": "xyz2",
     "email": "xyz@gmail.com",
     "password": "$2b$10$0rXxwCBnMmjHB9axFdr3veBpz3aU9ytqUHDFjJhwakTvaGEV90pNS",
-    "role": "User",
-    "id": 1749632167277
+    "role": "Admin",
+    "id": 1749632167277,
+    "uploadedImages": [
+      "uploads\\images\\2.jpg",
+      "uploads\\images\\0966de45-3128-4140-852b-851f1793a732.jpeg",
+      "uploads\\images\\DC-Refined-Logo-300x14.jpeg",
+      "uploads\\images\\Absolutes-oil-min.png",
+      "uploads\\images\\download.jpeg",
+      "uploads\\images\\iq1iIoYokoY_Asset_189_552x_RightFacing.png",
+      "uploads\\images\\iq1iIoYokoY_Asset_189_552x_RightFacing.png",
+      "uploads\\images\\a1.png"
+    ],
+    "uploadedVideos": [
+      "uploads\\videos\\Mental Health Gameplay 3.mp4",
+      "uploads\\videos\\20240408-1031-06.6043785.mp4",
+      "uploads\\videos\\com.solutionario.sentioclient.quest.test-20240430-172439.mp4"
+    ]
   },
   "1749748268674": {
     "name": "me",

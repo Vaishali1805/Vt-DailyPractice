@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import formStyles from '../styles/formStyles';
 import { useAuth } from '../context/AuthContext';
 import { validateFile, validateProfileForm } from '../utils/validation.js';
-import { editUser } from '../api/apiHandlers';
+import { sendRequest } from '../api/apiHandlers';
 import ShowToastMessage from '../components/showToastMessage';
 import { getSource } from '../utils/utils';
+import { routes } from '../api/routes.js';
 
 const ProfileForm = () => {
     const navigate = useNavigate();
@@ -79,8 +80,7 @@ const ProfileForm = () => {
             payload.append("file", file, `${Date.now()}_${file.name}`);
         }
         try {
-            console.log("payload: ", payload)
-            const { message, success } = await editUser(payload);
+            const { message, success } = await sendRequest(payload,routes.edit);
             ShowToastMessage(success, message);
             if (success) {
                 navigate('/userlist');

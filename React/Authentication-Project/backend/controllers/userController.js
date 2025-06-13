@@ -20,9 +20,7 @@ export const getUserData = async (req, res) => {
 
 export const handleDelete = async (req, res) => {
     try {
-        console.log("req.body: ",req.body);
         const { userIds } = req.body || {};
-        console.log("userIds: ",userIds);
         if (userIds.length === 0) {
             return sendResponse(res, "No IDs provided for deletion", false, 400);
         }

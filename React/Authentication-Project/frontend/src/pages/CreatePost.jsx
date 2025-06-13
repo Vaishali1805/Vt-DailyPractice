@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ShowToastMessage from "../components/showToastMessage";
-import { uploadFiles, uploadVideos } from "../api/apiHandlers";
+import { sendRequest } from "../api/apiHandlers";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import ImageUploader from "../components/ImageUploader";
@@ -9,12 +9,14 @@ import VideoUploader from "../components/VideoUploader";
 import { CHUNK_SIZE } from "../utils/constant";
 import ShowUploadedImage from "../components/ShowUploadedImage";
 import ShowUploadedVideo from "../components/ShowUploadedVideo";
+import { routes } from "../api/routes";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { users, currentUserId } = useAuth();
   const [uploadedMedia, setUploadedMedia] = useState({ images: [], videos: [] });
   const [selectedMedia, setSelectedMedia] = useState({ images: [], videos: [] });
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     const user = users.find((u) => u.id === currentUserId);
@@ -32,18 +34,17 @@ const CreatePost = () => {
       file,
       url: URL.createObjectURL(file),
     }));
-    console.log("previews: ", previews);
     setSelectedMedia((prev) => ({
       ...prev,
       [type]: [...prev[type], ...previews]
     }))
   }
 
-   const uploadImages = async (images, userId) => {
+  const uploadImages = async (images, userId) => {
     const formData = new FormData();
     images.forEach(img => formData.append("files", img.file));
     formData.append("userId", userId);
-    const res = await uploadFiles(formData);
+    const res = await sendRequest(formData, routes.uploadImages);
     if (!res?.success) throw new Error(res.message || "Image upload failed");
     return res;
   };
@@ -61,7 +62,7 @@ const CreatePost = () => {
       formData.append("totalChunks", totalChunks);
       formData.append("userId", userId);
 
-      const res = await uploadVideos(formData);
+      const res = await sendRequest(formData, routes.uploadVideos);
       if (!res?.success) {
         throw new Error(`Chunk ${i + 1} failed: ${res.message}`);
       }
@@ -72,9 +73,9 @@ const CreatePost = () => {
   const handleUpload = async () => {
     const { images, videos } = selectedMedia;
     const userId = currentUserId;
-
     const tasks = [];
 
+    setIsUploading(true);  // disable button before starting
     if (images.length > 0) {
       tasks.push(uploadImages(images, userId));
     }
@@ -88,6 +89,7 @@ const CreatePost = () => {
       ShowToastMessage(true, "All media uploaded successfully!");
       setTimeout(() => {
         setSelectedMedia({ images: [], videos: [] });
+        setIsUploading(false);
         navigate("/userlist");
       }, 1000);
     } catch (err) {
@@ -121,18 +123,19 @@ const CreatePost = () => {
           <div className="flex justify-center mt-5">
             <Button
               onClick={handleUpload}
+              disabled={isUploading}
               className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 cursor-pointer"
-              value="Upload"
+              value={isUploading ? "Uploading..." : "Upload"}
             />
           </div>
         )}
 
         {/* All uploaded images shown below */}
-        <ShowUploadedImage uploadedImages={uploadedMedia.images}  />
+        <ShowUploadedImage uploadedImages={uploadedMedia.images} />
 
         {/* All uploaded videos shown below */}
         <ShowUploadedVideo uploadedVideos={uploadedMedia.videos} />
-        
+
       </div>
     </>
   );
