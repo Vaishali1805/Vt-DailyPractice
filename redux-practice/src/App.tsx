@@ -1,16 +1,17 @@
-import { useState } from 'react'
 import './App.css'
-import { useAppSelector } from './redux/hooks'
+import { decrement, increment } from './redux/counterSlice';
+import { useAppDispatch, useAppSelector } from './redux/hooks'
 
 function App() {
-  const count = useAppSelector();
+  const { value } = useAppSelector((state) => state.counterSlice);
+  const dispatch = useAppDispatch();
   return (
     <>
       <h1>Counter</h1>
       <div className="card">
-        <button>+</button>
-        <p>Count is {count}</p>
-        <button>-</button>
+        <button onClick={() => dispatch(increment())}>+</button>
+        <p>Count is {value}</p>
+        <button onClick={() => dispatch(decrement())}>-</button>
       </div>
     </>
   )
