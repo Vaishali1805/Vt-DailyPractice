@@ -118,5 +118,20 @@
     "city": 5027,
     "profilePath": "uploads\\1744955992121_Manu_Herrador_student_interview_featured.jpg",
     "id": 1744955992603
+  },
+  "1752142514640": {
+    "firstName": "new student",
+    "lastName": null,
+    "email": "newEmail@gmail.com",
+    "contactNo": "7410741012",
+    "dateOfBirth": "2025-07-01",
+    "studentId": 3245123,
+    "gender": "Female",
+    "address": "78, cannaught plaza, Delhi",
+    "country": 3,
+    "state": 4917,
+    "city": null,
+    "profilePath": "uploads\\1752142513965_5.jpg",
+    "id": 1752142514640
   }
 }
