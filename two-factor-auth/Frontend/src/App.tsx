@@ -1,6 +1,11 @@
 import { useState } from "react";
 import "./App.css";
-import axios from 'axios';
+import axios, { type AxiosResponse } from "axios";
+
+interface responseType {
+  message?: string;
+  success?: boolean;
+}
 
 function App() {
   const [email, setEmail] = useState<string>("");
@@ -12,8 +17,14 @@ function App() {
 
   const handleSubmit = async () => {
     console.log("am in handle Submit");
-    const response = await axios.post('http://localhost:2500/auth/verifyEmail',{email})
-    console.log("response: ",response);
+    const response: AxiosResponse<responseType> = await axios.post(
+      "http://localhost:2500/auth/verifyEmail",
+      { email }
+    );
+    console.log("response: ", response);
+    if (response.data.success) {
+      window.location.href = './views/otp.tsx';
+    }
   };
 
   return (

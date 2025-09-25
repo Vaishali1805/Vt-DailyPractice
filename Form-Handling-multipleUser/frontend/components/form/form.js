@@ -244,7 +244,7 @@ function handleFileSelection(event) {
   if (file) {
     if (validateFile(file)) {
       lastSelectedFile = file;
-      const fileUrl = URL.createObjectURL(file);+
+      const fileUrl = URL.createObjectURL(file);
       previewImg(fileUrl);
     } else {
       preview.innerHTML = '';
