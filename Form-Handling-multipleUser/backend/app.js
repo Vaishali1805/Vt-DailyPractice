@@ -17,8 +17,8 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));     //limit to remove the error -payload too large
 app.use('/uploads', express.static('uploads'));
 app.use('/user', userRoute);
-app.use('/auth', authRoute);
 
+app.use('/auth', authRoute);
 app.listen(PORT, (req, res) => {
     console.log("server is running on PORT: ", PORT);
 })
