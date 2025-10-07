@@ -8,7 +8,7 @@ function App() {
     <>
       <div className="bg-slate-100 h-screen">
         <div className="flex justify-center items-center h-screen">
-          <RouterProvider router={router } />
+          <RouterProvider router={router} />
         </div>
       </div>
     </>
