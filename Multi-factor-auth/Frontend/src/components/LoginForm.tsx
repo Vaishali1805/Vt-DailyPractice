@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 const LoginForm = () => {
@@ -6,15 +6,15 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  // const [error, setError] = useState("");
+  // const [message, setMessage] = useState("");
 
-  const handleRegister = () => {
-    
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
   }
 
-  const handleLogin = () => {
-
+  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
   }
   return (
     <form onSubmit={isRegister ? handleRegister : handleLogin} className="bg-white rounded-lg shadow-md w-full max-w-sm mx-auto">
@@ -73,8 +73,8 @@ const LoginForm = () => {
         ) : (
           ""
         )}
-        {error ? <p>{error}</p> : ""}
-        {message ? <p>{message}</p> : ""}
+        {/* {error ? <p className="text-red-500 text-sm mb-3">{error}</p> : ""} */}
+        {/* {message ? <p className="text-green-600 text-sm mb-3">{message}</p> : ""} */}
         <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md">
           {isRegister ? "Register" : "Login"}
         </button>
