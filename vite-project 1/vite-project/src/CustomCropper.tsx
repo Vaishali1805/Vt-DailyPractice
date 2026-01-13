@@ -7,7 +7,7 @@ interface CropperProps {
   zoom: number;
   aspect: number;
   onCropChange: (crop: { x: number; y: number }) => void;
-  onZoomChange: (zoom: number) => void;
+  // onZoomChange: (zoom: number) => void;
   onCropComplete: (area: CropArea, areaPixels: CropArea) => void;
 }
 
@@ -17,7 +17,7 @@ const CustomCropper: React.FC<CropperProps> = ({
   zoom,
   aspect,
   onCropChange,
-  onZoomChange,
+  // onZoomChange,
   onCropComplete,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);

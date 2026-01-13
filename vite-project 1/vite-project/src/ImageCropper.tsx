@@ -7,7 +7,7 @@ import CustomCropper from "./CustomCropper_new";
 
 interface ImageCropperModalProps {
   image: string; // input image
-  aspect?: number; // aspect ratio (default 4/3)
+  aspect: number; // aspect ratio (default 4/3)
   onCropDone: (croppedImg: string) => void; // return cropped image
   onClose: () => void; // close modal without cropping
 }
@@ -93,7 +93,7 @@ const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
                 zoom={zoom}
                 aspect={aspect}
                 onCropChange={setCrop}
-                onZoomChange={setZoom}
+                // onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
               />
               {/* <Cropper
